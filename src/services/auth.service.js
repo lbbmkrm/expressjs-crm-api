@@ -7,22 +7,30 @@ const authService = {
   register: async (username, email, password) => {
     const usernameExists = await authRepository.findUserByUsername(username);
     if (usernameExists) {
-      throw new Error("Username already exists", 400);
+      const err = new Error("Username already exists");
+      err.statusCode = 400;
+      throw err;
     }
+
     const emailExists = await authRepository.findUserByEmail(email);
     if (emailExists) {
-      throw new Error("Email already exists", 400);
+      const err = new Error("Email already exists");
+      err.statusCode = 400;
+      throw err;
     }
+
     const hashPassword = await bcrypt.hash(password, 10);
-    const token = jwt.sign({ username: username }, config.secret, {
-      expiresIn: "1d",
-    });
 
     const user = await authRepository.createUser({
       username: username,
       email: email,
       password: hashPassword,
     });
+    const token = jwt.sign(
+      { id: user.id, username: user.username, email: user.email },
+      config.secret,
+      { expiresIn: "1d" }
+    );
 
     return {
       user: {
@@ -33,17 +41,29 @@ const authService = {
       token: token,
     };
   },
+
   login: async (email, password) => {
     const user = await authRepository.findUserByEmail(email);
-    const userPassword = await bcrypt.compare(password, user.password);
 
-    if (!user || !userPassword) {
-      throw new Error("Invalid email or password", 400);
+    if (!user) {
+      const err = new Error("Invalid email or password");
+      err.statusCode = 400;
+      throw err;
     }
 
-    const token = jwt.sign({ username: user.username }, config.secret, {
-      expiresIn: "1d",
-    });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      const err = new Error("Invalid email or password");
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, username: user.username },
+      config.secret,
+      { expiresIn: "1h" }
+    );
 
     return {
       user: {

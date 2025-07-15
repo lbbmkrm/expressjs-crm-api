@@ -6,6 +6,13 @@ const authRepository = {
       where: {
         username: username,
       },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   },
   findUserByEmail: async (email) => {

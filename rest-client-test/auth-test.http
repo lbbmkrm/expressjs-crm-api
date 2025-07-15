@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc1MjU2NDk0NywiZXhwIjoxNzUyNjUxMzQ3fQ.RqE2Y_7TLUABEjC2jVuziWMrT_pG_-oFfr6fwM0l4uA
+
+### Register pengguna baru
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+### Login untuk mendapatkan token
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}

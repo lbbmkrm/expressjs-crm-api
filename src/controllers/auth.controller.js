@@ -1,4 +1,5 @@
 import authService from "../services/auth.service.js";
+
 const authController = {
   register: async (req, res) => {
     try {
@@ -11,23 +12,25 @@ const authController = {
         token: result.token,
       });
     } catch (err) {
-      res.status(400).json({
+      res.status(err.statusCode || 500).json({
         message: err.message,
+        trace: err.stack,
       });
     }
   },
+
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
       const result = await authService.login(email, password);
       res.status(200).json({
-        status: "Success",
+        status: "success",
         message: "Success login",
         data: result.user,
         token: result.token,
       });
     } catch (err) {
-      res.status(err.statusCode).json({
+      res.status(err.statusCode || 500).json({
         message: err.message,
       });
     }
