@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJqb2huZG9lIiwiaWF0IjoxNzUyNTY0MzYzLCJleHAiOjE3NTI1Njc5NjN9.zdB0RNVNdMKwR4D8G7kpy7Ji8ra7oZfcqv1grIFnPj0
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImlhdCI6MTc1MjY2NDIzMiwiZXhwIjoxNzUyNjY3ODMyfQ.mfethHbrunBo2Q1sVPqa5uuYn-muvWCShIqkDTicuFw
 
 ### Login untuk mendapatkan token
 POST {{baseUrl}}/api/auth/login

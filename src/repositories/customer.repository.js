@@ -8,7 +8,7 @@ const customerRepository = {
   },
   findCustomerById: async (id) => {
     return prisma.customer.findUnique({
-      where: { id },
+      where: { id: id },
       select: {
         id: true,
         name: true,

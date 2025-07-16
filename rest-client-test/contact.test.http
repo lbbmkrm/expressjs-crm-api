@@ -1,0 +1,136 @@
+@baseUrl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImlhdCI6MTc1MjY2NDIzMiwiZXhwIjoxNzUyNjY3ODMyfQ.mfethHbrunBo2Q1sVPqa5uuYn-muvWCShIqkDTicuFw
+
+### Login untuk mendapatkan token
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+### Membuat pelanggan baru (diperlukan untuk customerId pada Contact)
+POST {{baseUrl}}/api/customers
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "phone": "1234567890",
+  "address": "123 Main St",
+  "company": "Doe Inc"
+}
+
+### Membuat kontak baru (kasus sukses)
+POST {{baseUrl}}/api/contacts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": 1,
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane.doe@example.com",
+  "phone": "09876543212",
+  "position": "Vice President"
+}
+
+### Menguji duplikasi email (harus gagal)
+POST {{baseUrl}}/api/contacts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": 1,
+  "firstName": "Bob",
+  "lastName": "Jones",
+  "email": "jane.smith@example.com",
+  "phone": "1112223333",
+  "position": "Assistant"
+}
+
+### Menguji customerId tidak valid (harus gagal)
+POST {{baseUrl}}/api/contacts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": 999,
+  "firstName": "Bob",
+  "lastName": "Jones",
+  "email": "bob.jones@example.com",
+  "phone": "1112223333",
+  "position": "Assistant"
+}
+
+### Menguji customerId bukan angka (harus gagal)
+POST {{baseUrl}}/api/contacts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": "invalid",
+  "firstName": "Bob",
+  "lastName": "Jones",
+  "email": "bob.jones2@example.com",
+  "phone": "1112223333",
+  "position": "Assistant"
+}
+
+### Menguji email tidak valid (harus gagal)
+POST {{baseUrl}}/api/contacts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": 1,
+  "firstName": "Bob",
+  "lastName": "Jones",
+  "email": "invalid-email",
+  "phone": "1112223333",
+  "position": "Assistant"
+}
+
+### Menguji tanpa token (harus gagal)
+POST {{baseUrl}}/api/contacts
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "firstName": "Bob",
+  "lastName": "Jones",
+  "email": "bob.jones3@example.com",
+  "phone": "1112223333",
+  "position": "Assistant"
+}
+
+### Mendapatkan semua kontak
+GET {{baseUrl}}/api/contacts
+Authorization: Bearer {{token}}
+
+### Mendapatkan kontak berdasarkan ID (kasus sukses)
+GET {{baseUrl}}/api/contacts/3
+Authorization: Bearer {{token}}
+
+### Mendapatkan kontak dengan ID tidak valid (harus gagal)
+GET {{baseUrl}}/api/contacts/999
+Authorization: Bearer {{token}}
+
+### Memperbarui kontak (kasus sukses)
+PATCH {{baseUrl}}/api/contacts/3
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "lastName": "doer"
+}
+
+### Menghapus kontak (kasus sukses)
+DELETE {{baseUrl}}/api/contacts/3
+Authorization: Bearer {{token}}
+
+### Menghapus kontak dengan ID tidak valid (harus gagal)
+DELETE {{baseUrl}}/api/contacts/999
+Authorization: Bearer {{token}}

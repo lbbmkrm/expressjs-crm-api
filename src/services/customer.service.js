@@ -3,6 +3,12 @@ import { AppError } from "../utils/AppError.js";
 
 const customerService = {
   createCustomer: async (userId, data) => {
+    const existingCustomer = await customerRepository.findCustomerByEmail(
+      data.email
+    );
+    if (existingCustomer) {
+      throw new AppError("Customer with this email already exists", 400);
+    }
     data.createdByUserId = userId;
     return customerRepository.createCustomer(data);
   },
