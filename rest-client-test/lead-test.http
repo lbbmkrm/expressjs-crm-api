@@ -1,0 +1,166 @@
+@baseUrl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc1MjkxNDA1NywiZXhwIjoxNzUzMDAwNDU3fQ.wpBJV05YD3WOPK1T0jB_vm0nakCT_t7464P2hVCGP18
+
+### Login untuk mendapatkan token
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+### Membuat pelanggan baru (opsional, untuk customerId pada Lead)
+POST {{baseUrl}}/api/customers
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "phone": "1234567890",
+  "address": "123 Main St",
+  "company": "Doe Inc"
+}
+
+### Membuat lead baru (kasus sukses, tanpa customerId)
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Alice Brown",
+  "email": "alice.brown@example.com",
+  "phone": "1234567890",
+  "status": "new"
+}
+
+### Membuat lead baru (kasus sukses, dengan customerId)
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Bob Green",
+  "email": "bob.green@example.com",
+  "phone": "0987654321",
+  "status": "contacted",
+  "customerId": 1
+}
+
+### Menguji customerId tidak valid (harus gagal)
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Charlie Black",
+  "email": "charlie.black@example.com",
+  "phone": "1112223333",
+  "status": "new",
+  "customerId": 999
+}
+
+### Menguji status tidak ada (harus gagal)
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "David White",
+  "email": "david.white@example.com",
+  "phone": "1112223333"
+}
+
+### Menguji customerId bukan angka (harus gagal)
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "David White",
+  "email": "david.white2@example.com",
+  "phone": "1112223333",
+  "status": "new",
+  "customerId": "invalid"
+}
+
+### Menguji email tidak valid (harus gagal)
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "David White",
+  "email": "invalid-email",
+  "phone": "1112223333",
+  "status": "new"
+}
+
+### Menguji tanpa token (harus gagal)
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+
+{
+  "name": "David White",
+  "email": "david.white3@example.com",
+  "phone": "1112223333",
+  "status": "new"
+}
+
+### Mendapatkan semua lead
+GET {{baseUrl}}/api/leads
+Authorization: Bearer {{token}}
+
+### Mendapatkan lead berdasarkan ID (kasus sukses)
+GET {{baseUrl}}/api/leads/2
+Authorization: Bearer {{token}}
+
+### Mendapatkan lead dengan ID tidak valid (harus gagal)
+GET {{baseUrl}}/api/leads/999
+Authorization: Bearer {{token}}
+
+### Memperbarui lead (kasus sukses, tanpa customerId)
+PATCH {{baseUrl}}/api/leads/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Alice Brown Updated",
+  "status": "qualified"
+}
+
+### Memperbarui lead (kasus sukses, hapus customerId)
+PATCH {{baseUrl}}/api/leads/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": null
+}
+
+### Menguji pembaruan dengan customerId tidak valid (harus gagal)
+PATCH {{baseUrl}}/api/leads/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": 999
+}
+
+### Menguji pembaruan dengan customerId bukan angka (harus gagal)
+PATCH {{baseUrl}}/api/leads/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": "invalid"
+}
+
+### Menghapus lead (kasus sukses)
+DELETE {{baseUrl}}/api/leads/2
+Authorization: Bearer {{token}}
+
+### Menghapus lead dengan ID tidak valid (harus gagal)
+DELETE {{baseUrl}}/api/leads/999
+Authorization: Bearer {{token}}

@@ -51,7 +51,6 @@ const customerController = {
       res.status(err.statusCode || 400).json({
         status: "error",
         message: err.message,
-        trace: err.stack,
       });
     }
   },
