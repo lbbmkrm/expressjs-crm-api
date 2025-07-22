@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -23,9 +17,9 @@ model User {
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
 
-  customers Customer[]
-  contact Contact[]
-  lead Lead[]
+  customers Customer[] @relation("userCustomers")
+  contact Contact[] @relation("contactUser")
+  lead Lead[] @relation("leadUser")
     
   @@map("users")
 }
@@ -40,7 +34,7 @@ model Customer{
   createdByUserId Int @map("created_by_user_id") 
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
-  user User @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
+  user User @relation("userCustomers" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
   contact Contact[]
   lead Lead[]
 
@@ -60,8 +54,15 @@ model Contact {
   updatedAt DateTime @map("updated_at") @updatedAt
 
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
+  user User @relation("contactUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
   @@map("contacts")
+}
+
+enum LeadStatus{
+  NEW
+  CONTACTED
+  WON
+  LOST
 }
 
 model Lead{
@@ -69,14 +70,14 @@ model Lead{
   name String @db.VarChar(100) 
   email String? @db.VarChar(100)
   phone String? @db.VarChar(20)
-  status String @db.VarChar(50)
+  status LeadStatus @default(NEW)
   createdByUserId Int @map("created_by_user_id")
   customerId Int? @map("customer_id")
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
 
   customer Customer? @relation(fields: [customerId],references: [id], onDelete: SetNull)
-  user User @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
+  user User @relation("leadUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
 
   @@map("leads")
 }
