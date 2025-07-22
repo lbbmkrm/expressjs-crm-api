@@ -6,14 +6,14 @@ const leadService = {
   createLead: async (userId, requestData) => {
     const { name, email, phone, status, customerId } = requestData;
 
-    const existingCustomer = await customerRepository.findCustomerById(
-      customerId
-    );
-    if (!existingCustomer) {
-      throw new AppError("Customer not found", 404);
+    if (customerId) {
+      const existingCustomer = await customerRepository.findById(customerId);
+      if (!existingCustomer) {
+        throw new AppError("Customer not found", 404);
+      }
     }
 
-    const lead = await leadRepository.createLead({
+    const lead = await leadRepository.create({
       name,
       email,
       phone,

@@ -1,0 +1,212 @@
+@baseUrl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJkdW1teSIsImVtYWlsIjoiZHVtbXlAZXhhbXBsZS5jb20iLCJpYXQiOjE3NTMxODg1NzYsImV4cCI6MTc1MzI3NDk3Nn0.PwEHjh_-I1bSYgwrCsoBFgjYJ_rQiK6W1lhgTERebyE
+
+@opportunityId = 1
+@leadId = 1
+@customerId = 1
+
+
+### Login untuk mendapatkan token
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+### Membuat pelanggan baru (opsional, untuk customerId pada Opportunity)
+POST {{baseUrl}}/api/customers
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "phone": "1234567890",
+  "address": "123 Main St",
+  "company": "Doe Inc"
+}
+
+### Membuat lead baru 
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Alice Brown",
+  "email": "alice.brown@example.com",
+  "phone": "1234567890",
+  "status": "NEW"
+}
+
+### Membuat opportunity baru (kasus sukses, tanpa customerId)
+POST {{baseUrl}}/api/opportunities
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Project Apollo - Lead Conversion",
+  "amount": 10000.50,
+  "stage": "QUALIFICATION",
+  "closeDate": "2025-09-30T00:00:00Z",
+  "description": "Converted lead from inbound marketing campaign.",
+  "leadId": {{leadId}} 
+}
+
+### Membuat opportunity baru (kasus sukses, dengan customerId)
+POST {{baseUrl}}/api/opportunities
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Project Apollo - Customer Conversion",
+  "amount": 15000.75,
+  "stage": "QUALIFICATION",
+  "closeDate": "2025-10-15T00:00:00Z",
+  "description": "Converted customer from previous engagement.",
+  "customerId": 1
+}
+
+### Menguji leadId tidak valid (harus gagal)
+POST {{baseUrl}}/api/opportunities
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid Lead Deal",
+  "amount": 1000,
+  "stage": "QUALIFICATION",
+  "closeDate": "2025-09-30T00:00:00Z",
+  "description": "Invalid lead ID.",
+  "leadId": 999
+}
+
+### Menguji customerId tidak valid (harus gagal)
+POST {{baseUrl}}/api/opportunities
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid Customer Deal",
+  "amount": 1000,
+  "stage": "QUALIFICATION",
+  "closeDate" : "2025-09-30T00:00:00Z",
+  "description": "Invalid customer ID.",
+  "customerId": 999
+}
+
+### Menguji multiple errors 
+POST {{baseUrl}}/api/opportunities
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Short",
+  "amount": 1000,
+  "stage": "INVALID_STAGE",
+  "closeDate": "invalid-date",
+  "description": "This should fail due to multiple validation errors.",
+  "leadId": 999,
+  "customerId": 999
+}
+
+### Menguji leadId bukan angka (harus gagal)
+POST {{baseUrl}}/api/opportunities
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid Lead ID Type",
+  "amount": 1000,
+  "stage": "QUALIFICATION",
+  "closeDate": "2025-09-30T00:00:00Z",
+  "description": "Lead ID should be a number.",
+  "leadId": "not-a-number",
+  "customerId": 1
+}
+
+### Menguji tanpa token (harus gagal)
+POST {{baseUrl}}/api/opportunities
+Content-Type: application/json
+
+{
+  "name": "Missing Token Deal",
+  "amount": 1000,
+  "stage": "QUALIFICATION",
+  "closeDate": "2025-09-30T00:00:00Z",
+  "description": "Missing token should fail.",
+  "leadId": 1
+}
+
+### Menguji token tidak valid (harus gagal)
+POST {{baseUrl}}/api/opportunities
+Content-Type: application/json
+Authorization: Bearer invalid-token
+
+{
+  "name": "Invalid Token Deal",
+  "amount": 1000,
+  "stage": "QUALIFICATION",
+  "closeDate": "2025-09-30T00:00:00Z",
+  "description": "This should fail due to invalid token.",
+  "leadId": 1
+}
+
+### Mendapatkan semua opportunity
+GET {{baseUrl}}/api/opportunities
+Authorization: Bearer {{token}}
+
+### Mendapatkan opportunity berdasarkan ID (kasus sukses)
+GET {{baseUrl}}/api/opportunities/4
+Authorization: Bearer {{token}}
+
+### Mendapatkan opportunity dengan ID tidak valid (harus gagal)
+GET {{baseUrl}}/api/opportunities/999
+Authorization: Bearer {{token}}
+
+### Memperbarui opportunity (kasus sukses)
+PATCH {{baseUrl}}/api/opportunities/8
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Updated Opportunity Name",
+  "amount": 11000.00,
+  "stage": "NEGOTIATION",
+  "closeDate": "2025-11-30T00:00:00Z",
+  "description": "Updated description for the opportunity.",
+  "customerId": 1
+}
+
+### Memperbarui opportunity (kasus sukses, hapus customerId)
+PATCH {{baseUrl}}/api/opportunities/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": null
+}
+
+
+### Menguji pembaruan dengan multiple errors 
+PATCH {{baseUrl}}/api/opportunities/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Short",
+  "amount": 1000,
+  "stage": "INVALID_STAGE",
+  "closeDate": "invalid-date",
+  "description": "This should fail due to multiple validation errors.",
+  "customerId": 999
+}
+
+### Menghapus opportunity (kasus sukses)
+DELETE {{baseUrl}}/api/opportunities/1
+Authorization: Bearer {{token}}
+
+### Menghapus opportunity dengan ID tidak valid (harus gagal)
+DELETE {{baseUrl}}/api/opportunities/999
+Authorization: Bearer {{token}}

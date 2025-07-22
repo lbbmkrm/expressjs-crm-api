@@ -20,6 +20,7 @@ model User {
   customers Customer[] @relation("userCustomers")
   contact Contact[] @relation("contactUser")
   lead Lead[] @relation("leadUser")
+  opportunities Opportunity[] @relation("userOpportunity")
     
   @@map("users")
 }
@@ -37,6 +38,7 @@ model Customer{
   user User @relation("userCustomers" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
   contact Contact[]
   lead Lead[]
+  opportunities Opportunity[] @relation("customerOpportunity")
 
   @@map("customers")
 }
@@ -55,6 +57,7 @@ model Contact {
 
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   user User @relation("contactUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
+
   @@map("contacts")
 }
 
@@ -78,6 +81,36 @@ model Lead{
 
   customer Customer? @relation(fields: [customerId],references: [id], onDelete: SetNull)
   user User @relation("leadUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
+  opportunity Opportunity? @relation("leadOpportunity")
 
   @@map("leads")
+}
+
+enum OpportunityStage{
+  QUALIFICATION
+  NEED_ANALYSIS
+  PROPOSAL_PRESENTATION
+  NEGOTIATION
+  WON
+  LOST
+}
+
+model Opportunity{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  amount Decimal @db.Decimal(10,2)
+  stage OpportunityStage @default(QUALIFICATION)
+  closeDate DateTime? @map("close_date")
+  description String? @db.Text
+  customerId Int? @map("customer_id")
+  leadId Int? @map("lead_id") @unique
+  createdByUserId Int @map("created_by_user_id")
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+
+  customer Customer? @relation("customerOpportunity", fields: [customerId], references: [id], onDelete: SetNull)
+  lead Lead? @relation("leadOpportunity", fields: [leadId], references: [id], onDelete: SetNull)
+  user User @relation("userOpportunity", fields: [createdByUserId], references: [id], onDelete: Cascade)
+
+  @@map("opportunities")
 }
