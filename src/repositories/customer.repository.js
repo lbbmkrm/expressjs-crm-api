@@ -1,45 +1,46 @@
 import prisma from "./prismaClient.js";
 
 const customerRepository = {
-  createCustomer: async (data) => {
+  create: async (data) => {
     return prisma.customer.create({
-      data,
+      data: data,
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
     });
   },
-  findCustomerById: async (id) => {
+  findById: async (id) => {
     return prisma.customer.findUnique({
       where: { id: id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        address: true,
-        company: true,
-        createdAt: true,
-        updatedAt: true,
-        createdByUserId: true,
-        user: { select: { id: true, username: true } },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
       },
     });
   },
-  findCustomerByEmail: async (email) => {
+  findByEmail: async (email) => {
     return prisma.customer.findUnique({
       where: { email },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        address: true,
-        company: true,
-        createdAt: true,
-        updatedAt: true,
-        createdByUserId: true,
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
       },
     });
   },
-  findAllCustomers: async () => {
+  all: async () => {
     return prisma.customer.findMany({
       select: {
         id: true,
@@ -51,28 +52,24 @@ const customerRepository = {
         createdAt: true,
         updatedAt: true,
         createdByUserId: true,
-        user: { select: { id: true, username: true } },
       },
     });
   },
-  updateCustomer: async (id, data) => {
+  update: async (id, data) => {
     return prisma.customer.update({
       where: { id: id },
-      data,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        address: true,
-        company: true,
-        createdAt: true,
-        updatedAt: true,
-        createdByUserId: true,
+      data: data,
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
       },
     });
   },
-  deleteCustomer: async (id) => {
+  delete: async (id) => {
     return prisma.customer.delete({
       where: { id },
     });

@@ -1,7 +1,7 @@
 import customerService from "../services/customer.service.js";
 
 const customerController = {
-  getAllCustomers: async (req, res) => {
+  getAllCustomers: async (req, res, next) => {
     try {
       const customers = await customerService.getAllCustomers();
       const message =
@@ -14,13 +14,10 @@ const customerController = {
         data: customers,
       });
     } catch (err) {
-      res.status(err.statusCode || 500).json({
-        status: "error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  getCustomer: async (req, res) => {
+  getCustomer: async (req, res, next) => {
     try {
       const customerId = parseInt(req.params.id);
       const customer = await customerService.getCustomer(customerId);
@@ -30,13 +27,10 @@ const customerController = {
         data: customer,
       });
     } catch (err) {
-      res.status(err.statusCode || 404).json({
-        status: "error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  createCustomer: async (req, res) => {
+  createCustomer: async (req, res, next) => {
     try {
       const customer = await customerService.createCustomer(
         req.user.id,
@@ -48,13 +42,10 @@ const customerController = {
         data: customer,
       });
     } catch (err) {
-      res.status(err.statusCode || 400).json({
-        status: "error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  updateCustomer: async (req, res) => {
+  updateCustomer: async (req, res, next) => {
     try {
       const customerId = parseInt(req.params.id);
       const customer = await customerService.updateCustomer(
@@ -67,13 +58,10 @@ const customerController = {
         data: customer,
       });
     } catch (err) {
-      res.status(err.statusCode || 400).json({
-        status: "error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  deleteCustomer: async (req, res) => {
+  deleteCustomer: async (req, res, next) => {
     try {
       const customerId = parseInt(req.params.id);
       await customerService.deleteCustomer(customerId);
@@ -82,10 +70,7 @@ const customerController = {
         message: "Customer deleted successfully",
       });
     } catch (err) {
-      res.status(err.statusCode || 404).json({
-        status: "error",
-        message: err.message,
-      });
+      next(err);
     }
   },
 };

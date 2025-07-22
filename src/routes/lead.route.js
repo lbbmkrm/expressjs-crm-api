@@ -7,22 +7,22 @@ import {
   updateLeadScheme,
 } from "../validators/lead.validator.js";
 
-const route = express.Router();
+const router = express.Router();
 
-route.get("/", authMiddleware, leadController.index);
-route.get("/:id", authMiddleware, leadController.show);
-route.post(
+router.get("/", authMiddleware, leadController.index);
+router.get("/:id", authMiddleware, leadController.show);
+router.post(
   "/",
   authMiddleware,
   validate(createLeadScheme),
   leadController.create
 );
-route.patch(
+router.patch(
   "/:id",
   authMiddleware,
   validate(updateLeadScheme),
   leadController.update
 );
-route.delete("/:id", authMiddleware, leadController.delete);
+router.delete("/:id", authMiddleware, leadController.delete);
 
-export default route;
+export default router;

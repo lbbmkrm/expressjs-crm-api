@@ -1,7 +1,7 @@
 import prisma from "./prismaClient.js";
 
 const authRepository = {
-  findUserByUsername: async (username) => {
+  findByUsername: async (username) => {
     return prisma.user.findUnique({
       where: {
         username: username,
@@ -15,16 +15,23 @@ const authRepository = {
       },
     });
   },
-  findUserByEmail: async (email) => {
+  findByEmail: async (email) => {
     return prisma.user.findUnique({
       where: {
         email: email,
       },
     });
   },
-  createUser: async (data) => {
+  create: async (data) => {
     return prisma.user.create({
       data: data,
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   },
 };

@@ -1,14 +1,28 @@
 import prisma from "./prismaClient.js";
 const leadRepository = {
-  createLead: async (data) => {
+  create: async (data) => {
     return prisma.lead.create({
-      data,
+      data: data,
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        customer: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
   },
-  findAllLeads: async () => {
-    return prisma.lead.findMany({});
+  all: async () => {
+    return prisma.lead.findMany();
   },
-  findLeadById: async (id) => {
+  findById: async (id) => {
     const lead = await prisma.lead.findUnique({
       where: {
         id: id,
@@ -30,16 +44,30 @@ const leadRepository = {
     });
     return lead;
   },
-  updateLead: async (id, data) => {
+  update: async (id, data) => {
     const updatedLead = await prisma.lead.update({
       where: {
         id: id,
       },
       data: data,
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        customer: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
     return updatedLead;
   },
-  deleteLead: async (id) => {
+  delete: async (id) => {
     return prisma.lead.delete({
       where: {
         id: id,

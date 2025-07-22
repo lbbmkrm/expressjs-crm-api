@@ -1,7 +1,7 @@
 import prisma from "./prismaClient.js";
 
 const contactRepository = {
-  createContact: async (data) => {
+  create: async (data) => {
     return prisma.contact.create({
       data,
       include: {
@@ -14,7 +14,7 @@ const contactRepository = {
       },
     });
   },
-  findContactById: async (id) => {
+  findById: async (id) => {
     return prisma.contact.findUnique({
       where: { id },
       include: {
@@ -27,12 +27,12 @@ const contactRepository = {
       },
     });
   },
-  findContactByEmail: async (email) => {
+  findByEmail: async (email) => {
     return prisma.contact.findUnique({
       where: { email },
     });
   },
-  findAllContacts: async () => {
+  all: async () => {
     return prisma.contact.findMany({
       include: {
         user: {
@@ -44,13 +44,21 @@ const contactRepository = {
       },
     });
   },
-  updateContact: async (id, data) => {
+  update: async (id, data) => {
     return prisma.contact.update({
       where: { id },
-      data,
+      data: data,
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
     });
   },
-  deleteContact: async (id) => {
+  delete: async (id) => {
     return prisma.contact.delete({
       where: { id },
     });

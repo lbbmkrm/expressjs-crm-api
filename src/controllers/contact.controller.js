@@ -1,6 +1,6 @@
 import contactService from "../services/contact.service.js";
 const contactController = {
-  createContact: async (req, res) => {
+  createContact: async (req, res, next) => {
     try {
       const contact = await contactService.createContact(req.user.id, req.body);
       res.status(201).json({
@@ -9,14 +9,10 @@ const contactController = {
         data: contact,
       });
     } catch (err) {
-      res.status(err.statusCode || 400).json({
-        status: "error",
-        message: err.message,
-        trace: err.stack,
-      });
+      next(err);
     }
   },
-  getAllContacts: async (req, res) => {
+  getAllContacts: async (req, res, next) => {
     try {
       const contacts = await contactService.getAllContacts(req.user.id);
       const message =
@@ -29,13 +25,10 @@ const contactController = {
         data: contacts,
       });
     } catch (err) {
-      res.status(err.statusCode || 500).json({
-        status: "error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  getContact: async (req, res) => {
+  getContact: async (req, res, next) => {
     try {
       const contactId = parseInt(req.params.id);
       const contact = await contactService.getContact(contactId);
@@ -45,13 +38,10 @@ const contactController = {
         data: contact,
       });
     } catch (err) {
-      res.status(err.statusCode || 404).json({
-        status: "error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  updateContact: async (req, res) => {
+  updateContact: async (req, res, next) => {
     try {
       const contactId = parseInt(req.params.id);
       const contact = await contactService.updateContact(contactId, req.body);
@@ -61,13 +51,10 @@ const contactController = {
         data: contact,
       });
     } catch (err) {
-      res.status(err.statusCode || 400).json({
-        status: "error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  deleteContact: async (req, res) => {
+  deleteContact: async (req, res, next) => {
     try {
       const contactId = parseInt(req.params.id);
       await contactService.deleteContact(contactId);
@@ -76,10 +63,7 @@ const contactController = {
         message: "Contact deleted successfully",
       });
     } catch (err) {
-      res.status(err.statusCode || 404).json({
-        status: "error",
-        message: err.message,
-      });
+      next(err);
     }
   },
 };

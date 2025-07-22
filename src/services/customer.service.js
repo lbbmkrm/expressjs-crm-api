@@ -3,38 +3,40 @@ import { AppError } from "../utils/AppError.js";
 
 const customerService = {
   createCustomer: async (userId, data) => {
-    const existingCustomer = await customerRepository.findCustomerByEmail(
-      data.email
-    );
+    const existingCustomer = await customerRepository.findByEmail(data.email);
     if (existingCustomer) {
       throw new AppError("Customer with this email already exists", 400);
     }
     data.createdByUserId = userId;
-    return customerRepository.createCustomer(data);
+    return customerRepository.create(data);
   },
+
   getAllCustomers: async () => {
-    return customerRepository.findAllCustomers();
+    return customerRepository.findAll();
   },
+
   getCustomer: async (id) => {
-    const customer = await customerRepository.findCustomerById(id);
+    const customer = await customerRepository.findById(id);
     if (!customer) {
       throw new AppError("Customer not found", 404);
     }
     return customer;
   },
+
   updateCustomer: async (id, data) => {
-    const user = await customerRepository.findCustomerById(id);
-    if (!user) {
+    const customer = await customerRepository.findById(id);
+    if (!customer) {
       throw new AppError("Customer not found", 404);
     }
-    return customerRepository.updateCustomer(id, data);
+    return customerRepository.update(id, data);
   },
+
   deleteCustomer: async (id) => {
-    const costumer = await customerRepository.findCustomerById(id);
-    if (!costumer) {
+    const customer = await customerRepository.findById(id);
+    if (!customer) {
       throw new AppError("Customer not found", 404);
     }
-    return customerRepository.deleteCustomer(id);
+    return customerRepository.delete(id);
   },
 };
 

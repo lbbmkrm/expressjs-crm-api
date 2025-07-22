@@ -1,51 +1,42 @@
 import leadService from "../services/lead.service.js";
 
 const leadController = {
-  create: async (req, res) => {
+  create: async (req, res, next) => {
     const user = req.user;
     try {
       const lead = await leadService.createLead(user.id, req.body);
       res.status(201).json({
-        status: "Success",
+        status: "success",
         message: "Lead created successfully",
         data: lead,
       });
     } catch (err) {
-      res.status(err.statusCode || 500).json({
-        status: "Error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  index: async (req, res) => {
+  index: async (req, res, next) => {
     try {
       const leads = await leadService.getAllLeads();
       res.status(200).json({
-        status: "Success",
+        status: "success",
         message: "Leads retieved successfully",
         data: leads,
       });
     } catch (err) {
-      res.status(err.statusCode || 500).json({
-        status: "Error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  show: async (req, res) => {
+  show: async (req, res, next) => {
     try {
       const leadId = parseInt(req.params.id);
       const lead = await leadService.getLeadById(leadId);
       res.status(200).json({
-        status: "Success",
+        status: "success",
         message: "Lead retrieved successfully",
         data: lead,
       });
     } catch (err) {
-      res.status(err.statusCode || 500).json({
-        status: "Error",
-        message: err.message,
-      });
+      next(err);
     }
   },
   update: async (req, res) => {
@@ -53,29 +44,23 @@ const leadController = {
       const leadId = parseInt(req.params.id);
       const lead = await leadService.updateLead(leadId, req.body);
       res.status(200).json({
-        status: "Success",
+        status: "success",
         message: "Lead updated successfully",
         data: lead,
       });
     } catch (err) {
-      res.status(err.statusCode).json({
-        status: "Error",
-        message: err.message,
-      });
+      next(err);
     }
   },
-  delete: async (req, res) => {
+  delete: async (req, res, next) => {
     try {
       await leadService.deleteLead(parseInt(req.params.id));
       res.status(200).json({
-        status: "Success",
+        status: "success",
         message: "Lead deleted successfully",
       });
     } catch (err) {
-      res.status(err.statusCode || 500).json({
-        status: "Error",
-        message: err.message,
-      });
+      next(err);
     }
   },
 };

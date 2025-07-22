@@ -1,7 +1,7 @@
 import authService from "../services/auth.service.js";
 
 const authController = {
-  register: async (req, res) => {
+  register: async (req, res, next) => {
     try {
       const { username, email, password } = req.body;
       const result = await authService.register(username, email, password);
@@ -12,14 +12,11 @@ const authController = {
         token: result.token,
       });
     } catch (err) {
-      res.status(err.statusCode || 500).json({
-        message: err.message,
-        trace: err.stack,
-      });
+      next(err);
     }
   },
 
-  login: async (req, res) => {
+  login: async (req, res, next) => {
     try {
       const { email, password } = req.body;
       const result = await authService.login(email, password);
@@ -30,9 +27,7 @@ const authController = {
         token: result.token,
       });
     } catch (err) {
-      res.status(err.statusCode || 500).json({
-        message: err.message,
-      });
+      next(err);
     }
   },
 };
