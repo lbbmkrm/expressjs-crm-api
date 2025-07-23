@@ -2,7 +2,6 @@ import { AppError } from "../utils/AppError.js";
 import logger from "../config/logger.js";
 import config from "../config/index.js";
 
-console.log(config.nodeEnv);
 const globalErrorHandler = (err, req, res, next) => {
   logger.error(`Error: ${err.statusCode || 500} - ${err.message}`, err);
 
@@ -23,6 +22,9 @@ const globalErrorHandler = (err, req, res, next) => {
     if (err.code === "P2002") {
       statusCode = 409;
       message = "Duplicate entry. This record already exists.";
+    } else if (err.code === "P2025") {
+      statusCode = 404;
+      message = "Record not found.";
     } else {
       statusCode = 500;
       message =

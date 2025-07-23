@@ -9,20 +9,20 @@ import {
 
 const router = express.Router();
 
-router.get("/", authMiddleware, customerController.getAllCustomers);
-router.get("/:id", authMiddleware, customerController.getCustomer);
+router.get("/", authMiddleware, customerController.index);
+router.get("/:id", authMiddleware, customerController.show);
 router.post(
   "/",
   authMiddleware,
   validate(createCustomerScheme),
-  customerController.createCustomer
+  customerController.create
 );
 router.patch(
   "/:id",
   authMiddleware,
   validate(updateCustomerScheme),
-  customerController.updateCustomer
+  customerController.update
 );
-router.delete("/:id", authMiddleware, customerController.deleteCustomer);
+router.delete("/:id", authMiddleware, customerController.delete);
 
 export default router;

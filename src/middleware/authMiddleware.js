@@ -3,11 +3,13 @@ import config from "../config/index.js";
 import { AppError } from "../utils/AppError.js";
 
 const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(new AppError("Invalid authorization header", 401));
+  }
+  const token = authHeader.split(" ")[1];
   if (!token) {
-    return res
-      .status(401)
-      .json({ status: "error", message: "No token provided" });
+    return next(new AppError("No token provided", 401));
   }
   try {
     const decoded = jwt.verify(token, config.secret);

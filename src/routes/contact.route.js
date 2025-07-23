@@ -9,20 +9,20 @@ import {
 
 const router = express.Router();
 
-router.get("/", authMiddleware, contactController.getAllContacts);
-router.get("/:id", authMiddleware, contactController.getContact);
+router.get("/", authMiddleware, contactController.index);
+router.get("/:id", authMiddleware, contactController.show);
 router.post(
   "/",
   authMiddleware,
   validate(createContactScheme),
-  contactController.createContact
+  contactController.create
 );
 router.patch(
   "/:id",
   authMiddleware,
   validate(updateContactScheme),
-  contactController.updateContact
+  contactController.update
 );
-router.delete("/:id", authMiddleware, contactController.deleteContact);
+router.delete("/:id", authMiddleware, contactController.delete);
 
 export default router;

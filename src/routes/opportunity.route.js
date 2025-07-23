@@ -1,5 +1,5 @@
 import express from "express";
-import opportunityController from "./../controllers/opportunityController.js";
+import opportunityController from "../controllers/opportunity.controller.js";
 import authMiddleware from "./../middleware/authMiddleware.js";
 import validate from "./../middleware/validateMiddleware.js";
 import {
