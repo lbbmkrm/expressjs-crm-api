@@ -1,7 +1,7 @@
 import customerService from "../services/customer.service.js";
 
 const customerController = {
-  getAllCustomers: async (req, res, next) => {
+  index: async (req, res, next) => {
     try {
       const customers = await customerService.getAllCustomers();
       const message =
@@ -17,7 +17,7 @@ const customerController = {
       next(err);
     }
   },
-  getCustomer: async (req, res, next) => {
+  show: async (req, res, next) => {
     try {
       const customerId = parseInt(req.params.id);
       const customer = await customerService.getCustomer(customerId);
@@ -30,7 +30,7 @@ const customerController = {
       next(err);
     }
   },
-  createCustomer: async (req, res, next) => {
+  create: async (req, res, next) => {
     try {
       const customer = await customerService.createCustomer(
         req.user.id,
@@ -45,7 +45,7 @@ const customerController = {
       next(err);
     }
   },
-  updateCustomer: async (req, res, next) => {
+  update: async (req, res, next) => {
     try {
       const customerId = parseInt(req.params.id);
       const customer = await customerService.updateCustomer(
@@ -61,7 +61,7 @@ const customerController = {
       next(err);
     }
   },
-  deleteCustomer: async (req, res, next) => {
+  delete: async (req, res, next) => {
     try {
       const customerId = parseInt(req.params.id);
       await customerService.deleteCustomer(customerId);

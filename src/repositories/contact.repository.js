@@ -30,6 +30,14 @@ const contactRepository = {
   findByEmail: async (email) => {
     return prisma.contact.findUnique({
       where: { email },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
     });
   },
   all: async () => {

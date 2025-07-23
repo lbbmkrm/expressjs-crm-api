@@ -1,20 +1,8 @@
 import contactService from "../services/contact.service.js";
 const contactController = {
-  createContact: async (req, res, next) => {
+  index: async (req, res, next) => {
     try {
-      const contact = await contactService.createContact(req.user.id, req.body);
-      res.status(201).json({
-        status: "success",
-        message: "Contact created successfully",
-        data: contact,
-      });
-    } catch (err) {
-      next(err);
-    }
-  },
-  getAllContacts: async (req, res, next) => {
-    try {
-      const contacts = await contactService.getAllContacts(req.user.id);
+      const contacts = await contactService.getAllContacts();
       const message =
         contacts.length === 0
           ? "No contacts found"
@@ -28,7 +16,7 @@ const contactController = {
       next(err);
     }
   },
-  getContact: async (req, res, next) => {
+  show: async (req, res, next) => {
     try {
       const contactId = parseInt(req.params.id);
       const contact = await contactService.getContact(contactId);
@@ -41,7 +29,19 @@ const contactController = {
       next(err);
     }
   },
-  updateContact: async (req, res, next) => {
+  create: async (req, res, next) => {
+    try {
+      const contact = await contactService.createContact(req.user.id, req.body);
+      res.status(201).json({
+        status: "success",
+        message: "Contact created successfully",
+        data: contact,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  update: async (req, res, next) => {
     try {
       const contactId = parseInt(req.params.id);
       const contact = await contactService.updateContact(contactId, req.body);
@@ -54,7 +54,7 @@ const contactController = {
       next(err);
     }
   },
-  deleteContact: async (req, res, next) => {
+  delete: async (req, res, next) => {
     try {
       const contactId = parseInt(req.params.id);
       await contactService.deleteContact(contactId);

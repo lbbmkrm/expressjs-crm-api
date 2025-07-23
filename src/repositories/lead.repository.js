@@ -44,6 +44,27 @@ const leadRepository = {
     });
     return lead;
   },
+  findByStatus: async (status) => {
+    return prisma.lead.findMany({
+      where: {
+        status: status,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        customer: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  },
   update: async (id, data) => {
     const updatedLead = await prisma.lead.update({
       where: {

@@ -26,11 +26,14 @@ const leadService = {
   },
 
   getAllLeads: async () => {
-    return leadRepository.findAllLeads();
+    return leadRepository.all();
+  },
+  getLeadsByStatus: async (status) => {
+    return leadRepository.findByStatus(status);
   },
 
   getLeadById: async (id) => {
-    const lead = await leadRepository.findLeadById(id);
+    const lead = await leadRepository.findById(id);
     if (!lead) {
       throw new AppError("Lead not found", 404);
     }
@@ -50,7 +53,7 @@ const leadService = {
   },
 
   deleteLead: async (leadId) => {
-    const existingLead = await leadRepository.findLeadById(leadId);
+    const existingLead = await leadRepository.findById(leadId);
     if (!existingLead) {
       throw new AppError("Lead not found", 404);
     }

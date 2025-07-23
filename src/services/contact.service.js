@@ -4,7 +4,7 @@ import customerRepository from "./../repositories/customer.repository.js";
 
 const contactService = {
   createContact: async (userId, data) => {
-    const existingContact = await contactRepository.findyByEmail(data.email);
+    const existingContact = await contactRepository.findByEmail(data.email);
     if (existingContact) {
       throw new AppError("Contact with this email already exists", 400);
     }
@@ -19,7 +19,7 @@ const contactService = {
   },
 
   getAllContacts: async () => {
-    return contactRepository.findAll();
+    return contactRepository.all();
   },
 
   getContact: async (id) => {

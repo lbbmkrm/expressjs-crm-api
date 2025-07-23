@@ -19,7 +19,19 @@ const leadController = {
       const leads = await leadService.getAllLeads();
       res.status(200).json({
         status: "success",
-        message: "Leads retieved successfully",
+        message: "Leads retrieved successfully",
+        data: leads,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  indexByStatus: async (status) => {
+    try {
+      const leads = await leadService.getLeadsByStatus(status);
+      res.status(200).json({
+        status: "success",
+        message: "Leads retrieved successfully",
         data: leads,
       });
     } catch (err) {
