@@ -21,6 +21,8 @@ model User {
   contact Contact[] @relation("contactUser")
   lead Lead[] @relation("leadUser")
   opportunities Opportunity[] @relation("userOpportunity")
+  taskAssigned Task[] @relation("taskAssigned")
+  taskCreator Task[] @relation("taskCreator")
     
   @@map("users")
 }
@@ -36,9 +38,10 @@ model Customer{
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
   user User @relation("userCustomers" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
-  contact Contact[]
-  lead Lead[]
+  contact Contact[] @relation("customerContact")
+  lead Lead[] @relation("customerLead")
   opportunities Opportunity[] @relation("customerOpportunity")
+  task Task[] @relation("taskCustomer")
 
   @@map("customers")
 }
@@ -55,7 +58,7 @@ model Contact {
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
 
-  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer Customer @relation("customerContact" ,fields: [customerId], references: [id], onDelete: Cascade)
   user User @relation("contactUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
 
   @@map("contacts")
@@ -79,9 +82,10 @@ model Lead{
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
 
-  customer Customer? @relation(fields: [customerId],references: [id], onDelete: SetNull)
+  customer Customer? @relation("customerLead" ,fields: [customerId],references: [id], onDelete: SetNull)
   user User @relation("leadUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
   opportunity Opportunity? @relation("leadOpportunity")
+  task Task[] @relation("taskLead")
 
   @@map("leads")
 }
@@ -111,6 +115,45 @@ model Opportunity{
   customer Customer? @relation("customerOpportunity", fields: [customerId], references: [id], onDelete: SetNull)
   lead Lead? @relation("leadOpportunity", fields: [leadId], references: [id], onDelete: SetNull)
   user User @relation("userOpportunity", fields: [createdByUserId], references: [id], onDelete: Cascade)
+  task Task[] @relation("taskOpportunity")
+
 
   @@map("opportunities")
+}
+
+enum TaskStatus{
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+enum TaskPriority{
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Task{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  description String? @db.Text
+  status TaskStatus @default(PENDING)
+  priority TaskPriority @default(LOW)
+  dueDate DateTime @map("due_date")
+  completedAt DateTime? @map("completed_at")
+  customerId Int? @map("customer_id")
+  leadId Int? @map("lead_id")
+  opportunityId Int? @map("opportunity_id")
+  assignedToUserId Int @map("assigned_to_user_id")
+  createdByUserId Int @map("created_by_user")
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+
+  customer Customer? @relation("taskCustomer", fields: [customerId], references: [id], onDelete: SetNull)
+  lead Lead? @relation("taskLead", fields: [leadId], references: [id], onDelete: SetNull)
+  opportunity Opportunity? @relation("taskOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
+  assignedToUser User @relation("taskAssigned", fields: [assignedToUserId], references: [id], onDelete: Cascade)
+  creator User @relation("taskCreator", fields: [createdByUserId], references: [id], onDelete: Cascade)
+
+  @@map("tasks")
 }

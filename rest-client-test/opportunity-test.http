@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJkdW1teSIsImVtYWlsIjoiZHVtbXlAZXhhbXBsZS5jb20iLCJpYXQiOjE3NTMxODg1NzYsImV4cCI6MTc1MzI3NDk3Nn0.PwEHjh_-I1bSYgwrCsoBFgjYJ_rQiK6W1lhgTERebyE
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkdW1teUBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiZHVtbXkiLCJpYXQiOjE3NTMzNDc0NjMsImV4cCI6MTc1MzM1MTA2M30.5uNbXa6QTj7EEVu7cvphX8Qaz2nze9tkWGw0BdFJHSo
 
 @opportunityId = 1
 @leadId = 1

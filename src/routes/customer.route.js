@@ -23,6 +23,6 @@ router.patch(
   validate(updateCustomerScheme),
   customerController.update
 );
-router.delete("/:id", authMiddleware, customerController.delete);
+router.delete("/:id", authMiddleware, customerController.destroy);
 
 export default router;

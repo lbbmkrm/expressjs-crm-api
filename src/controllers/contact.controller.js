@@ -54,7 +54,7 @@ const contactController = {
       next(err);
     }
   },
-  delete: async (req, res, next) => {
+  destroy: async (req, res, next) => {
     try {
       const contactId = parseInt(req.params.id);
       await contactService.deleteContact(contactId);

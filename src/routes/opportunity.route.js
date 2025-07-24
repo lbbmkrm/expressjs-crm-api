@@ -23,6 +23,6 @@ router.patch(
   validate(updateOpportunityScheme),
   opportunityController.update
 );
-router.delete("/:id", authMiddleware, opportunityController.delete);
+router.delete("/:id", authMiddleware, opportunityController.destroy);
 
 export default router;

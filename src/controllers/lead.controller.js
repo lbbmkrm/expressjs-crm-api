@@ -64,7 +64,7 @@ const leadController = {
       next(err);
     }
   },
-  delete: async (req, res, next) => {
+  destroy: async (req, res, next) => {
     try {
       await leadService.deleteLead(parseInt(req.params.id));
       res.status(200).json({

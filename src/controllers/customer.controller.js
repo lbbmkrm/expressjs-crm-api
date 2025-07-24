@@ -61,7 +61,7 @@ const customerController = {
       next(err);
     }
   },
-  delete: async (req, res, next) => {
+  destroy: async (req, res, next) => {
     try {
       const customerId = parseInt(req.params.id);
       await customerService.deleteCustomer(customerId);

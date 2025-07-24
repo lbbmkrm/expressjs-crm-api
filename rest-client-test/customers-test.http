@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImlhdCI6MTc1MzE2OTMyMCwiZXhwIjoxNzUzMTcyOTIwfQ.GfA6CnLexh7erbod_wfeY-t1j0xaEYNeBx_qkE_E4Bk
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkdW1teUBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiZHVtbXkiLCJpYXQiOjE3NTMzNDc0NjMsImV4cCI6MTc1MzM1MTA2M30.5uNbXa6QTj7EEVu7cvphX8Qaz2nze9tkWGw0BdFJHSo
 
 ### Login untuk mendapatkan token
 POST {{baseUrl}}/api/auth/login
@@ -16,8 +16,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "John Doe",
-  "email": "john.doe@example.com",
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
   "phone": "1234567890",
   "address": "123 Main St",
   "company": "Doe Inc"

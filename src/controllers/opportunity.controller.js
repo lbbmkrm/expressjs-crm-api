@@ -57,7 +57,7 @@ const opportunityController = {
       next(err);
     }
   },
-  delete: async (req, res, next) => {
+  destroy: async (req, res, next) => {
     try {
       await opportunityService.deleteOpportunity(parseInt(req.params.id));
       res.status(200).json({

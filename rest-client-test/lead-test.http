@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc1MjkxNDA1NywiZXhwIjoxNzUzMDAwNDU3fQ.wpBJV05YD3WOPK1T0jB_vm0nakCT_t7464P2hVCGP18
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkdW1teUBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiZHVtbXkiLCJpYXQiOjE3NTMzNDc0NjMsImV4cCI6MTc1MzM1MTA2M30.5uNbXa6QTj7EEVu7cvphX8Qaz2nze9tkWGw0BdFJHSo
 
 ### Login untuk mendapatkan token
 POST {{baseUrl}}/api/auth/login
@@ -44,7 +44,7 @@ Authorization: Bearer {{token}}
   "name": "Bob Green",
   "email": "bob.green@example.com",
   "phone": "0987654321",
-  "status": "contacted",
+  "status": "CONTACTED",
   "customerId": 1
 }
 

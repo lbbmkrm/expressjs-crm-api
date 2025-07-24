@@ -23,6 +23,6 @@ router.patch(
   validate(updateContactScheme),
   contactController.update
 );
-router.delete("/:id", authMiddleware, contactController.delete);
+router.delete("/:id", authMiddleware, contactController.destroy);
 
 export default router;

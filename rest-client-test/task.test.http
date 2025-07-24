@@ -1,0 +1,249 @@
+@baseUrl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkdW1teUBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiZHVtbXkiLCJpYXQiOjE3NTMzNjU3NTYsImV4cCI6MTc1MzM2OTM1Nn0.o3ERQWb8rUJnr5b3-kppyq4oAiQPhTzzjecjG6DABLc
+@taskId = 1
+@assignedToUserId = 2
+@customerId = 1
+@leadId = 1
+@opportunityId = 1
+
+### Membuat tugas baru (kasus sukses, tanpa customerId, leadId, atau opportunityId)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Follow up with client",
+  "description": "Schedule a call to discuss project requirements",
+  "dueDate": "2025-08-01T00:00:00Z",
+  "priority": "HIGH",
+  "assignedToUserId": {{assignedToUserId}}
+}
+
+### Membuat tugas baru (kasus sukses, dengan customerId)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Customer onboarding",
+  "description": "Assist customer with initial setup",
+  "dueDate": "2025-08-15T00:00:00Z",
+  "priority": "MEDIUM",
+  "assignedToUserId": {{assignedToUserId}},
+  "customerId": {{customerId}}
+}
+
+### Membuat tugas baru (kasus sukses, dengan leadId)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Lead follow-up",
+  "description": "Follow up on lead from marketing campaign",
+  "dueDate": "2025-08-10T00:00:00Z",
+  "priority": "HIGH",
+  "assignedToUserId": {{assignedToUserId}},
+  "leadId": {{leadId}}
+}
+
+### Membuat tugas baru (kasus sukses, dengan opportunityId)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Opportunity negotiation",
+  "description": "Negotiate terms for opportunity",
+  "dueDate": "2025-09-01T00:00:00Z",
+  "priority": "HIGH",
+  "assignedToUserId": {{assignedToUserId}},
+  "opportunityId": {{opportunityId}}
+}
+
+### Menguji assignedToUserId tidak valid (harus gagal)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid User Task",
+  "dueDate": "2025-08-01T00:00:00Z",
+  "priority": "LOW",
+  "assignedToUserId": 999
+}
+
+### Menguji customerId tidak valid (harus gagal)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid Customer Task",
+  "dueDate": "2025-08-01T00:00:00Z",
+  "priority": "LOW",
+  "assignedToUserId": {{assignedToUserId}},
+  "customerId": 999
+}
+
+### Menguji leadId tidak valid (harus gagal)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid Lead Task",
+  "dueDate": "2025-08-01T00:00:00Z",
+  "priority": "LOW",
+  "assignedToUserId": {{assignedToUserId}},
+  "leadId": 999
+}
+
+### Menguji opportunityId tidak valid (harus gagal)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid Opportunity Task",
+  "dueDate": "2025-08-01T00:00:00Z",
+  "priority": "LOW",
+  "assignedToUserId": {{assignedToUserId}},
+  "opportunityId": 999
+}
+
+### Menguji dueDate di masa lalu (harus gagal)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Past Due Task",
+  "dueDate": "2024-01-01T00:00:00Z",
+  "priority": "LOW",
+  "assignedToUserId": {{assignedToUserId}}
+}
+
+### Menguji multiple errors (harus gagal)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Short",
+  "dueDate": "invalid-date",
+  "priority": "LOW",
+  "assignedToUserId": "not-a-number",
+  "customerId": 999,
+  "leadId": 999,
+  "opportunityId": 999
+}
+
+### Menguji tanpa token (harus gagal)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "name": "Missing Token Task",
+  "dueDate": "2025-08-01T00:00:00Z",
+  "priority": "LOW",
+  "assignedToUserId": {{assignedToUserId}}
+}
+
+### Menguji token tidak valid (harus gagal)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: Bearer invalid-token
+
+{
+  "name": "Invalid Token Task",
+  "dueDate": "2025-08-01T00:00:00Z",
+  "priority": "LOW",
+  "assignedToUserId": {{assignedToUserId}}
+}
+
+### Mendapatkan semua tugas
+GET {{baseUrl}}/api/tasks
+Authorization: Bearer {{token}}
+
+### Mendapatkan tugas berdasarkan ID (kasus sukses)
+GET {{baseUrl}}/api/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+
+### Mendapatkan tugas dengan ID tidak valid (harus gagal)
+GET {{baseUrl}}/api/tasks/999
+Authorization: Bearer {{token}}
+
+### Mendapatkan tugas berdasarkan status (kasus sukses)
+GET {{baseUrl}}/api/tasks/status/PENDING
+Authorization: Bearer {{token}}
+
+### Mendapatkan tugas berdasarkan status tidak valid (harus gagal)
+GET {{baseUrl}}/api/tasks/status/INVALID_STATUS
+Authorization: Bearer {{token}}
+
+### Mendapatkan tugas berdasarkan prioritas (kasus sukses)
+GET {{baseUrl}}/api/tasks/priority/HIGH
+Authorization: Bearer {{token}}
+
+### Mendapatkan tugas berdasarkan prioritas tidak valid (harus gagal)
+GET {{baseUrl}}/api/tasks/priority/NOT_VALID
+Authorization: Bearer {{token}}
+
+### Mendapatkan tugas berdasarkan pengguna yang ditugaskan
+GET {{baseUrl}}/api/tasks/assigned/2
+Authorization: Bearer {{token}}
+
+### Memperbarui tugas (kasus sukses, ubah status ke COMPLETED)
+PATCH {{baseUrl}}/api/tasks/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "COMPLETED"
+}
+
+### Memperbarui tugas (kasus sukses, ubah beberapa field)
+PATCH {{baseUrl}}/api/tasks/{{taskId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Updated Task Name",
+  "description": "Updated description for the task",
+  "dueDate": "2025-09-01T00:00:00Z",
+  "priority": "MEDIUM",
+  "customerId": {{customerId}}
+}
+
+### Memperbarui tugas (kasus sukses, hapus customerId)
+PATCH {{baseUrl}}/api/tasks/{{taskId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "customerId": null
+}
+
+### Menguji pembaruan dengan multiple errors (harus gagal)
+PATCH {{baseUrl}}/api/tasks/{{taskId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Short",
+  "dueDate": "invalid-date",
+  "priority": "INVALID_PRIORITY",
+  "customerId": 999,
+  "leadId": 999,
+  "opportunityId": 999,
+  "assignedToUserId": "not-a-number"
+}
+
+### Menghapus tugas (kasus sukses)
+DELETE {{baseUrl}}/api/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+
+### Menghapus tugas dengan ID tidak valid (harus gagal)
+DELETE {{baseUrl}}/api/tasks/999
+Authorization: Bearer {{token}}

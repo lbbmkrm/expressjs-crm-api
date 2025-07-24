@@ -30,6 +30,6 @@ router.patch(
   validate(updateLeadScheme),
   leadController.update
 );
-router.delete("/:id", authMiddleware, leadController.delete);
+router.delete("/:id", authMiddleware, leadController.destroy);
 
 export default router;
