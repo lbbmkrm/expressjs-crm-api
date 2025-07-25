@@ -1,0 +1,166 @@
+@baseUrl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJqb2huZG9lIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUzNDM2NDI5LCJleHAiOjE3NTM1MjI4Mjl9.FT_Cme9yS7vREbbcy4d-iuvckW8MYL9Fj-KoVsX3mww
+@noteId = 1
+@customerId = 1
+@contactId = 1
+@leadId = 1
+@opportunityId = 1
+
+### Membuat catatan baru (kasus sukses, dengan customerId)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Met with customer to discuss project requirements",
+  "customerId": {{customerId}}
+}
+
+### Membuat catatan baru (kasus sukses, dengan contactId)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Follow-up call with contact scheduled",
+  "contactId": {{contactId}}
+}
+
+### Membuat catatan baru (kasus sukses, dengan leadId)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Lead expressed interest in product demo",
+  "leadId": {{leadId}}
+}
+
+### Membuat catatan baru (kasus sukses, dengan opportunityId)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Opportunity negotiation notes",
+  "opportunityId": {{opportunityId}}
+}
+
+### Menguji tanpa relasi (harus gagal)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Invalid note without relation"
+}
+
+### Menguji multiple relasi (harus gagal)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Invalid note with multiple relations",
+  "customerId": {{customerId}},
+  "contactId": {{contactId}}
+}
+
+### Menguji customerId tidak valid (harus gagal)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Invalid customer note",
+  "customerId": 999
+}
+
+### Menguji content kosong (harus gagal)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "",
+  "customerId": {{customerId}}
+}
+
+### Menguji tanpa token (harus gagal)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+
+{
+  "content": "Note without token",
+  "customerId": {{customerId}}
+}
+
+### Menguji token tidak valid (harus gagal)
+POST {{baseUrl}}/api/notes
+Content-Type: application/json
+Authorization: Bearer invalid-token
+
+{
+  "content": "Note with invalid token",
+  "customerId": {{customerId}}
+}
+
+### Mendapatkan semua catatan
+GET {{baseUrl}}/api/notes
+Authorization: Bearer {{token}}
+
+### Mendapatkan catatan berdasarkan ID (kasus sukses)
+GET {{baseUrl}}/api/notes/{{noteId}}
+Authorization: Bearer {{token}}
+
+### Mendapatkan catatan dengan ID tidak valid (harus gagal)
+GET {{baseUrl}}/api/notes/999
+Authorization: Bearer {{token}}
+
+### Memperbarui catatan (kasus sukses, ubah content dan customerId)
+PATCH {{baseUrl}}/api/notes/{{noteId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Updated meeting notes with customer",
+  "customerId": {{customerId}}
+}
+
+### Memperbarui catatan (kasus sukses, hapus relasi)
+PATCH {{baseUrl}}/api/notes/{{noteId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Updated note",
+  "customerId": null,
+  "contactId": {{contactId}}
+}
+
+### Menguji pembaruan tanpa relasi (harus gagal)
+PATCH {{baseUrl}}/api/notes/{{noteId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Updated note without relation"
+}
+
+### Menguji pembaruan dengan ID tidak valid (harus gagal)
+PATCH {{baseUrl}}/api/notes/999
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "Invalid note ID",
+  "customerId": {{customerId}}
+}
+
+### Menghapus catatan (kasus sukses)
+DELETE {{baseUrl}}/api/notes/{{noteId}}
+Authorization: Bearer {{token}}
+
+### Menghapus catatan dengan ID tidak valid (harus gagal)
+DELETE {{baseUrl}}/api/notes/999
+Authorization: Bearer {{token}}

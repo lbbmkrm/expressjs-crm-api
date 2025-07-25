@@ -23,6 +23,7 @@ model User {
   opportunities Opportunity[] @relation("userOpportunity")
   taskAssigned Task[] @relation("taskAssigned")
   taskCreator Task[] @relation("taskCreator")
+  note Note[] @relation("noteUser")
     
   @@map("users")
 }
@@ -42,6 +43,7 @@ model Customer{
   lead Lead[] @relation("customerLead")
   opportunities Opportunity[] @relation("customerOpportunity")
   task Task[] @relation("taskCustomer")
+  note Note[] @relation("noteCustomer")
 
   @@map("customers")
 }
@@ -60,6 +62,7 @@ model Contact {
 
   customer Customer @relation("customerContact" ,fields: [customerId], references: [id], onDelete: Cascade)
   user User @relation("contactUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
+  note Note[] @relation("noteContact")
 
   @@map("contacts")
 }
@@ -86,6 +89,7 @@ model Lead{
   user User @relation("leadUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
   opportunity Opportunity? @relation("leadOpportunity")
   task Task[] @relation("taskLead")
+  note Note[] @relation("noteLead")
 
   @@map("leads")
 }
@@ -116,6 +120,7 @@ model Opportunity{
   lead Lead? @relation("leadOpportunity", fields: [leadId], references: [id], onDelete: SetNull)
   user User @relation("userOpportunity", fields: [createdByUserId], references: [id], onDelete: Cascade)
   task Task[] @relation("taskOpportunity")
+  note Note[] @relation("noteOpportunity")
 
 
   @@map("opportunities")
@@ -156,4 +161,24 @@ model Task{
   creator User @relation("taskCreator", fields: [createdByUserId], references: [id], onDelete: Cascade)
 
   @@map("tasks")
+}
+
+model Note{
+  id Int @id @default(autoincrement())
+  content String @db.Text
+  customerId Int? @map("customer_id")
+  contactId Int? @map("contact_id")
+  leadId Int? @map("lead_id")
+  opportunityId Int? @map("opportunity_id")
+  createdByUserId Int @map("created_by_user_id")
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+
+  customer Customer? @relation("noteCustomer", fields: [customerId], references: [id], onDelete: SetNull)
+  contact Contact? @relation("noteContact", fields: [contactId], references: [id], onDelete: SetNull)
+  lead Lead? @relation("noteLead", fields: [leadId], references: [id], onDelete: SetNull)
+  opportunity Opportunity? @relation("noteOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
+  createdByUser User @relation("noteUser", fields: [createdByUserId], references: [id], onDelete: Cascade)
+
+  @@map("notes") 
 }

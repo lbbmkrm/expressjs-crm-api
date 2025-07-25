@@ -5,6 +5,7 @@ import contactRoute from "./contact.route.js";
 import leadRoute from "./lead.route.js";
 import opportunityRoute from "./opportunity.route.js";
 import taskRoute from "./task.route.js";
+import noteRoute from "./note.route.js";
 const router = express.Router();
 
 router.use("/auth", authRoute);
@@ -13,5 +14,6 @@ router.use("/contacts", contactRoute);
 router.use("/leads", leadRoute);
 router.use("/opportunities", opportunityRoute);
 router.use("/tasks", taskRoute);
+router.use("/notes", noteRoute);
 
 export default router;
