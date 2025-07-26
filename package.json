@@ -4,8 +4,10 @@
   "description": "Generic CRM RESTful API for study case",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/server.js"
+    "start": "nodemon ./src/server.js",
+    "db:migrate": "npx prisma migrate dev",
+    "db:reset": "npx prisma migrate reset",
+    "db:seed": "node ./prisma/seed.js"
   },
   "author": "",
   "license": "ISC",

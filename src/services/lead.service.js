@@ -48,7 +48,7 @@ const leadService = {
       throw new AppError("Customer not found", 404);
     }
 
-    const updatedLead = await leadRepository.updateLead(leadId, requestData);
+    const updatedLead = await leadRepository.update(leadId, requestData);
     return updatedLead;
   },
 

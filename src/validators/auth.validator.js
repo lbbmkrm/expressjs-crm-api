@@ -20,9 +20,8 @@ const registerSchema = Joi.object({
 });
 
 const loginSchema = Joi.object({
-  email: Joi.string().required().email().messages({
-    "string.email": "Invalid email format",
-    "any.required": "Email is required",
+  emailOrUsername: Joi.string().required().messages({
+    "any.required": "Email or username is required",
   }),
   password: Joi.string().required().messages({
     "any.required": "Password is required",

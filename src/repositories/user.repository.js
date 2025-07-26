@@ -1,86 +1,136 @@
 import prisma from "./prismaClient.js";
 
+const userSelect = {
+  id: true,
+  username: true,
+  email: true,
+  createdAt: true,
+  updatedAt: true,
+  customers: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  contacts: {
+    select: {
+      id: true,
+      email: true,
+    },
+  },
+  leads: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  opportunities: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  taskAssigned: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  taskCreator: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  notes: {
+    select: {
+      id: true,
+      content: true,
+    },
+  },
+};
 const userRepository = {
+  create: async (data) => {
+    return prisma.user.create({
+      data: data,
+      select: userSelect,
+    });
+  },
   all: async () => {
-    return prisma.user.findMany();
+    return prisma.user.findMany({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   },
   findById: async (id) => {
     return prisma.user.findUnique({
       where: {
         id: id,
+        deletedAt: null,
       },
-      include: {
-        customers: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        lead: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        opportunities: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        taskAssigned: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        taskCreator: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+      select: userSelect,
+    });
+  },
+  loginCheck: async (credential) => {
+    return prisma.user.findFirst({
+      where: {
+        deletedAt: null,
+        OR: [{ email: credential }, { username: credential }],
       },
+    });
+  },
+  findActiveUser: async (id) => {
+    return prisma.user.findUnique({
+      where: {
+        id: id,
+        deletedAt: null,
+      },
+      select: userSelect,
+    });
+  },
+  findByEmail: async (email) => {
+    return prisma.user.findUnique({
+      where: {
+        email: email,
+        deletedAt: null,
+      },
+      select: userSelect,
+    });
+  },
+  findByUsername: async (username) => {
+    return prisma.user.findUnique({
+      where: {
+        username: username,
+        deletedAt: null,
+      },
+      select: userSelect,
     });
   },
   update: async (id, data) => {
     return prisma.user.update({
       where: {
         id: id,
+        deletedAt: null,
       },
       data: data,
-      include: {
-        customer: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        lead: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        opportunity: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        task: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      select: userSelect,
     });
   },
   delete: async (id) => {
-    return prisma.user.delete({
+    return prisma.user.update({
       where: {
         id: id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   },

@@ -7,23 +7,29 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-
+enum Roles {
+  ADMIN
+  MANAGER
+  SALES
+  VIEWER
+}
 model User {
   id Int @id @default(autoincrement())
+  role Roles @default(VIEWER)
   username String @db.VarChar(100) @unique
   email String @db.VarChar(100) @unique
   password String @db.VarChar(255)
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
+  deletedAt DateTime? @map("deleted_at")
 
   customers Customer[] @relation("userCustomers")
-  contact Contact[] @relation("contactUser")
-  lead Lead[] @relation("leadUser")
+  contacts Contact[] @relation("contactUser")
+  leads Lead[] @relation("leadUser")
   opportunities Opportunity[] @relation("userOpportunity")
   taskAssigned Task[] @relation("taskAssigned")
   taskCreator Task[] @relation("taskCreator")
-  note Note[] @relation("noteUser")
+  notes Note[] @relation("noteUser")
     
   @@map("users")
 }
@@ -31,14 +37,14 @@ model User {
 model Customer{
   id Int @id @default(autoincrement())
   name String @db.VarChar(100)
-  email String? @db.VarChar(100) @unique
+  email String? @db.VarChar(100)
   phone String? @db.VarChar(20)
   address String? 
   company String?
   createdByUserId Int @map("created_by_user_id") 
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
-  user User @relation("userCustomers" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
+  user User @relation("userCustomers" ,fields: [createdByUserId], references: [id], onDelete: Restrict)
   contact Contact[] @relation("customerContact")
   lead Lead[] @relation("customerLead")
   opportunities Opportunity[] @relation("customerOpportunity")
@@ -53,7 +59,7 @@ model Contact {
   customerId Int @map("customer_id")
   firstName String @map("first_name") @db.VarChar(100) 
   lastName String? @map("last_name") @db.VarChar(100)
-  email String? @db.VarChar(100) @unique
+  email String? @db.VarChar(100)
   phone String? @db.VarChar(20)
   position String? @db.VarChar(50)
   createdByUserId Int @map("created_by_user_id")
@@ -86,7 +92,7 @@ model Lead{
   updatedAt DateTime @map("updated_at") @updatedAt
 
   customer Customer? @relation("customerLead" ,fields: [customerId],references: [id], onDelete: SetNull)
-  user User @relation("leadUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
+  user User @relation("leadUser" ,fields: [createdByUserId], references: [id], onDelete: Restrict)
   opportunity Opportunity? @relation("leadOpportunity")
   task Task[] @relation("taskLead")
   note Note[] @relation("noteLead")
@@ -106,7 +112,7 @@ enum OpportunityStage{
 model Opportunity{
   id Int @id @default(autoincrement())
   name String @db.VarChar(255)
-  amount Decimal @db.Decimal(10,2)
+  amount Decimal @db.Decimal(15,2)
   stage OpportunityStage @default(QUALIFICATION)
   closeDate DateTime? @map("close_date")
   description String? @db.Text
@@ -118,7 +124,7 @@ model Opportunity{
 
   customer Customer? @relation("customerOpportunity", fields: [customerId], references: [id], onDelete: SetNull)
   lead Lead? @relation("leadOpportunity", fields: [leadId], references: [id], onDelete: SetNull)
-  user User @relation("userOpportunity", fields: [createdByUserId], references: [id], onDelete: Cascade)
+  user User @relation("userOpportunity", fields: [createdByUserId], references: [id], onDelete: Restrict)
   task Task[] @relation("taskOpportunity")
   note Note[] @relation("noteOpportunity")
 
@@ -150,15 +156,15 @@ model Task{
   leadId Int? @map("lead_id")
   opportunityId Int? @map("opportunity_id")
   assignedToUserId Int @map("assigned_to_user_id")
-  createdByUserId Int @map("created_by_user")
+  createdByUserId Int @map("created_by_user_id")
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
 
   customer Customer? @relation("taskCustomer", fields: [customerId], references: [id], onDelete: SetNull)
   lead Lead? @relation("taskLead", fields: [leadId], references: [id], onDelete: SetNull)
   opportunity Opportunity? @relation("taskOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
-  assignedToUser User @relation("taskAssigned", fields: [assignedToUserId], references: [id], onDelete: Cascade)
-  creator User @relation("taskCreator", fields: [createdByUserId], references: [id], onDelete: Cascade)
+  assignedToUser User @relation("taskAssigned", fields: [assignedToUserId], references: [id], onDelete: Restrict)
+  creator User @relation("taskCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
 
   @@map("tasks")
 }
@@ -178,7 +184,7 @@ model Note{
   contact Contact? @relation("noteContact", fields: [contactId], references: [id], onDelete: SetNull)
   lead Lead? @relation("noteLead", fields: [leadId], references: [id], onDelete: SetNull)
   opportunity Opportunity? @relation("noteOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
-  createdByUser User @relation("noteUser", fields: [createdByUserId], references: [id], onDelete: Cascade)
+  createdByUser User @relation("noteUser", fields: [createdByUserId], references: [id], onDelete: Restrict)
 
   @@map("notes") 
 }

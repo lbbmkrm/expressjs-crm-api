@@ -1,0 +1,43 @@
+@baseUrl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwiaWF0IjoxNzUzNTIyNTQyLCJleHAiOjE3NTM2MDg5NDJ9.7pcSuRHLaRQ5D11UdhbhBFP65c51S2e3EWUusj-IMhE
+
+### Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "adminuser",
+  "password": "password123"
+}
+
+### Get all users
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{token}}
+
+### Get user by ID
+GET {{baseUrl}}/api/users/3
+Authorization: Bearer {{token}}
+
+### Create user 
+POST {{baseUrl}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username" : "dummyuser",
+  "email" : "dummy@example.com",
+  "password" : "password123"
+}
+
+### Update user
+PATCH  {{baseUrl}}/api/users/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role": "MANAGER"
+}
+
+### Delete user
+DELETE {{baseUrl}}/api/users/3
+Authorization: Bearer {{token}}

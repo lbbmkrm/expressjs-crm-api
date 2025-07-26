@@ -15,12 +15,12 @@ const createLeadScheme = Joi.object({
     "string.max": "Phone number cannot exceed 20 characters",
   }),
   status: Joi.string()
-    .valid("NEW", "CONTACTED", "QUALIFIED", "LOST")
+    .valid("NEW", "CONTACTED", "WON", "LOST")
     .optional()
     .max(50)
     .messages({
       "string.valid":
-        "Status must be one of the following: NEW, CONTACTED, QUALIFIED, LOST",
+        "Status must be one of the following: NEW, CONTACTED, WON, LOST",
     }),
 });
 
