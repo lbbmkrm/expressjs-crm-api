@@ -18,18 +18,31 @@ const authService = {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const user = await userRepository.create({
+    let user = await userRepository.create({
       username,
       email,
       password: hashPassword,
     });
 
     const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email },
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
       config.secret,
       { expiresIn: "1d" }
     );
 
+    user = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
     return {
       user,
       token,
@@ -48,7 +61,12 @@ const authService = {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, username: user.username },
+      {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      },
       config.secret,
       { expiresIn: "24h" }
     );
@@ -56,6 +74,7 @@ const authService = {
       id: user.id,
       username: user.username,
       email: user.email,
+      role: user.role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

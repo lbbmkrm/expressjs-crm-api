@@ -4,6 +4,7 @@ const userSelect = {
   id: true,
   username: true,
   email: true,
+  role: true,
   createdAt: true,
   updatedAt: true,
   customers: {

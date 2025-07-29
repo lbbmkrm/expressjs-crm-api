@@ -1,7 +1,7 @@
 import express from "express";
 import contactController from "../controllers/contact.controller.js";
-import authMiddleware from "../middleware/authMiddleware.js";
-import validate from "../middleware/validateMiddleware.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import validate from "../middleware/validate.middleware.js";
 import {
   createContactScheme,
   updateContactScheme,

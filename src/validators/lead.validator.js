@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { LeadStatus } from "./../../generated/prisma/index.js";
 const createLeadScheme = Joi.object({
   customerId: Joi.number().integer().optional().allow(null).messages({
     "number.base": "Customer ID must be a number",
@@ -15,9 +16,8 @@ const createLeadScheme = Joi.object({
     "string.max": "Phone number cannot exceed 20 characters",
   }),
   status: Joi.string()
-    .valid("NEW", "CONTACTED", "WON", "LOST")
     .optional()
-    .max(50)
+    .valid(...Object.values(LeadStatus))
     .messages({
       "string.valid":
         "Status must be one of the following: NEW, CONTACTED, WON, LOST",
@@ -38,9 +38,23 @@ const updateLeadScheme = Joi.object({
   phone: Joi.string().optional().max(20).messages({
     "string.max": "Phone number cannot exceed 20 characters",
   }),
-  status: Joi.string().optional().max(50).messages({
-    "string.max": "Status cannot exceed 50 characters",
-  }),
+  status: Joi.string()
+    .valid(...Object.values(LeadStatus))
+    .optional()
+    .messages({
+      "string.valid":
+        "Status must be one of the following: NEW, CONTACTED, WON, LOST",
+    }),
 });
 
-export { createLeadScheme, updateLeadScheme };
+const leadStatusScheme = Joi.object({
+  status: Joi.string()
+    .valid(...Object.values(LeadStatus))
+    .optional()
+    .max(50)
+    .messages({
+      "string.valid":
+        "Status must be one of the following: NEW, CONTACTED, WON, LOST",
+    }),
+});
+export { createLeadScheme, updateLeadScheme, leadStatusScheme };

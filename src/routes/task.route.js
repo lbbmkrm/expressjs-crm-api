@@ -1,7 +1,7 @@
 import express from "express";
 import taskController from "../controllers/task.controller.js";
-import authMiddleware from "../middleware/authMiddleware.js";
-import validate from "../middleware/validateMiddleware.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import validate from "../middleware/validate.middleware.js";
 import {
   createTaskScheme,
   updateTaskScheme,

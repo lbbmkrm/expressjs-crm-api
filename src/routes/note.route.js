@@ -1,7 +1,7 @@
 import express from "express";
 import noteController from "./../controllers/note.controller.js";
-import authMiddleware from "./../middleware/authMiddleware.js";
-import validate from "./../middleware/validateMiddleware.js";
+import authMiddleware from "./../middleware/auth.middleware.js";
+import validate from "./../middleware/validate.middleware.js";
 import {
   createNoteScheme,
   updateNoteScheme,

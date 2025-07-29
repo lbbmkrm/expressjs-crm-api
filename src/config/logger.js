@@ -4,11 +4,15 @@ import config from "./index.js";
 
 const { combine, timestamp, printf, colorize, align } = winston.format;
 
-const logFormat = printf(({ level, message, timestamp, stack }) => {
+const logFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
+  const metaString =
+    Object.keys(meta).length > 0
+      ? `\nMetadata: ${JSON.stringify(meta, null, 2)}`
+      : "";
   if (stack) {
-    return `${timestamp} ${level}: ${message}\n${stack}`;
+    return `${timestamp} ${level}: ${message}\n${stack}${metaString}`;
   }
-  return `${timestamp} ${level}: ${message}`;
+  return `${timestamp} ${level}: ${message}${metaString}`;
 });
 
 const logger = winston.createLogger({

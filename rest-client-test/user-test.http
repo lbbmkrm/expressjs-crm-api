@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwiaWF0IjoxNzUzNTIyNTQyLCJleHAiOjE3NTM2MDg5NDJ9.7pcSuRHLaRQ5D11UdhbhBFP65c51S2e3EWUusj-IMhE
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZSI6IlZJRVdFUiIsImlhdCI6MTc1Mzc2NjcyMywiZXhwIjoxNzUzODUzMTIzfQ.CZkpv3NCh5oBFeiHhQzhb-ia77c4_VkwF3C2vJwmWeM
 
 ### Login
 POST {{baseUrl}}/api/auth/login
@@ -15,7 +15,7 @@ GET {{baseUrl}}/api/users
 Authorization: Bearer {{token}}
 
 ### Get user by ID
-GET {{baseUrl}}/api/users/3
+GET {{baseUrl}}/api/users/4
 Authorization: Bearer {{token}}
 
 ### Create user 
@@ -24,20 +24,20 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "username" : "dummyuser",
-  "email" : "dummy@example.com",
+  "username" : "yummyuser",
+  "email" : "yummy@example.com",
   "password" : "password123"
 }
 
 ### Update user
-PATCH  {{baseUrl}}/api/users/3
+PATCH  {{baseUrl}}/api/users/7
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "role": "MANAGER"
+  "role": "VIEWER"
 }
 
 ### Delete user
-DELETE {{baseUrl}}/api/users/3
+DELETE {{baseUrl}}/api/users/6
 Authorization: Bearer {{token}}

@@ -1,12 +1,12 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJqb2huZG9lIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUzNDM2NDI5LCJleHAiOjE3NTM1MjI4Mjl9.FT_Cme9yS7vREbbcy4d-iuvckW8MYL9Fj-KoVsX3mww
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJqb2huZG9lIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUzNTQ1NDE5LCJleHAiOjE3NTM2MzE4MTl9.DoVFDWH6wGYIzbKtJte7y12kfflp4lTeR_JQvDqexbM
 
 ### Login untuk mendapatkan token
 POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "emailOrUsername": "dummyuser",
   "password": "password123"
 }
 
@@ -32,7 +32,7 @@ Authorization: Bearer {{token}}
   "name": "Alice Brown",
   "email": "alice.brown@example.com",
   "phone": "1234567890",
-  "status": "new"
+  "status" : "NEW"
 }
 
 ### Membuat lead baru (kasus sukses, dengan customerId)

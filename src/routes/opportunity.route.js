@@ -1,7 +1,7 @@
 import express from "express";
 import opportunityController from "../controllers/opportunity.controller.js";
-import authMiddleware from "./../middleware/authMiddleware.js";
-import validate from "./../middleware/validateMiddleware.js";
+import authMiddleware from "./../middleware/auth.middleware.js";
+import validate from "./../middleware/validate.middleware.js";
 import {
   createOpportunityScheme,
   updateOpportunityScheme,

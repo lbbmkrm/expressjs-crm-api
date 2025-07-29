@@ -1,10 +1,10 @@
 import express from "express";
 import leadController from "../controllers/lead.controller.js";
-import authMiddleware from "../middleware/authMiddleware.js";
-import validateLeadStatus from "./../middleware/validateLeadStatus.js";
-import validate from "../middleware/validateMiddleware.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import validate from "../middleware/validate.middleware.js";
 import {
   createLeadScheme,
+  leadStatusScheme,
   updateLeadScheme,
 } from "../validators/lead.validator.js";
 
@@ -14,7 +14,7 @@ router.get("/", authMiddleware, leadController.index);
 router.get(
   "/status/:status",
   authMiddleware,
-  validateLeadStatus,
+  validate(leadStatusScheme, "params"),
   leadController.indexByStatus
 );
 router.get("/:id", authMiddleware, leadController.show);
