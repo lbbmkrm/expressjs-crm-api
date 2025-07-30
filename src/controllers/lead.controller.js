@@ -51,7 +51,7 @@ const leadController = {
       next(err);
     }
   },
-  update: async (req, res) => {
+  update: async (req, res, next) => {
     try {
       const leadId = parseInt(req.params.id);
       const lead = await leadService.updateLead(leadId, req.body);

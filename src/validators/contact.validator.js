@@ -38,5 +38,11 @@ const updateContactScheme = Joi.object({
     "string.max": "Phone number cannot exceed 20 characters",
   }),
 });
-
-export { createContactScheme, updateContactScheme };
+const contactIdScheme = Joi.object({
+  id: Joi.number().integer().required().messages({
+    "any.required": "Contact ID is required",
+    "number.base": "Contact ID must be a number",
+    "number.integer": "Contact ID must be an integer",
+  }),
+});
+export { createContactScheme, updateContactScheme, contactIdScheme };

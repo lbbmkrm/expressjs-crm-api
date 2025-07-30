@@ -1,5 +1,16 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJqb2huZG9lIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUzNDM2NDI5LCJleHAiOjE3NTM1MjI4Mjl9.FT_Cme9yS7vREbbcy4d-iuvckW8MYL9Fj-KoVsX3mww
+### --- Token User: ADMIN ---
+@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUzNzgyNTAyLCJleHAiOjE3NTM4Njg5MDJ9.cmFwhq2QAf1S3NKcHxPHB0m9Z4tK8iDXvTurgpwNACQ
+
+### --- Token User: SALES (ID: 2) ---
+@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzYWxlc0BleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoic2FsZXN1c2VyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzUzNzgyNTM5LCJleHAiOjE3NTM4Njg5Mzl9.x8zMzqNmkUiQb2ljGqZYyvwRtI9fNF2PVV6OKGFI2Og
+@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InNhbGVzMnVzZXIiLCJyb2xlIjoiU0FMRVMiLCJpYXQiOjE3NTM3ODI1NjcsImV4cCI6MTc1Mzg2ODk2N30.aP2uRbxrSwtX7dehCUzIhgg1mT9Acm5kflvNQF5ouLs
+
+### --- Token User: MANAGER (ID: 3) ---
+@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJtYW5hZ2VydXNlciIsInJvbGUiOiJNQU5BR0VSIiwiaWF0IjoxNzUzNzgyNjAxLCJleHAiOjE3NTM4NjkwMDF9.CZ1Xhq3Oxp1ahnHuMcGlfubLJemuTS5QFkclRmDQjho
+
+### --- Token User: VIEWER (ID: 4) ---
+@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InZpZXdlcnVzZXIiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzUzNzgyNjMwLCJleHAiOjE3NTM4NjkwMzB9.qy-GSJ1gz5FS2xoxctWvEh78EmIqJ45iFcnvzKPDo40
 
 ### Login untuk mendapatkan token
 POST {{baseUrl}}/api/auth/login
@@ -13,7 +24,7 @@ Content-Type: application/json
 ### Membuat pelanggan baru (diperlukan untuk customerId pada Contact)
 POST {{baseUrl}}/api/customers
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "name": "John Doe",
@@ -26,10 +37,10 @@ Authorization: Bearer {{token}}
 ### Membuat kontak baru (kasus sukses)
 POST {{baseUrl}}/api/contacts
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
-  "customerId": 1,
+  "customerId": 3,
   "firstName": "Jane",
   "lastName": "Doe",
   "email": "jane.doe@example.com",
@@ -37,24 +48,10 @@ Authorization: Bearer {{token}}
   "position": "Vice President"
 }
 
-### Menguji duplikasi email (harus gagal)
-POST {{baseUrl}}/api/contacts
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "customerId": 1,
-  "firstName": "Bob",
-  "lastName": "Jones",
-  "email": "jane.smith@example.com",
-  "phone": "1112223333",
-  "position": "Assistant"
-}
-
 ### Menguji customerId tidak valid (harus gagal)
 POST {{baseUrl}}/api/contacts
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "customerId": 999,
@@ -68,7 +65,7 @@ Authorization: Bearer {{token}}
 ### Menguji customerId bukan angka (harus gagal)
 POST {{baseUrl}}/api/contacts
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "customerId": "invalid",
@@ -82,7 +79,7 @@ Authorization: Bearer {{token}}
 ### Menguji email tidak valid (harus gagal)
 POST {{baseUrl}}/api/contacts
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "customerId": 1,
@@ -108,29 +105,29 @@ Content-Type: application/json
 
 ### Mendapatkan semua kontak
 GET {{baseUrl}}/api/contacts
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_viewer}}
 
 ### Mendapatkan kontak berdasarkan ID (kasus sukses)
-GET {{baseUrl}}/api/contacts/3
-Authorization: Bearer {{token}}
+GET {{baseUrl}}/api/contacts/2
+Authorization: Bearer {{token_viewer}}
 
 ### Mendapatkan kontak dengan ID tidak valid (harus gagal)
 GET {{baseUrl}}/api/contacts/999
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 ### Memperbarui kontak (kasus sukses)
-PATCH {{baseUrl}}/api/contacts/3
+PATCH {{baseUrl}}/api/contacts/1
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "lastName": "doer"
 }
 
 ### Menghapus kontak (kasus sukses)
-DELETE {{baseUrl}}/api/contacts/3
-Authorization: Bearer {{token}}
+DELETE {{baseUrl}}/api/contacts/1
+Authorization: Bearer {{token_admin}}
 
 ### Menghapus kontak dengan ID tidak valid (harus gagal)
 DELETE {{baseUrl}}/api/contacts/999
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}

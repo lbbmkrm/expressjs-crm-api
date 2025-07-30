@@ -1,8 +1,8 @@
 import express from "express";
 import userController from "../controllers/user.controller.js";
-import authMiddleware from "../middleware/auth.middleware.js";
-import validate from "../middleware/validate.middleware.js";
-import policyMiddleware from "../middleware/policy.middleware.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
+import validate from "../middlewares/validate.middleware.js";
+import policyMiddleware from "../middlewares/policy.middleware.js";
 import {
   createUserScheme,
   updateUserScheme,

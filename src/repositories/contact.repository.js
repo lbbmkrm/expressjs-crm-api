@@ -28,7 +28,7 @@ const contactRepository = {
     });
   },
   findByEmail: async (email) => {
-    return prisma.contact.findUnique({
+    return prisma.contact.findFirst({
       where: { email },
       include: {
         user: {

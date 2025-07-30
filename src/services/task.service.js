@@ -67,6 +67,9 @@ const taskService = {
   getTasksByPriority: async (priority) => {
     return taskRepository.findByPriority(priority);
   },
+  getUserTasks: async (userId) => {
+    return taskRepository.findByUserId(userId);
+  },
   updateTask: async (taskId, requestData) => {
     const task = await taskRepository.findById(taskId);
     console.log(task);

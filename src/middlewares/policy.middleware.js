@@ -5,7 +5,7 @@ const policyMiddleware = (policy, method, options = {}) => {
     try {
       if (options.needModel) {
         const modelId = parseInt(req.params.id);
-        const model = await options.serviceMethod(parseInt(modelId));
+        const model = await options.serviceMethod(modelId);
         await policy[method](req.user, model);
         req.model = model;
       } else {

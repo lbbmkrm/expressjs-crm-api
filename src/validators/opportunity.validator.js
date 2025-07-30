@@ -87,4 +87,16 @@ const updateOpportunityScheme = Joi.object({
   }),
 });
 
-export { createOpportunityScheme, updateOpportunityScheme };
+const opportunityIdScheme = Joi.object({
+  id: Joi.number().integer().required().messages({
+    "any.required": "Opportunity ID is required",
+    "number.base": "Opportunity ID must be a number",
+    "number.integer": "Opportunity ID must be an integer",
+  }),
+});
+
+export {
+  createOpportunityScheme,
+  updateOpportunityScheme,
+  opportunityIdScheme,
+};

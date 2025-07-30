@@ -35,10 +35,13 @@ const userService = {
     }
     return userRepository.update(id, requestData);
   },
-  deleteUser: async (id) => {
+  deleteUser: async (id, userId) => {
     const user = await userRepository.findById(id);
     if (!user) {
       throw new AppError("User not found", 404);
+    }
+    if (user.id === userId) {
+      throw new AppError("You cannot delete yourself", 400);
     }
     return userRepository.delete(id);
   },

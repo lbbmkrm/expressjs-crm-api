@@ -1,9 +1,17 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJqb2huZG9lIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUzNDM2NDI5LCJleHAiOjE3NTM1MjI4Mjl9.FT_Cme9yS7vREbbcy4d-iuvckW8MYL9Fj-KoVsX3mww
+### --- Token User: ADMIN ---
+@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUzNzgyNTAyLCJleHAiOjE3NTM4Njg5MDJ9.cmFwhq2QAf1S3NKcHxPHB0m9Z4tK8iDXvTurgpwNACQ
 
-@opportunityId = 1
-@leadId = 1
-@customerId = 1
+### --- Token User: SALES (ID: 2) ---
+@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzYWxlc0BleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoic2FsZXN1c2VyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzUzNzgyNTM5LCJleHAiOjE3NTM4Njg5Mzl9.x8zMzqNmkUiQb2ljGqZYyvwRtI9fNF2PVV6OKGFI2Og
+@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InNhbGVzMnVzZXIiLCJyb2xlIjoiU0FMRVMiLCJpYXQiOjE3NTM3ODI1NjcsImV4cCI6MTc1Mzg2ODk2N30.aP2uRbxrSwtX7dehCUzIhgg1mT9Acm5kflvNQF5ouLs
+
+### --- Token User: MANAGER (ID: 3) ---
+@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJtYW5hZ2VydXNlciIsInJvbGUiOiJNQU5BR0VSIiwiaWF0IjoxNzUzNzgyNjAxLCJleHAiOjE3NTM4NjkwMDF9.CZ1Xhq3Oxp1ahnHuMcGlfubLJemuTS5QFkclRmDQjho
+
+### --- Token User: VIEWER (ID: 4) ---
+@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InZpZXdlcnVzZXIiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzUzNzgyNjMwLCJleHAiOjE3NTM4NjkwMzB9.qy-GSJ1gz5FS2xoxctWvEh78EmIqJ45iFcnvzKPDo40
+
 
 
 ### Login untuk mendapatkan token
@@ -18,7 +26,7 @@ Content-Type: application/json
 ### Membuat pelanggan baru (opsional, untuk customerId pada Opportunity)
 POST {{baseUrl}}/api/customers
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "name": "John Doe",
@@ -31,7 +39,7 @@ Authorization: Bearer {{token}}
 ### Membuat lead baru 
 POST {{baseUrl}}/api/leads
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "name": "Alice Brown",
@@ -43,7 +51,7 @@ Authorization: Bearer {{token}}
 ### Membuat opportunity baru (kasus sukses, tanpa customerId)
 POST {{baseUrl}}/api/opportunities
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "name": "Project Apollo - Lead Conversion",
@@ -51,13 +59,13 @@ Authorization: Bearer {{token}}
   "stage": "QUALIFICATION",
   "closeDate": "2025-09-30T00:00:00Z",
   "description": "Converted lead from inbound marketing campaign.",
-  "leadId": {{leadId}} 
+  "leadId": 5
 }
 
 ### Membuat opportunity baru (kasus sukses, dengan customerId)
 POST {{baseUrl}}/api/opportunities
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "name": "Project Apollo - Customer Conversion",
@@ -71,7 +79,7 @@ Authorization: Bearer {{token}}
 ### Menguji leadId tidak valid (harus gagal)
 POST {{baseUrl}}/api/opportunities
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "name": "Invalid Lead Deal",
@@ -85,7 +93,7 @@ Authorization: Bearer {{token}}
 ### Menguji customerId tidak valid (harus gagal)
 POST {{baseUrl}}/api/opportunities
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "name": "Invalid Customer Deal",
@@ -99,7 +107,7 @@ Authorization: Bearer {{token}}
 ### Menguji multiple errors 
 POST {{baseUrl}}/api/opportunities
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "name": "Short",
@@ -114,7 +122,7 @@ Authorization: Bearer {{token}}
 ### Menguji leadId bukan angka (harus gagal)
 POST {{baseUrl}}/api/opportunities
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "name": "Invalid Lead ID Type",
@@ -155,20 +163,20 @@ Authorization: Bearer invalid-token
 
 ### Mendapatkan semua opportunity
 GET {{baseUrl}}/api/opportunities
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_viewer}}
 
 ### Mendapatkan opportunity berdasarkan ID (kasus sukses)
-GET {{baseUrl}}/api/opportunities/4
-Authorization: Bearer {{token}}
+GET {{baseUrl}}/api/opportunities/2
+Authorization: Bearer {{token_viewer}}
 
 ### Mendapatkan opportunity dengan ID tidak valid (harus gagal)
 GET {{baseUrl}}/api/opportunities/999
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_viewer}}
 
 ### Memperbarui opportunity (kasus sukses)
-PATCH {{baseUrl}}/api/opportunities/8
+PATCH {{baseUrl}}/api/opportunities/2
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "name": "Updated Opportunity Name",
@@ -180,9 +188,9 @@ Authorization: Bearer {{token}}
 }
 
 ### Memperbarui opportunity (kasus sukses, hapus customerId)
-PATCH {{baseUrl}}/api/opportunities/2
+PATCH {{baseUrl}}/api/opportunities/3
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "customerId": null
@@ -192,7 +200,7 @@ Authorization: Bearer {{token}}
 ### Menguji pembaruan dengan multiple errors 
 PATCH {{baseUrl}}/api/opportunities/1
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "name": "Short",
@@ -204,9 +212,9 @@ Authorization: Bearer {{token}}
 }
 
 ### Menghapus opportunity (kasus sukses)
-DELETE {{baseUrl}}/api/opportunities/1
-Authorization: Bearer {{token}}
+DELETE {{baseUrl}}/api/opportunities/3
+Authorization: Bearer {{token_sales}}
 
 ### Menghapus opportunity dengan ID tidak valid (harus gagal)
 DELETE {{baseUrl}}/api/opportunities/999
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}

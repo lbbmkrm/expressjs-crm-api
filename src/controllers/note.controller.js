@@ -15,6 +15,22 @@ const noteController = {
       next(err);
     }
   },
+  indexByUser: async (req, res, next) => {
+    try {
+      const notes = await noteService.getNotesByUserId(parseInt(req.user.id));
+      const message =
+        notes.length === 0
+          ? "No notes found for this user"
+          : "Notes retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: notes,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
   show: async (req, res, next) => {
     try {
       const note = await noteService.getNote(parseInt(req.params.id));

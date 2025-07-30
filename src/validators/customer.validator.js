@@ -40,4 +40,12 @@ const updateCustomerScheme = Joi.object({
   }),
 });
 
-export { createCustomerScheme, updateCustomerScheme };
+const customerIdScheme = Joi.object({
+  id: Joi.number().integer().required().messages({
+    "any.required": "Customer ID is required",
+    "number.base": "Customer ID must be a number",
+    "number.integer": "Customer ID must be an integer",
+  }),
+});
+
+export { createCustomerScheme, updateCustomerScheme, customerIdScheme };

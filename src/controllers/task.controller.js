@@ -75,6 +75,20 @@ const taskController = {
       next(err);
     }
   },
+  indexByUserTasks: async (req, res, next) => {
+    try {
+      const tasks = await taskService.getUserTasks(parseInt(req.user.id));
+      const message =
+        tasks.length === 0 ? "No tasks found" : "Tasks retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: tasks,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
   create: async (req, res, next) => {
     try {
       const task = await taskService.createTask(req.user.id, req.body);

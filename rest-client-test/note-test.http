@@ -1,55 +1,58 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJqb2huZG9lIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUzNDM2NDI5LCJleHAiOjE3NTM1MjI4Mjl9.FT_Cme9yS7vREbbcy4d-iuvckW8MYL9Fj-KoVsX3mww
-@noteId = 1
-@customerId = 1
-@contactId = 1
-@leadId = 1
-@opportunityId = 1
+@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUzODYzNjEwLCJleHAiOjE3NTM5NTAwMTB9._8DehhGlexlYNI7D77QuK8AdffZjACUlzkIUJ1IpEtQ
+
+@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJtYW5hZ2VydXNlciIsInJvbGUiOiJNQU5BR0VSIiwiaWF0IjoxNzUzODYzNjY0LCJleHAiOjE3NTM5NTAwNjR9.ZPaVSoqi0yh4DNk6w2UIb2CTVwK_aUjGeVlHeujiJ8E
+
+@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzYWxlc0BleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoic2FsZXN1c2VyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzUzODYzNjgzLCJleHAiOjE3NTM5NTAwODN9.lWJaZ3UjVrZMa2GFmV8mf_oA49biW0SuIkJW45WFgEk
+
+@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InNhbGVzMnVzZXIiLCJyb2xlIjoiU0FMRVMiLCJpYXQiOjE3NTM4NjM2OTgsImV4cCI6MTc1Mzk1MDA5OH0.CkCqEBwtblx_bGNKiOwpT3yDjLajK6Jb7X1nVeTysJw
+
+@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InZpZXdlcnVzZXIiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzUzODYzNzE5LCJleHAiOjE3NTM5NTAxMTl9.o187xpco6XOJRIkrO3uhMVO7W5XDpuCSSTGFqJTy4yw
 
 ### Membuat catatan baru (kasus sukses, dengan customerId)
 POST {{baseUrl}}/api/notes
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_viewer}}
 
 {
   "content": "Met with customer to discuss project requirements",
-  "customerId": {{customerId}}
+  "customerId": 1
 }
 
 ### Membuat catatan baru (kasus sukses, dengan contactId)
 POST {{baseUrl}}/api/notes
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_manager}}
 
 {
   "content": "Follow-up call with contact scheduled",
-  "contactId": {{contactId}}
+  "contactId": 1
 }
 
 ### Membuat catatan baru (kasus sukses, dengan leadId)
 POST {{baseUrl}}/api/notes
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "content": "Lead expressed interest in product demo",
-  "leadId": {{leadId}}
+  "leadId": 2
 }
 
 ### Membuat catatan baru (kasus sukses, dengan opportunityId)
 POST {{baseUrl}}/api/notes
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales2}}
 
 {
   "content": "Opportunity negotiation notes",
-  "opportunityId": {{opportunityId}}
+  "opportunityId": 5
 }
 
 ### Menguji tanpa relasi (harus gagal)
 POST {{baseUrl}}/api/notes
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "content": "Invalid note without relation"
@@ -58,18 +61,18 @@ Authorization: Bearer {{token}}
 ### Menguji multiple relasi (harus gagal)
 POST {{baseUrl}}/api/notes
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "content": "Invalid note with multiple relations",
-  "customerId": {{customerId}},
-  "contactId": {{contactId}}
+  "customerId": 4,
+  "contactId": 4
 }
 
 ### Menguji customerId tidak valid (harus gagal)
 POST {{baseUrl}}/api/notes
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "content": "Invalid customer note",
@@ -79,11 +82,11 @@ Authorization: Bearer {{token}}
 ### Menguji content kosong (harus gagal)
 POST {{baseUrl}}/api/notes
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "content": "",
-  "customerId": {{customerId}}
+  "customerId": 1
 }
 
 ### Menguji tanpa token (harus gagal)
@@ -92,7 +95,7 @@ Content-Type: application/json
 
 {
   "content": "Note without token",
-  "customerId": {{customerId}}
+  "customerId": 1
 }
 
 ### Menguji token tidak valid (harus gagal)
@@ -102,46 +105,46 @@ Authorization: Bearer invalid-token
 
 {
   "content": "Note with invalid token",
-  "customerId": {{customerId}}
+  "customerId": 1
 }
 
 ### Mendapatkan semua catatan
 GET {{baseUrl}}/api/notes
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_manager}}
 
 ### Mendapatkan catatan berdasarkan ID (kasus sukses)
-GET {{baseUrl}}/api/notes/{{noteId}}
-Authorization: Bearer {{token}}
+GET {{baseUrl}}/api/notes/4
+Authorization: Bearer {{token_sales}}
 
 ### Mendapatkan catatan dengan ID tidak valid (harus gagal)
 GET {{baseUrl}}/api/notes/999
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 ### Memperbarui catatan (kasus sukses, ubah content dan customerId)
-PATCH {{baseUrl}}/api/notes/{{noteId}}
+PATCH {{baseUrl}}/api/notes/2
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "content": "Updated meeting notes with customer",
-  "customerId": {{customerId}}
+  "customerId": 4
 }
 
 ### Memperbarui catatan (kasus sukses, hapus relasi)
-PATCH {{baseUrl}}/api/notes/{{noteId}}
+PATCH {{baseUrl}}/api/notes/1
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_sales}}
 
 {
   "content": "Updated note",
-  "customerId": null,
-  "contactId": {{contactId}}
+  "leadId": null,
+  "customerId" : 1
 }
 
 ### Menguji pembaruan tanpa relasi (harus gagal)
-PATCH {{baseUrl}}/api/notes/{{noteId}}
+PATCH {{baseUrl}}/api/notes/3
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "content": "Updated note without relation"
@@ -150,17 +153,17 @@ Authorization: Bearer {{token}}
 ### Menguji pembaruan dengan ID tidak valid (harus gagal)
 PATCH {{baseUrl}}/api/notes/999
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}
 
 {
   "content": "Invalid note ID",
-  "customerId": {{customerId}}
+  "customerId": 3
 }
 
 ### Menghapus catatan (kasus sukses)
-DELETE {{baseUrl}}/api/notes/{{noteId}}
-Authorization: Bearer {{token}}
+DELETE {{baseUrl}}/api/notes/9
+Authorization: Bearer {{token_sales2}}
 
 ### Menghapus catatan dengan ID tidak valid (harus gagal)
 DELETE {{baseUrl}}/api/notes/999
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_admin}}

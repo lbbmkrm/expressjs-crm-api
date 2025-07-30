@@ -57,4 +57,12 @@ const leadStatusScheme = Joi.object({
         "Status must be one of the following: NEW, CONTACTED, WON, LOST",
     }),
 });
-export { createLeadScheme, updateLeadScheme, leadStatusScheme };
+
+const leadIdScheme = Joi.object({
+  id: Joi.number().integer().required().messages({
+    "any.required": "Lead ID is required",
+    "number.base": "Lead ID must be a number",
+    "number.integer": "Lead ID must be an integer",
+  }),
+});
+export { createLeadScheme, updateLeadScheme, leadStatusScheme, leadIdScheme };

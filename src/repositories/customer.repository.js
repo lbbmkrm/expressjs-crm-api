@@ -11,6 +11,12 @@ const customerRepository = {
             username: true,
           },
         },
+        customer: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
   },
@@ -28,8 +34,8 @@ const customerRepository = {
     });
   },
   findByEmail: async (email) => {
-    return prisma.customer.findUnique({
-      where: { email },
+    return prisma.customer.findFirst({
+      where: { email: email },
       include: {
         user: {
           select: {

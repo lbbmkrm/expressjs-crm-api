@@ -12,7 +12,7 @@ const customerService = {
   },
 
   getAllCustomers: async () => {
-    return customerRepository.findAll();
+    return customerRepository.all();
   },
 
   getCustomer: async (id) => {

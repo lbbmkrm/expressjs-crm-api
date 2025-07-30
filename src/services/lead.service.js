@@ -41,13 +41,14 @@ const leadService = {
   },
 
   updateLead: async (leadId, requestData) => {
-    const existingCustomer = await customerRepository.findById(
-      requestData.customerId
-    );
-    if (!existingCustomer) {
-      throw new AppError("Customer not found", 404);
+    if (requestData.customerId) {
+      const existingCustomer = await customerRepository.findById(
+        requestData.customerId
+      );
+      if (!existingCustomer) {
+        throw new AppError("Customer not found", 404);
+      }
     }
-
     const updatedLead = await leadRepository.update(leadId, requestData);
     return updatedLead;
   },
@@ -58,7 +59,7 @@ const leadService = {
       throw new AppError("Lead not found", 404);
     }
 
-    return leadRepository.deleteLead(leadId);
+    return leadRepository.delete(leadId);
   },
 };
 

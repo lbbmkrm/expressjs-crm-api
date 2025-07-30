@@ -42,6 +42,13 @@ const noteRepository = {
   all: async () => {
     return prisma.note.findMany();
   },
+  findByUserId: async (id) => {
+    return prisma.note.findMany({
+      where: {
+        createdByUserId: id,
+      },
+    });
+  },
   findById: async (id) => {
     return prisma.note.findUnique({
       where: {

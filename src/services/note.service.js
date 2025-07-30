@@ -63,6 +63,9 @@ const noteService = {
   getAllNotes: async () => {
     return noteRepository.all();
   },
+  getNotesByUserId: async (userId) => {
+    return noteRepository.findByUserId(userId);
+  },
   getNote: async (id) => {
     const note = await noteRepository.findById(id);
     if (!note) {

@@ -75,6 +75,14 @@ const taskRepository = {
       include: taskRelation,
     });
   },
+  findByUserId: async (id) => {
+    return prisma.task.findMany({
+      where: {
+        assignedToUserId: id,
+      },
+      include: taskRelation,
+    });
+  },
   update: async (id, data) => {
     return prisma.task.update({
       where: {

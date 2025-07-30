@@ -7,7 +7,7 @@ const userController = {
       res.status(200).json({
         status: "success",
         message: "Users retrieved successfully",
-        data: users,
+        data: req.model,
       });
     } catch (err) {
       next(err);
@@ -39,10 +39,7 @@ const userController = {
   },
   update: async (req, res, next) => {
     try {
-      const user = await userService.updateUser(
-        parseInt(req.params.id),
-        req.body
-      );
+      const user = await userService.updateUser(req.body.id, req.body);
       res.status(200).json({
         status: "success",
         message: "User updated successfully",
@@ -54,7 +51,7 @@ const userController = {
   },
   destroy: async (req, res, next) => {
     try {
-      await userService.deleteUser(parseInt(req.params.id));
+      await userService.deleteUser(parseInt(req.params.id), req.user.id);
       res.status(200).json({
         status: "success",
         message: "User deleted successfully",

@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJqb2huZG9lIiwicm9sZSI6IlZJRVdFUiIsImlhdCI6MTc1Mzc2NjcyMywiZXhwIjoxNzUzODUzMTIzfQ.CZkpv3NCh5oBFeiHhQzhb-ia77c4_VkwF3C2vJwmWeM
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUzNzcxMjYzLCJleHAiOjE3NTM4NTc2NjN9.2O0rg4y6E1Uow1DcsT7m9Db0mNWRZ-GnlTSa6BoGk-A
 
 ### Login
 POST {{baseUrl}}/api/auth/login
@@ -15,7 +15,7 @@ GET {{baseUrl}}/api/users
 Authorization: Bearer {{token}}
 
 ### Get user by ID
-GET {{baseUrl}}/api/users/4
+GET {{baseUrl}}/api/users/2
 Authorization: Bearer {{token}}
 
 ### Create user 
