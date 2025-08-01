@@ -1,0 +1,181 @@
+@baseUrl = http://localhost:3000
+@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MDYxOTAyLCJleHAiOjE3NTQxNDgzMDJ9.zlMgKj-tjhETkjqBtpUeiz55pCH9ad2CEFzoclr5FYI
+
+@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJtYW5hZ2VydXNlciIsInJvbGUiOiJNQU5BR0VSIiwiaWF0IjoxNzU0MDYwMDQ3LCJleHAiOjE3NTQxNDY0NDd9.02v9I1L9KW2VaMsjqPCOmK1RrrrHX0P0t05_VFaebrA
+
+@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzYWxlc0BleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoic2FsZXN1c2VyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzU0MDYwMDY5LCJleHAiOjE3NTQxNDY0Njl9.SjmWDDjpnIrHE6Tx9SUeq3qXcZQTwwrK84cpSOC5Rwc
+
+@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InNhbGVzMnVzZXIiLCJyb2xlIjoiU0FMRVMiLCJpYXQiOjE3NTQwNjAyMTEsImV4cCI6MTc1NDE0NjYxMX0.9wdizHvCt0TJsDr6FB7tCdxiBRUTRIN7S-2oSfDfn2s
+
+@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InZpZXdlcnVzZXIiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzU0MDYwMDg1LCJleHAiOjE3NTQxNDY0ODV9.kscxqgi_7GpGVpvv-6QA1livQ9McUPg19pwcqtB61ZM
+
+###
+
+# ---------------------------------
+# CREATE ACTIVITY TESTS
+# ---------------------------------
+
+### Membuat aktivitas baru (sukses, terkait Customer)
+POST {{baseUrl}}/api/activities
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "type": "MEETING",
+  "subject": "Initial project kickoff meeting",
+  "content": "Discussed project timeline and deliverables.",
+  "customerId": 1
+}
+
+### Membuat aktivitas baru (sukses, terkait Lead)
+POST {{baseUrl}}/api/activities
+Content-Type: application/json
+Authorization: Bearer {{token_sales2}}
+
+{
+  "type": "CALL",
+  "subject": "Follow-up call with new lead",
+  "content": "Lead is very interested, scheduling a demo.",
+  "leadId": 2
+}
+
+### Gagal membuat aktivitas (tanpa relasi)
+POST {{baseUrl}}/api/activities
+Content-Type: application/json
+Authorization: Bearer {{token_admin}}
+
+{
+  "type": "EMAIL",
+  "subject": "Invalid activity",
+  "content": "This should fail because there is no relation."
+}
+
+### Gagal membuat aktivitas (relasi ganda)
+POST {{baseUrl}}/api/activities
+Content-Type: application/json
+Authorization: Bearer {{token_admin}}
+
+{
+  "type": "MEETING",
+  "subject": "Invalid activity with multiple relations",
+  "content": "This should fail.",
+  "customerId": 1,
+  "leadId": 1
+}
+
+### Gagal membuat aktivitas (relasi tidak valid)
+POST {{baseUrl}}/api/activities
+Content-Type: application/json
+Authorization: Bearer {{token_admin}}
+
+{
+  "type": "CALL",
+  "subject": "Invalid relation ID",
+  "content": "This should fail.",
+  "customerId": 999
+}
+
+### Gagal membuat aktivitas (tanpa subject)
+POST {{baseUrl}}/api/activities
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "type": "CALL",
+  "content": "This should fail.",
+  "customerId": 1
+}
+
+###
+
+# ---------------------------------
+# GET ACTIVITY TESTS
+# ---------------------------------
+
+### Mendapatkan semua aktivitas terkait customerId (sukses)
+GET {{baseUrl}}/api/activities?customerId=1
+Authorization: Bearer {{token_manager}}
+
+### Mendapatkan semua aktivitas terkait leadId (sukses)
+GET {{baseUrl}}/api/activities?leadId=2
+Authorization: Bearer {{token_manager}}
+
+### Mendapatkan semua aktivitas dengan tipe CALL (sukses)
+GET {{baseUrl}}/api/activities?type=CALL
+Authorization: Bearer {{token_admin}}
+
+### Mendapatkan semua aktivitas dengan tipe MEETING untuk customer 1 (sukses)
+GET {{baseUrl}}/api/activities?customerId=1&type=MEETING
+Authorization: Bearer {{token_manager}}
+
+### Mendapatkan semua aktivitas dengan tipe EMAIL
+GET {{baseUrl}}/api/activities?type=EMAIL
+Authorization: Bearer {{token_admin}}
+
+### Gagal mendapatkan aktivitas (query ganda)
+GET {{baseUrl}}/api/activities?customerId=1&leadId=2
+Authorization: Bearer {{token_admin}}
+
+### Mendapatkan aktivitas berdasarkan ID (sukses)
+GET {{baseUrl}}/api/activities/1
+Authorization: Bearer {{token_manager}}
+
+### Gagal mendapatkan aktivitas (ID tidak ada)
+GET {{baseUrl}}/api/activities/999
+Authorization: Bearer {{token_admin}}
+
+### Mendapatkan aktivitas milik saya (My Activities)
+GET {{baseUrl}}/api/activities/myActivities
+Authorization: Bearer {{token_sales2}}
+
+###
+
+# ---------------------------------
+# UPDATE ACTIVITY TESTS
+# ---------------------------------
+
+### Memperbarui aktivitas (sukses)
+PATCH {{baseUrl}}/api/activities/1
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "subject": "UPDATED - Initial project kickoff meeting",
+  "content": "UPDATED - Discussed project timeline and deliverables."
+}
+
+### Gagal memperbarui aktivitas (bukan pemilik)
+PATCH {{baseUrl}}/api/activities/1
+Content-Type: application/json
+Authorization: Bearer {{token_manager}}
+
+{
+  "subject": "Failed update attempt"
+}
+
+### Gagal memperbarui aktivitas (ID tidak ada)
+PATCH {{baseUrl}}/api/activities/999
+Content-Type: application/json
+Authorization: Bearer {{token_admin}}
+
+{
+  "subject": "This will fail"
+}
+
+###
+
+# ---------------------------------
+# DELETE ACTIVITY TESTS
+# ---------------------------------
+
+### Gagal menghapus aktivitas (bukan pemilik)
+DELETE {{baseUrl}}/api/activities/2
+Authorization: Bearer {{token_manager}}
+
+### Menghapus aktivitas (sukses, sebagai pemilik)
+DELETE {{baseUrl}}/api/activities/2
+Authorization: Bearer {{token_sales2}}
+
+### Gagal menghapus aktivitas (ID tidak ada)
+DELETE {{baseUrl}}/api/activities/999
+Authorization: Bearer {{token_admin}}

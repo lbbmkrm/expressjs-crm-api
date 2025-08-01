@@ -7,7 +7,7 @@ const userController = {
       res.status(200).json({
         status: "success",
         message: "Users retrieved successfully",
-        data: req.model,
+        data: users,
       });
     } catch (err) {
       next(err);

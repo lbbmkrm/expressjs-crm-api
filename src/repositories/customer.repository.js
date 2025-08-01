@@ -11,12 +11,6 @@ const customerRepository = {
             username: true,
           },
         },
-        customer: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
       },
     });
   },
