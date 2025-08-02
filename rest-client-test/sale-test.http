@@ -1,0 +1,140 @@
+@baseUrl = http://localhost:3000/api
+
+@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MTQ5NjQxLCJleHAiOjE3NTQyMzYwNDF9.vg56We6bU49mO6fRg7j8mA7BYKJxHXFfOF8EU4nHHmM
+@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJtYW5hZ2VydXNlciIsInJvbGUiOiJNQU5BR0VSIiwiaWF0IjoxNzU0MTQ5NjcwLCJleHAiOjE3NTQyMzYwNzB9.ehOxdWlJv-AE-5YR2yk5Y52RpgqHgHyl-6NrkYfW6-0
+@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzYWxlc0BleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoic2FsZXN1c2VyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzU0MTQ5NjkyLCJleHAiOjE3NTQyMzYwOTJ9.ITt2cID8wdafVo7vs54odrqo15rXByJzNmn1niPPoD0
+@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InNhbGVzMnVzZXIiLCJyb2xlIjoiU0FMRVMiLCJpYXQiOjE3NTQxNDk3MTIsImV4cCI6MTc1NDIzNjExMn0.bYKCubK28A6EBAbh5g9zOPg6qu9Euj_qu-H0cd6_uMM
+@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InZpZXdlcnVzZXIiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzU0MTQ5NzM5LCJleHAiOjE3NTQyMzYxMzl9.xs9AFJk247NDqo4w98PlhJ3z_NljBj_N2A2c1s7Pbbk
+
+
+### [SUCCESS] Sales user creates a new sale
+# Annsumsikan: customerId: 1, productId: 1, dan productId: 2 ada di database
+POST {{baseUrl}}/sales
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "customerId": 1,
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1
+    },
+    {
+      "productId": 2,
+      "quantity": 5
+    }
+  ]
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Viewer tries to create a sale (Unauthorized)
+POST {{baseUrl}}/sales
+Content-Type: application/json
+Authorization: Bearer {{token_viewer}}
+
+{
+  "customerId": 1,
+  "items": [
+    { "productId": 1, "quantity": 1 }
+  ]
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Create a sale with a non-existent customer
+POST {{baseUrl}}/sales
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "customerId": 9999,
+  "items": [
+    { "productId": 1, "quantity": 1 }
+  ]
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Create a sale with a non-existent product
+POST {{baseUrl}}/sales
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "customerId": 1,
+  "items": [
+    { "productId": 9999, "quantity": 1 }
+  ]
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Create a sale with an empty items array
+POST {{baseUrl}}/sales
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "customerId": 1,
+  "items": []
+}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Get all sales
+GET {{baseUrl}}/sales
+Authorization: Bearer {{token_viewer}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Get a single sale by ID
+# Ganti ID '1' dengan ID sale yang valid
+GET {{baseUrl}}/sales/1
+Authorization: Bearer {{token_viewer}}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Get a sale with a non-existent ID
+GET {{baseUrl}}/sales/9999
+Authorization: Bearer {{token_viewer}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Update a sale's status to COMPLETED
+# Ganti ID '1' dengan ID sale yang valid
+PATCH {{baseUrl}}/sales/1
+Content-Type: application/json
+Authorization: Bearer {{token_admin}} 
+
+{
+  "status": "COMPLETED"
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Update a sale with an invalid status
+# Ganti ID '1' dengan ID sale yang valid
+PATCH {{baseUrl}}/sales/1
+Content-Type: application/json
+Authorization: Bearer {{token_admin}}
+
+{
+  "status": "SHIPPED"
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Try to update a sale that is already COMPLETED
+# Ganti ID '1' dengan ID sale yang valid
+PATCH {{baseUrl}}/sales/1
+Content-Type: application/json
+Authorization: Bearer {{token_admin}}
+
+{
+  "status": "CANCELLED"
+}
+
+### ----------------------------------------------------------------
+

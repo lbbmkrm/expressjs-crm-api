@@ -31,6 +31,7 @@ model User {
   taskCreator Task[] @relation("taskCreator")
   notes Note[] @relation("noteUser")
   activities Activity[] @relation("activityUser")
+  sales Sale[] @relation("saleUser")
     
   @@map("users")
 }
@@ -52,6 +53,7 @@ model Customer{
   task Task[] @relation("taskCustomer")
   note Note[] @relation("noteCustomer")
   activity Activity[] @relation("activityCustomer")
+  sales Sale[] @relation("saleCustomer")
 
   @@map("customers")
 }
@@ -134,7 +136,7 @@ model Opportunity{
   task Task[] @relation("taskOpportunity")
   note Note[] @relation("noteOpportunity")
   activity Activity[] @relation("activityOpportunity")
-
+  sales Sale? @relation("saleOpportunity")
 
   @@map("opportunities")
 }
@@ -234,5 +236,47 @@ model Product{
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
   isActive Boolean @default(true)
+  saleItems SaleItem[] @relation("saleItemProduct")
   @@map("products")
+}
+
+enum SaleStatus{
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model Sale{
+  id Int @id @default(autoincrement())
+  customerId Int @map("customer_id")
+  opportunityId Int? @map("opportunity_id") @unique
+  saleDate DateTime @map("sale_date") @default(now())
+  totalAmount Decimal @map("total_amount") @db.Decimal(15,2)
+  status SaleStatus @default(PENDING)
+  createdByUserId Int @map("created_by_user_id")
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+
+  customer Customer @relation("saleCustomer", fields: [customerId], references: [id], onDelete: Restrict)
+  opportunity Opportunity? @relation("saleOpportunity", fields: [opportunityId], references: [id], onDelete: Restrict)
+  createdByUser User @relation("saleUser", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  items SaleItem[] @relation("saleItemSale")
+
+  
+  @@map("sales")
+}
+
+model SaleItem{
+  saleId Int @map("sale_id")
+  productId Int @map("product_id")
+  quantity Int @map("quantity")
+  unitPrice Decimal @map("price") @db.Decimal(15,2)
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+
+  sale Sale @relation("saleItemSale", fields: [saleId], references: [id], onDelete: Cascade)
+  product Product @relation("saleItemProduct", fields: [productId], references: [id], onDelete: Restrict)
+
+  @@id([saleId, productId])
+  @@map("sale_items")
 }
