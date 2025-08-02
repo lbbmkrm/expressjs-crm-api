@@ -8,6 +8,7 @@ import taskRoute from "./task.route.js";
 import noteRoute from "./note.route.js";
 import userRoute from "./user.route.js";
 import activityRoute from "./activity.route.js";
+import productRoute from "./product.route.js";
 
 const router = express.Router();
 
@@ -20,5 +21,6 @@ router.use("/tasks", taskRoute);
 router.use("/notes", noteRoute);
 router.use("/users", userRoute);
 router.use("/activities", activityRoute);
+router.use("/products", productRoute);
 
 export default router;

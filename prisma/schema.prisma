@@ -224,3 +224,15 @@ model Activity{
 
   @@map("activities")
 }
+
+model Product{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  description String? @db.Text
+  price Decimal @db.Decimal(15,2)
+
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+  isActive Boolean @default(true)
+  @@map("products")
+}
