@@ -129,6 +129,7 @@ const userRepository = {
     return prisma.user.update({
       where: {
         id: id,
+        deletedAt: null,
       },
       data: {
         deletedAt: new Date(),

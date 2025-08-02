@@ -1,6 +1,7 @@
 import leadRepository from "./../repositories/lead.repository.js";
 import { AppError } from "../utils/AppError.js";
 import customerRepository from "./../repositories/customer.repository.js";
+import prisma from "./../repositories/prismaClient.js";
 
 const leadService = {
   createLead: async (userId, requestData) => {
@@ -60,6 +61,61 @@ const leadService = {
     }
 
     return leadRepository.delete(leadId);
+  },
+  convertLead: async (leadId, userId) => {
+    return prisma.$transaction(async (tx) => {
+      const lead = await tx.lead.findUnique({
+        where: {
+          id: leadId,
+        },
+      });
+      if (!lead) {
+        throw new AppError("Lead not found", 404);
+      }
+      if (lead.status === "CONVERTED") {
+        throw new AppError("Lead already converted", 400);
+      }
+      const customer = await tx.customer.create({
+        data: {
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          createdByUserId: userId,
+        },
+      });
+
+      const contact = await tx.contact.create({
+        data: {
+          firstName: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          customerId: customer.id,
+          createdByUserId: userId,
+        },
+      });
+
+      const opportunity = await tx.opportunity.create({
+        data: {
+          name: `Opportunity from ${lead.name}`,
+          amount: 0,
+          stage: "QUALIFICATION",
+          customerId: customer.id,
+          leadId: lead.id,
+          createdByUserId: userId,
+        },
+      });
+
+      await tx.lead.update({
+        where: {
+          id: leadId,
+        },
+        data: {
+          status: "CONVERTED",
+          customerId: customer.id,
+        },
+      });
+      return { customer, contact, opportunity };
+    });
   },
 };
 

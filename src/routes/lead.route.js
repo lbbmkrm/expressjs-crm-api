@@ -62,4 +62,15 @@ router.delete(
   leadController.destroy
 );
 
+router.post(
+  "/:id/convert",
+  authMiddleware,
+  validate(leadIdScheme, "params"),
+  policyMiddleware(leadPolicy, "canConvert", {
+    needModel: true,
+    serviceMethod: leadService.getLeadById,
+  }),
+  leadController.convertLead
+);
+
 export default router;

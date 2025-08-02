@@ -32,6 +32,12 @@ const leadPolicy = {
     }
     throw new AppError("Unauthorized", 403);
   },
+  canConvert: async (user, model) => {
+    if (user.role === "ADMIN" || user.id === model.createdByUserId) {
+      return true;
+    }
+    throw new AppError("Unauthorized", 403);
+  },
 };
 
 export default leadPolicy;

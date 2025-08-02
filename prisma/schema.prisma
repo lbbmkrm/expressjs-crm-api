@@ -82,6 +82,7 @@ enum LeadStatus{
   CONTACTED
   WON
   LOST
+  CONVERTED
 }
 
 model Lead{

@@ -75,6 +75,22 @@ const leadController = {
       next(err);
     }
   },
+
+  convertLead: async (req, res, next) => {
+    try {
+      const result = await leadService.convertLead(
+        parseInt(req.params.id),
+        req.user.id
+      );
+      res.status(200).json({
+        status: "success",
+        message: "Lead converted successfully",
+        data: result,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 export default leadController;
