@@ -55,6 +55,13 @@ const saleRepository = {
       },
     });
   },
+  findByOpportunityId: async (opportunityId) => {
+    return prisma.sale.findMany({
+      where: {
+        opportunityId: opportunityId,
+      },
+    });
+  },
   create: async (saleData, itemsData) => {
     return prisma.sale.create({
       data: {
@@ -98,6 +105,46 @@ const saleRepository = {
       },
       data: {
         status: data.status,
+      },
+    });
+  },
+  calculateTotalItemsSold: async () => {
+    return prisma.saleItem.aggregate({
+      _sum: {
+        quantity: true,
+      },
+    });
+  },
+  calculateTotalItemsSoldByUserId: async (userId) => {
+    return prisma.saleItem.aggregate({
+      _sum: {
+        quantity: true,
+      },
+      where: {
+        sale: {
+          createdByUserId: userId,
+        },
+      },
+    });
+  },
+  calculateTotalSaleByUserId: async (userId) => {
+    return prisma.sale.aggregate({
+      _sum: {
+        totalAmount: true,
+      },
+      where: {
+        createdByUserId: userId,
+        status: "COMPLETED",
+      },
+    });
+  },
+  calculateTotalRevenue: async () => {
+    return prisma.sale.aggregate({
+      _sum: {
+        totalAmount: true,
+      },
+      where: {
+        status: "COMPLETED",
       },
     });
   },

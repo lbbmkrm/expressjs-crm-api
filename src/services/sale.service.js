@@ -19,7 +19,20 @@ const saleService = {
     if (!customerId || !items || items.length === 0) {
       throw new AppError("Customer ID and at least one item are required", 400);
     }
-
+    if (opportunityId) {
+      const opportunity = await prisma.opportunity.findUnique({
+        where: { id: opportunityId },
+      });
+      if (!opportunity) {
+        throw new AppError("Opportunity not found", 404);
+      }
+      const existingSale = await saleRepository.findByOpportunityId(
+        opportunityId
+      );
+      if (existingSale) {
+        throw new AppError("Opportunity already has a sale", 400);
+      }
+    }
     return prisma.$transaction(async (tx) => {
       const customer = await tx.customer.findUnique({
         where: { id: customerId },

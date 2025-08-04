@@ -74,6 +74,9 @@ const customerRepository = {
       where: { id },
     });
   },
+  countCustomers: async () => {
+    return prisma.customer.count();
+  },
 };
 
 export default customerRepository;

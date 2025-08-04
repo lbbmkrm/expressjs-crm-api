@@ -95,6 +95,30 @@ const leadRepository = {
       },
     });
   },
+  countLeads: async () => {
+    return prisma.lead.count();
+  },
+  countNewsLeads: async () => {
+    return prisma.lead.count({
+      where: {
+        status: "NEW",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  },
+  countNewLeadsByUserId: async (userId) => {
+    return prisma.lead.count({
+      where: {
+        createdByUserId: userId,
+        status: "NEW",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  },
 };
 
 export default leadRepository;

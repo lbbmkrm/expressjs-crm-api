@@ -10,6 +10,7 @@ import userRoute from "./user.route.js";
 import activityRoute from "./activity.route.js";
 import productRoute from "./product.route.js";
 import saleRoute from "./sale.route.js";
+import dashboardroute from "./dashboard.route.js";
 
 const router = express.Router();
 
@@ -24,5 +25,6 @@ router.use("/users", userRoute);
 router.use("/activities", activityRoute);
 router.use("/products", productRoute);
 router.use("/sales", saleRoute);
+router.use("/dashboard", dashboardroute);
 
 export default router;

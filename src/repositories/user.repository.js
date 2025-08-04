@@ -57,7 +57,7 @@ const userRepository = {
       select: userSelect,
     });
   },
-  all: async () => {
+  allUserActive: async () => {
     return prisma.user.findMany({
       where: {
         deletedAt: null,
@@ -133,6 +133,28 @@ const userRepository = {
       },
       data: {
         deletedAt: new Date(),
+      },
+    });
+  },
+  findByRole: async (role) => {
+    return prisma.user.findMany({
+      where: {
+        role: role,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  },
+  countActiveUser: async () => {
+    return prisma.user.count({
+      where: {
+        deletedAt: null,
       },
     });
   },

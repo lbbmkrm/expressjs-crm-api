@@ -99,6 +99,13 @@ const taskRepository = {
       },
     });
   },
+  countPending: async () => {
+    return prisma.task.count({
+      where: {
+        status: "PENDING",
+      },
+    });
+  },
 };
 
 export default taskRepository;

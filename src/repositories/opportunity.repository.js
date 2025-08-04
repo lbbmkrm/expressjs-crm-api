@@ -78,6 +78,29 @@ const opportunityRepository = {
       },
     });
   },
+  countOpenOpportunities: async () => {
+    return prisma.opportunity.count({
+      where: {
+        NOT: {
+          stage: {
+            in: ["WON", "LOST"],
+          },
+        },
+      },
+    });
+  },
+  countOpenOpportunitiesByUserId: async (userId) => {
+    return prisma.opportunity.count({
+      where: {
+        createdByUserId: userId,
+        NOT: {
+          stage: {
+            in: ["WON", "LOST"],
+          },
+        },
+      },
+    });
+  },
 };
 
 export default opportunityRepository;

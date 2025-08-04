@@ -23,6 +23,7 @@ model User {
   updatedAt DateTime @map("updated_at") @updatedAt
   deletedAt DateTime? @map("deleted_at")
 
+  dashboard Dashboard? @relation("dashboardUser")
   customers Customer[] @relation("userCustomers")
   contacts Contact[] @relation("contactUser")
   leads Lead[] @relation("leadUser")
@@ -279,4 +280,17 @@ model SaleItem{
 
   @@id([saleId, productId])
   @@map("sale_items")
+}
+
+model Dashboard{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  description String? @db.Text
+  layout Json
+  userId Int @map("user_id") @unique
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+
+  user User @relation("dashboardUser", fields: [userId], references: [id], onDelete: Restrict)
+  @@map("dashboards")
 }

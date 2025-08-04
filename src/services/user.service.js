@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 const userService = {
   getAllUsers: async () => {
-    return userRepository.all();
+    return userRepository.allUserActive();
   },
   getUser: async (id) => {
     const user = await userRepository.findById(id);

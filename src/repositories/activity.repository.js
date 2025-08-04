@@ -79,6 +79,15 @@ const activityRepository = {
       },
     });
   },
+  recentActivities: async () => {
+    return prisma.activity.findMany({
+      include: activityRelation,
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
+    });
+  },
 };
 
 export default activityRepository;
