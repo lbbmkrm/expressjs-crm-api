@@ -14,11 +14,27 @@ const productRepository = {
         id: id,
         isActive: true,
       },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
     });
   },
   create: async (data) => {
     return prisma.product.create({
       data: data,
+      include: {
+        creator: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
     });
   },
   update: async (id, data) => {

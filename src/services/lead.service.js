@@ -64,6 +64,7 @@ const leadService = {
   },
   convertLead: async (leadId, userId) => {
     return prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT  id FROM leads WHERE id = ${leadId}`;
       const lead = await tx.lead.findUnique({
         where: {
           id: leadId,

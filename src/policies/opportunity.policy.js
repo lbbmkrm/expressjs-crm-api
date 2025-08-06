@@ -16,6 +16,7 @@ const opportunityPolicy = {
   canUpdate: async (user, model) => {
     if (
       user.role === "ADMIN" ||
+      user.role === "MANAGER" ||
       (user.role === "SALES" && user.id === model.createdByUserId)
     ) {
       return true;

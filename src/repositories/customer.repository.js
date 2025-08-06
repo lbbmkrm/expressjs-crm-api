@@ -5,7 +5,7 @@ const customerRepository = {
     return prisma.customer.create({
       data: data,
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -16,9 +16,12 @@ const customerRepository = {
   },
   findById: async (id) => {
     return prisma.customer.findUnique({
-      where: { id: id },
+      where: {
+        id: id,
+        deletedAt: null,
+      },
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -29,9 +32,9 @@ const customerRepository = {
   },
   findByEmail: async (email) => {
     return prisma.customer.findFirst({
-      where: { email: email },
+      where: { email: email, deletedAt: null },
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -40,8 +43,19 @@ const customerRepository = {
       },
     });
   },
+  findByUserId: async (userId) => {
+    return prisma.customer.findMany({
+      where: {
+        createdByUserId: userId,
+        deletedAt: null,
+      },
+    });
+  },
   all: async () => {
     return prisma.customer.findMany({
+      where: {
+        deletedAt: null,
+      },
       select: {
         id: true,
         name: true,
@@ -57,10 +71,10 @@ const customerRepository = {
   },
   update: async (id, data) => {
     return prisma.customer.update({
-      where: { id: id },
+      where: { id: id, deletedAt: null },
       data: data,
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -70,12 +84,19 @@ const customerRepository = {
     });
   },
   delete: async (id) => {
-    return prisma.customer.delete({
+    return prisma.customer.update({
       where: { id },
+      data: {
+        deletedAt: new Date(),
+      },
     });
   },
   countCustomers: async () => {
-    return prisma.customer.count();
+    return prisma.customer.count({
+      where: {
+        deletedAt: null,
+      },
+    });
   },
 };
 

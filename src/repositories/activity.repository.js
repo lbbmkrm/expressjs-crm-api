@@ -1,6 +1,6 @@
 import prisma from "./prismaClient.js";
 const activityRelation = {
-  createdByUser: {
+  creator: {
     select: {
       id: true,
       username: true,
@@ -53,6 +53,14 @@ const activityRepository = {
     return prisma.activity.findMany({
       where: {
         createdByUserId: userId,
+      },
+      include: activityRelation,
+    });
+  },
+  findByCustomerId: async (customerId) => {
+    return prisma.activity.findMany({
+      where: {
+        customerId: customerId,
       },
       include: activityRelation,
     });

@@ -17,6 +17,12 @@ const activityPolicy = {
     }
     throw new AppError("Unauthorized", 403);
   },
+  canViewByCustomer: async (user) => {
+    if (user.role === "ADMIN" || user.role === "MANAGER") {
+      return true;
+    }
+    throw new AppError("Unauthorized", 403);
+  },
   canCreate: async (user) => {
     return true;
   },

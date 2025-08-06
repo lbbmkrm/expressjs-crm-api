@@ -24,14 +24,15 @@ model User {
   deletedAt DateTime? @map("deleted_at")
 
   dashboard Dashboard? @relation("dashboardUser")
-  customers Customer[] @relation("userCustomers")
-  contacts Contact[] @relation("contactUser")
-  leads Lead[] @relation("leadUser")
-  opportunities Opportunity[] @relation("userOpportunity")
+  customers Customer[] @relation("customerCreator")
+  contacts Contact[] @relation("contactCreator")
+  leads Lead[] @relation("leadCreator")
+  opportunities Opportunity[] @relation("opportunityCreator")
   taskAssigned Task[] @relation("taskAssigned")
   taskCreator Task[] @relation("taskCreator")
-  notes Note[] @relation("noteUser")
-  activities Activity[] @relation("activityUser")
+  notes Note[] @relation("noteCreator")
+  activities Activity[] @relation("activityCreator")
+  products Product[] @relation("productCreator")
   sales Sale[] @relation("saleUser")
     
   @@map("users")
@@ -47,7 +48,8 @@ model Customer{
   createdByUserId Int @map("created_by_user_id") 
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
-  user User @relation("userCustomers" ,fields: [createdByUserId], references: [id], onDelete: Restrict)
+  deletedAt DateTime? @map("deleted_at")
+  creator User @relation("customerCreator" ,fields: [createdByUserId], references: [id], onDelete: Restrict)
   contact Contact[] @relation("customerContact")
   lead Lead[] @relation("customerLead")
   opportunities Opportunity[] @relation("customerOpportunity")
@@ -72,7 +74,7 @@ model Contact {
   updatedAt DateTime @map("updated_at") @updatedAt
 
   customer Customer @relation("customerContact" ,fields: [customerId], references: [id], onDelete: Cascade)
-  user User @relation("contactUser" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
+  creator User @relation("contactCreator" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
   note Note[] @relation("noteContact")
   activity Activity[] @relation("activityContact")
 
@@ -100,7 +102,7 @@ model Lead{
   updatedAt DateTime @map("updated_at") @updatedAt
 
   customer Customer? @relation("customerLead" ,fields: [customerId],references: [id], onDelete: SetNull)
-  user User @relation("leadUser" ,fields: [createdByUserId], references: [id], onDelete: Restrict)
+  creator User @relation("leadCreator" ,fields: [createdByUserId], references: [id], onDelete: Restrict)
   opportunity Opportunity? @relation("leadOpportunity")
   task Task[] @relation("taskLead")
   note Note[] @relation("noteLead")
@@ -133,7 +135,7 @@ model Opportunity{
 
   customer Customer? @relation("customerOpportunity", fields: [customerId], references: [id], onDelete: SetNull)
   lead Lead? @relation("leadOpportunity", fields: [leadId], references: [id], onDelete: SetNull)
-  user User @relation("userOpportunity", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  creator User @relation("opportunityCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
   task Task[] @relation("taskOpportunity")
   note Note[] @relation("noteOpportunity")
   activity Activity[] @relation("activityOpportunity")
@@ -194,7 +196,7 @@ model Note{
   contact Contact? @relation("noteContact", fields: [contactId], references: [id], onDelete: SetNull)
   lead Lead? @relation("noteLead", fields: [leadId], references: [id], onDelete: SetNull)
   opportunity Opportunity? @relation("noteOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
-  createdByUser User @relation("noteUser", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  creator User @relation("noteCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
 
   @@map("notes") 
 }
@@ -223,7 +225,7 @@ model Activity{
   contact Contact? @relation("activityContact", fields: [contactId], references: [id], onDelete: SetNull)
   lead Lead? @relation("activityLead", fields: [leadId], references: [id], onDelete: SetNull)
   opportunity Opportunity? @relation("activityOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
-  createdByUser User @relation("activityUser", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  creator User @relation("activityCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
 
   @@map("activities")
 }
@@ -233,7 +235,9 @@ model Product{
   name String @db.VarChar(255)
   description String? @db.Text
   price Decimal @db.Decimal(15,2)
+  createdByUserId Int @map("created_by_user_id")
 
+  creator User @relation("productCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
   isActive Boolean @default(true)
@@ -258,9 +262,9 @@ model Sale{
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
 
+  creator User @relation("saleUser", fields: [createdByUserId], references: [id], onDelete: Restrict)
   customer Customer @relation("saleCustomer", fields: [customerId], references: [id], onDelete: Restrict)
   opportunity Opportunity? @relation("saleOpportunity", fields: [opportunityId], references: [id], onDelete: Restrict)
-  createdByUser User @relation("saleUser", fields: [createdByUserId], references: [id], onDelete: Restrict)
   items SaleItem[] @relation("saleItemSale")
 
   

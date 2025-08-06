@@ -1,7 +1,7 @@
 import prisma from "./prismaClient.js";
 
 const noteRelation = {
-  createdByUser: {
+  creator: {
     select: {
       id: true,
       username: true,
@@ -53,6 +53,14 @@ const noteRepository = {
     return prisma.note.findUnique({
       where: {
         id: id,
+      },
+      include: noteRelation,
+    });
+  },
+  findByCustomerId: async (customerId) => {
+    return prisma.note.findMany({
+      where: {
+        customerId: customerId,
       },
       include: noteRelation,
     });

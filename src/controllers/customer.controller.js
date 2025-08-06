@@ -73,6 +73,108 @@ const customerController = {
       next(err);
     }
   },
+  showContacts: async (req, res, next) => {
+    try {
+      const contacts = await customerService.getCustomerContacts(
+        parseInt(req.params.id)
+      );
+      const message =
+        contacts.length === 0
+          ? "No contacts found"
+          : "Contacts retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: contacts,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showLeads: async (req, res, next) => {
+    try {
+      const leads = await customerService.getCustomerLeads(
+        parseInt(req.params.id)
+      );
+      const message =
+        leads.length === 0 ? "No leads found" : "Leads retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: leads,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showOpportunities: async (req, res, next) => {
+    try {
+      const opportunities = await customerService.getCustomerOpportunities(
+        parseInt(req.params.id)
+      );
+      const message =
+        opportunities.length === 0
+          ? "No opportunities found"
+          : "Opportunities retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: opportunities,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showSales: async (req, res, next) => {
+    try {
+      const sales = await customerService.getCustomerSales(
+        parseInt(req.params.id)
+      );
+      const message =
+        sales.length === 0 ? "No sales found" : "Sales retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: sales,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showCustomerActivities: async (req, res, next) => {
+    try {
+      const activities = await customerService.getCustomerActivities(
+        parseInt(req.params.id)
+      );
+      const message =
+        activities.length === 0
+          ? "No activities found"
+          : "Activities retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: activities,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showCustomerNotes: async (req, res, next) => {
+    try {
+      const notes = await customerService.getCustomerNotes(
+        parseInt(req.params.id)
+      );
+      const message =
+        notes.length === 0 ? "No notes found" : "Notes retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: notes,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 export default customerController;

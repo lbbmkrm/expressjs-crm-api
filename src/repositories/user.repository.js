@@ -98,7 +98,7 @@ const userRepository = {
     });
   },
   findByEmail: async (email) => {
-    return prisma.user.findUnique({
+    return prisma.user.findFirst({
       where: {
         email: email,
         deletedAt: null,

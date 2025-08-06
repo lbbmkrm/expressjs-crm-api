@@ -5,7 +5,7 @@ const contactRepository = {
     return prisma.contact.create({
       data,
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -18,7 +18,7 @@ const contactRepository = {
     return prisma.contact.findUnique({
       where: { id },
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -31,7 +31,33 @@ const contactRepository = {
     return prisma.contact.findFirst({
       where: { email },
       include: {
-        user: {
+        creator: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+  },
+  findByCustomerId: async (customerId) => {
+    return prisma.contact.findMany({
+      where: { customerId },
+      include: {
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
+            company: true,
+            createdAt: true,
+            updatedAt: true,
+            createdByUserId: true,
+          },
+        },
+        creator: {
           select: {
             id: true,
             username: true,
@@ -43,7 +69,7 @@ const contactRepository = {
   all: async () => {
     return prisma.contact.findMany({
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -57,7 +83,7 @@ const contactRepository = {
       where: { id },
       data: data,
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,

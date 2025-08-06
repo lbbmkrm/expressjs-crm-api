@@ -5,7 +5,7 @@ const opportunityRepository = {
     return prisma.opportunity.create({
       data: data,
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -35,7 +35,7 @@ const opportunityRepository = {
         id: id,
       },
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -60,6 +60,33 @@ const opportunityRepository = {
     return prisma.opportunity.findUnique({
       where: {
         leadId: leadId,
+      },
+    });
+  },
+  findByCustomerId: async (customerId) => {
+    return prisma.opportunity.findMany({
+      where: {
+        customerId: customerId,
+      },
+      include: {
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
+            company: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        creator: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
       },
     });
   },

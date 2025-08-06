@@ -20,7 +20,7 @@ const createLeadScheme = Joi.object({
     .valid(...Object.values(LeadStatus))
     .messages({
       "string.valid":
-        "Status must be one of the following: NEW, CONTACTED, WON, LOST",
+        "Status must be one of the following: NEW, CONTACTED, CONVERTED, WON, LOST",
     }),
 });
 

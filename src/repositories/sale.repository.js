@@ -10,7 +10,7 @@ const saleRepository = {
             name: true,
           },
         },
-        createdByUser: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -28,6 +28,12 @@ const saleRepository = {
         id: id,
       },
       include: {
+        creator: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
         customer: {
           select: {
             id: true,
@@ -59,6 +65,27 @@ const saleRepository = {
     return prisma.sale.findMany({
       where: {
         opportunityId: opportunityId,
+      },
+    });
+  },
+  findByCustomerId: async (customerId) => {
+    return prisma.sale.findMany({
+      where: {
+        customerId: customerId,
+      },
+      include: {
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
+            company: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
     });
   },

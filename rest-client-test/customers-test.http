@@ -1,59 +1,106 @@
-@baseUrl = http://localhost:3000
-@baseUrl = http://localhost:3000
+@baseUrl = http://localhost:3000/api
 
-### --- Token User: ADMIN ---
-@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUzNzgyNTAyLCJleHAiOjE3NTM4Njg5MDJ9.cmFwhq2QAf1S3NKcHxPHB0m9Z4tK8iDXvTurgpwNACQ
+# =================================================================
+# TOKENS
+# Harap ganti dengan token yang valid sebelum menjalankan
+# =================================================================
+@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBjcm0uY29tIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc1NDQ4MDIyNSwiZXhwIjoxNzU0NTY2NjI1fQ.PdEpZ1cklrgjnhBWeOpGyMZX_qGMsvTYTElm6nmWEpk
+@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJtYW5hZ2VyQGNybS5jb20iLCJ1c2VybmFtZSI6Im1hbmFnZXIiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc1NDQ4MDU5MSwiZXhwIjoxNzU0NTY2OTkxfQ.y8SdUMGn9Ryan4Gy8zRrMS8a3aKCICofUixIubm4ahM
+@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczFAY3JtLmNvbSIsInVzZXJuYW1lIjoic2FsZXMxIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzU0NDgwNjUyLCJleHAiOjE3NTQ1NjcwNTJ9.E1JlcS77BtxhL6ZulRM2ecxn8QeHrdRdeoMu2VZUKvs
 
-### --- Token User: SALES (ID: 2) ---
-@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzYWxlc0BleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoic2FsZXN1c2VyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzUzNzgyNTM5LCJleHAiOjE3NTM4Njg5Mzl9.x8zMzqNmkUiQb2ljGqZYyvwRtI9fNF2PVV6OKGFI2Og
-@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InNhbGVzMnVzZXIiLCJyb2xlIjoiU0FMRVMiLCJpYXQiOjE3NTM3ODI1NjcsImV4cCI6MTc1Mzg2ODk2N30.aP2uRbxrSwtX7dehCUzIhgg1mT9Acm5kflvNQF5ouLs
 
-### --- Token User: MANAGER (ID: 3) ---
-@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJtYW5hZ2VydXNlciIsInJvbGUiOiJNQU5BR0VSIiwiaWF0IjoxNzUzNzgyNjAxLCJleHAiOjE3NTM4NjkwMDF9.CZ1Xhq3Oxp1ahnHuMcGlfubLJemuTS5QFkclRmDQjho
+# =================================================================
+# CUSTOMER CORE ENDPOINTS
+# =================================================================
 
-### --- Token User: VIEWER (ID: 4) ---
-@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InZpZXdlcnVzZXIiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzUzNzgyNjMwLCJleHAiOjE3NTM4NjkwMzB9.qy-GSJ1gz5FS2xoxctWvEh78EmIqJ45iFcnvzKPDo40
-
-### Login untuk mendapatkan token
-POST {{baseUrl}}/api/auth/login
-Content-Type: application/json
-
-{
-  "emailOrUsername": "salesuser",
-  "password": "password123"
-}
-
-### Membuat pelanggan baru
-POST {{baseUrl}}/api/customers
+### [SUCCESS] Sales user creates a new customer
+# @name createCustomer
+POST {{baseUrl}}/customers
 Content-Type: application/json
 Authorization: Bearer {{token_sales}}
 
 {
-  "name": "Customer by Sales",
-  "email": "sales.customer@example.com",
-  "phone": "0800000000",
-  "address": "Jl. Contoh",
-  "company": "Sales Corp"
+  "name": "PT Maju Mundur Sejahtera",
+  "email": "kontak@majumundur.com",
+  "phone": "02177788899",
+  "address": "Jl. Kenangan No. 404, Jakarta",
+  "company": "MMS Group"
 }
 
-### Mendapatkan semua pelanggan
-GET {{baseUrl}}/api/customers
-Authorization: Bearer {{token_viewer}}
+### ----------------------------------------------------------------
 
-### Mendapatkan pelanggan berdasarkan ID
-GET {{baseUrl}}/api/customers/2
+### [SUCCESS] Any authenticated user gets all customers
+GET {{baseUrl}}/customers
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Any authenticated user gets a customer by ID
+GET {{baseUrl}}/customers/1
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Manager updates a customer
+PATCH {{baseUrl}}/customers/1
+Content-Type: application/json
 Authorization: Bearer {{token_manager}}
 
-### Memperbarui pelanggan
-PATCH {{baseUrl}}/api/customers/2
-Content-Type: application/json
-Authorization: Bearer {{token_sales}}
-
 {
-  "name": "John Smith",
-  "phone": "0987654321"
+  "phone": "02177788811",
+  "company": "Maju Mundur Sejahtera Tbk"
 }
 
-### Menghapus pelanggan
-DELETE {{baseUrl}}/api/customers/2
+### ----------------------------------------------------------------
+
+### [FAIL] Sales user tries to delete a customer (not allowed if have relation)
+DELETE {{baseUrl}}/customers/3
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Admin deletes a customer
+# Ganti ID customer jika perlu
+DELETE {{baseUrl}}/customers/4
 Authorization: Bearer {{token_admin}}
+
+
+# =================================================================
+# CUSTOMER RELATIONSHIP ENDPOINTS
+# =================================================================
+
+### [SUCCESS] Manager gets all contacts for a customer
+GET {{baseUrl}}/customers/1/contacts
+Authorization: Bearer {{token_manager}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Manager gets all leads for a customer
+GET {{baseUrl}}/customers/1/leads
+Authorization: Bearer {{token_manager}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Manager gets all opportunities for a customer
+GET {{baseUrl}}/customers/1/opportunities
+Authorization: Bearer {{token_manager}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Manager gets all sales for a customer
+GET {{baseUrl}}/customers/1/sales
+Authorization: Bearer {{token_manager}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Manager gets all activities for a customer
+GET {{baseUrl}}/customers/1/activities
+Authorization: Bearer {{token_manager}}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Sales user tries to get activities for a customer (not allowed by policy)
+GET {{baseUrl}}/customers/1/activities
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------

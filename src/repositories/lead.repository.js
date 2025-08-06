@@ -4,7 +4,7 @@ const leadRepository = {
     return prisma.lead.create({
       data: data,
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -28,7 +28,7 @@ const leadRepository = {
         id: id,
       },
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -50,7 +50,7 @@ const leadRepository = {
         status: status,
       },
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,
@@ -65,6 +65,33 @@ const leadRepository = {
       },
     });
   },
+  findByCustomerId: async (customerId) => {
+    return prisma.lead.findMany({
+      where: {
+        customerId: customerId,
+      },
+      include: {
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
+            company: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        creator: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+  },
   update: async (id, data) => {
     const updatedLead = await prisma.lead.update({
       where: {
@@ -72,7 +99,7 @@ const leadRepository = {
       },
       data: data,
       include: {
-        user: {
+        creator: {
           select: {
             id: true,
             username: true,

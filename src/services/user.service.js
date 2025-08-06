@@ -1,4 +1,6 @@
 import userRepository from "./../repositories/user.repository.js";
+import customerRepository from "../repositories/customer.repository.js";
+import taskRepository from "../repositories/task.repository.js";
 import { AppError } from "./../utils/AppError.js";
 import bcrypt from "bcrypt";
 
@@ -12,6 +14,28 @@ const userService = {
       throw new AppError("User not found", 404);
     }
     return user;
+  },
+  getUsersCustomers: async (userId) => {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+    const customers = await customerRepository.findByUserId(userId);
+    return customers;
+  },
+  getUserAssignedTasks: async (userId) => {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+    return taskRepository.findByAssignedUserId(userId);
+  },
+  getTasksByCreatorId: async (creatorId) => {
+    const user = await userRepository.findById(creatorId);
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+    return taskRepository.findByCreatorId(creatorId);
   },
   createUser: async (requestData) => {
     const existingUsername = await userRepository.findByUsername(
