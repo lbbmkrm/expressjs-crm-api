@@ -19,11 +19,15 @@ const leadRepository = {
       },
     });
   },
-  all: async () => {
+  all: async (status) => {
+    const whereClause = {
+      deletedAt: null,
+    };
+    if (status) {
+      whereClause.status = status;
+    }
     return prisma.lead.findMany({
-      where: {
-        deletedAt: null,
-      },
+      where: whereClause,
     });
   },
   findById: async (id) => {
@@ -48,28 +52,6 @@ const leadRepository = {
       },
     });
     return lead;
-  },
-  findByStatus: async (status) => {
-    return prisma.lead.findMany({
-      where: {
-        status: status,
-        deletedAt: null,
-      },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        customer: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
   },
   findByCustomerId: async (customerId) => {
     return prisma.lead.findMany({

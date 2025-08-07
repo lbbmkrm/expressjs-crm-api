@@ -64,6 +64,17 @@ Authorization: Bearer {{token_sales}}
 
 ### ----------------------------------------------------------------
 
+### [SUCCESS] get all leads by status
+GET {{baseUrl}}/leads?status=WON
+Authorization: Bearer {{token_sales}}
+### ----------------------------------------------------------------
+
+### [FAILED] get all leads by invalid status
+GET {{baseUrl}}/leads?status=INVALID
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------
+
 ### [SUCCESS] Any authenticated user can get a lead by ID
 # Ganti ID sesuai dengan data yang ada
 GET {{baseUrl}}/leads/1

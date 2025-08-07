@@ -20,14 +20,8 @@ router.get(
   "/",
   authMiddleware,
   policyMiddleware(leadPolicy, "canViewAll"),
+  validate(leadStatusScheme, "query"),
   leadController.index
-);
-router.get(
-  "/status/:status",
-  authMiddleware,
-  validate(leadStatusScheme, "params"),
-  policyMiddleware(leadPolicy, "canViewAll"),
-  leadController.indexByStatus
 );
 router.get(
   "/:id",

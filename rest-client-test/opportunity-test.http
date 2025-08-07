@@ -1,220 +1,116 @@
-@baseUrl = http://localhost:3000
-### --- Token User: ADMIN ---
-@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUzNzgyNTAyLCJleHAiOjE3NTM4Njg5MDJ9.cmFwhq2QAf1S3NKcHxPHB0m9Z4tK8iDXvTurgpwNACQ
+@baseUrl = http://localhost:3000/api
 
-### --- Token User: SALES (ID: 2) ---
-@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzYWxlc0BleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoic2FsZXN1c2VyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzUzNzgyNTM5LCJleHAiOjE3NTM4Njg5Mzl9.x8zMzqNmkUiQb2ljGqZYyvwRtI9fNF2PVV6OKGFI2Og
-@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InNhbGVzMnVzZXIiLCJyb2xlIjoiU0FMRVMiLCJpYXQiOjE3NTM3ODI1NjcsImV4cCI6MTc1Mzg2ODk2N30.aP2uRbxrSwtX7dehCUzIhgg1mT9Acm5kflvNQF5ouLs
+# =================================================================
+# TOKENS
+# =================================================================
+@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBjcm0uY29tIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc1NDU2MDQ5MSwiZXhwIjoxNzU0NjQ2ODkxfQ.sXZekuDGiHv4_KVqCWM1Hz4bNyAh_bsRjYLIl7VRsfQ
+@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJtYW5hZ2VyQGNybS5jb20iLCJ1c2VybmFtZSI6Im1hbmFnZXIiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc1NDU2MDUyNywiZXhwIjoxNzU0NjQ2OTI3fQ.MitFAC5XKFKW-a-Q5UWVEWjYMSO-acMANuNfKs5V1_w
+@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczFAY3JtLmNvbSIsInVzZXJuYW1lIjoic2FsZXMxIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzU0NTYwNTg3LCJleHAiOjE3NTQ2NDY5ODd9.2ZN-WQdAFyF_6BybSd31GFpD8FLMXPlLtEU1uZQh1aI
+@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJzYWxlczJAY3JtLmNvbSIsInVzZXJuYW1lIjoic2FsZXMyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzU0NTYwNjA1LCJleHAiOjE3NTQ2NDcwMDV9.WbemKaKO3luLZ_1ldluzfwwmszWq2q2fxL9Z7_gdSho
+@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAY3JtLmNvbSIsInVzZXJuYW1lIjoidmlld2VyIiwicm9sZSI6IlZJRVdFUiIsImlhdCI6MTc1NDU3NzE3MiwiZXhwIjoxNzU0NjYzNTcyfQ.0RWXzPpemALcQxD6oHUnG7BBSs0WA85ZSPcsOmlEtR0
 
-### --- Token User: MANAGER (ID: 3) ---
-@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJtYW5hZ2VydXNlciIsInJvbGUiOiJNQU5BR0VSIiwiaWF0IjoxNzUzNzgyNjAxLCJleHAiOjE3NTM4NjkwMDF9.CZ1Xhq3Oxp1ahnHuMcGlfubLJemuTS5QFkclRmDQjho
+# =================================================================
+# OPPORTUNITY CORE ENDPOINTS
+# =================================================================
 
-### --- Token User: VIEWER (ID: 4) ---
-@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InZpZXdlcnVzZXIiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzUzNzgyNjMwLCJleHAiOjE3NTM4NjkwMzB9.qy-GSJ1gz5FS2xoxctWvEh78EmIqJ45iFcnvzKPDo40
-
-
-
-### Login untuk mendapatkan token
-POST {{baseUrl}}/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-
-### Membuat pelanggan baru (opsional, untuk customerId pada Opportunity)
-POST {{baseUrl}}/api/customers
+### [SUCCESS] Sales user creates a new opportunity
+# @name createOpportunity
+POST {{baseUrl}}/opportunities
 Content-Type: application/json
 Authorization: Bearer {{token_sales}}
 
 {
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "phone": "1234567890",
-  "address": "123 Main St",
-  "company": "Doe Inc"
-}
-
-### Membuat lead baru 
-POST {{baseUrl}}/api/leads
-Content-Type: application/json
-Authorization: Bearer {{token_sales}}
-
-{
-  "name": "Alice Brown",
-  "email": "alice.brown@example.com",
-  "phone": "1234567890",
-  "status": "NEW"
-}
-
-### Membuat opportunity baru (kasus sukses, tanpa customerId)
-POST {{baseUrl}}/api/opportunities
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
-
-{
-  "name": "Project Apollo - Lead Conversion",
-  "amount": 10000.50,
+  "name": "Peluang Proyek Website Baru",
+  "amount": 75000000.00,
   "stage": "QUALIFICATION",
-  "closeDate": "2025-09-30T00:00:00Z",
-  "description": "Converted lead from inbound marketing campaign.",
-  "leadId": 5
-}
-
-### Membuat opportunity baru (kasus sukses, dengan customerId)
-POST {{baseUrl}}/api/opportunities
-Content-Type: application/json
-Authorization: Bearer {{token_sales}}
-
-{
-  "name": "Project Apollo - Customer Conversion",
-  "amount": 15000.75,
-  "stage": "QUALIFICATION",
-  "closeDate": "2025-10-15T00:00:00Z",
-  "description": "Converted customer from previous engagement.",
+  "closeDate": "2025-12-31T17:00:00.000Z",
   "customerId": 1
 }
 
-### Menguji leadId tidak valid (harus gagal)
-POST {{baseUrl}}/api/opportunities
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
+### ----------------------------------------------------------------
 
-{
-  "name": "Invalid Lead Deal",
-  "amount": 1000,
-  "stage": "QUALIFICATION",
-  "closeDate": "2025-09-30T00:00:00Z",
-  "description": "Invalid lead ID.",
-  "leadId": 999
-}
-
-### Menguji customerId tidak valid (harus gagal)
-POST {{baseUrl}}/api/opportunities
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
-
-{
-  "name": "Invalid Customer Deal",
-  "amount": 1000,
-  "stage": "QUALIFICATION",
-  "closeDate" : "2025-09-30T00:00:00Z",
-  "description": "Invalid customer ID.",
-  "customerId": 999
-}
-
-### Menguji multiple errors 
-POST {{baseUrl}}/api/opportunities
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
-
-{
-  "name": "Short",
-  "amount": 1000,
-  "stage": "INVALID_STAGE",
-  "closeDate": "invalid-date",
-  "description": "This should fail due to multiple validation errors.",
-  "leadId": 999,
-  "customerId": 999
-}
-
-### Menguji leadId bukan angka (harus gagal)
-POST {{baseUrl}}/api/opportunities
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
-
-{
-  "name": "Invalid Lead ID Type",
-  "amount": 1000,
-  "stage": "QUALIFICATION",
-  "closeDate": "2025-09-30T00:00:00Z",
-  "description": "Lead ID should be a number.",
-  "leadId": "not-a-number",
-  "customerId": 1
-}
-
-### Menguji tanpa token (harus gagal)
-POST {{baseUrl}}/api/opportunities
-Content-Type: application/json
-
-{
-  "name": "Missing Token Deal",
-  "amount": 1000,
-  "stage": "QUALIFICATION",
-  "closeDate": "2025-09-30T00:00:00Z",
-  "description": "Missing token should fail.",
-  "leadId": 1
-}
-
-### Menguji token tidak valid (harus gagal)
-POST {{baseUrl}}/api/opportunities
-Content-Type: application/json
-Authorization: Bearer invalid-token
-
-{
-  "name": "Invalid Token Deal",
-  "amount": 1000,
-  "stage": "QUALIFICATION",
-  "closeDate": "2025-09-30T00:00:00Z",
-  "description": "This should fail due to invalid token.",
-  "leadId": 1
-}
-
-### Mendapatkan semua opportunity
-GET {{baseUrl}}/api/opportunities
-Authorization: Bearer {{token_viewer}}
-
-### Mendapatkan opportunity berdasarkan ID (kasus sukses)
-GET {{baseUrl}}/api/opportunities/2
-Authorization: Bearer {{token_viewer}}
-
-### Mendapatkan opportunity dengan ID tidak valid (harus gagal)
-GET {{baseUrl}}/api/opportunities/999
-Authorization: Bearer {{token_viewer}}
-
-### Memperbarui opportunity (kasus sukses)
-PATCH {{baseUrl}}/api/opportunities/2
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
-
-{
-  "name": "Updated Opportunity Name",
-  "amount": 11000.00,
-  "stage": "NEGOTIATION",
-  "closeDate": "2025-11-30T00:00:00Z",
-  "description": "Updated description for the opportunity.",
-  "customerId": 1
-}
-
-### Memperbarui opportunity (kasus sukses, hapus customerId)
-PATCH {{baseUrl}}/api/opportunities/3
-Content-Type: application/json
+### [SUCCESS] Any authenticated user gets all opportunities
+GET {{baseUrl}}/opportunities
 Authorization: Bearer {{token_sales}}
 
-{
-  "customerId": null
-}
+### ----------------------------------------------------------------
 
-
-### Menguji pembaruan dengan multiple errors 
-PATCH {{baseUrl}}/api/opportunities/1
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
-
-{
-  "name": "Short",
-  "amount": 1000,
-  "stage": "INVALID_STAGE",
-  "closeDate": "invalid-date",
-  "description": "This should fail due to multiple validation errors.",
-  "customerId": 999
-}
-
-### Menghapus opportunity (kasus sukses)
-DELETE {{baseUrl}}/api/opportunities/3
+### [SUCCESS] Any authenticated user gets an opportunity by ID
+GET {{baseUrl}}/opportunities/1
 Authorization: Bearer {{token_sales}}
 
-### Menghapus opportunity dengan ID tidak valid (harus gagal)
-DELETE {{baseUrl}}/api/opportunities/999
+### ----------------------------------------------------------------
+
+### [SUCCESS] Manager updates an opportunity
+PATCH {{baseUrl}}/opportunities/1
+Content-Type: application/json
+Authorization: Bearer {{token_manager}}
+
+{
+  "stage": "PROPOSAL_PRESENTATION",
+  "amount": 80000000.00
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Sales user tries to delete an opportunity they don't own
+DELETE {{baseUrl}}/opportunities/4
+Authorization: Bearer {{token_sales2}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Admin deletes an opportunity
+# Ganti ID opportunity jika perlu
+DELETE {{baseUrl}}/opportunities/2
 Authorization: Bearer {{token_admin}}
+
+
+# =================================================================
+# OPPORTUNITY FILTER ENDPOINTS
+# =================================================================
+
+### [SUCCESS] Get all opportunities filtered by stage 'QUALIFICATION'
+GET {{baseUrl}}/opportunities?stage=QUALIFICATION
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Get opportunities with an invalid stage
+GET {{baseUrl}}/opportunities?stage=INVALID_STAGE
+Authorization: Bearer {{token_sales}}
+
+
+# =================================================================
+# OPPORTUNITY RELATIONSHIP ENDPOINTS
+# =================================================================
+
+### [SUCCESS] Any authenticated user gets sales for an opportunity
+# Ganti ID dengan opportunity yang memiliki sales
+GET {{baseUrl}}/opportunities/1/sales
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Manager gets activities for an opportunity
+# Ganti ID dengan opportunity yang memiliki activities
+GET {{baseUrl}}/opportunities/1/activities
+Authorization: Bearer {{token_manager}}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Sales user tries to get activities for an opportunity (not allowed by policy)
+GET {{baseUrl}}/opportunities/1/activities
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Manager gets notes for an opportunity
+# Ganti ID dengan opportunity yang memiliki notes
+GET {{baseUrl}}/opportunities/1/notes
+Authorization: Bearer {{token_manager}}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Sales user tries to get notes for an opportunity (not allowed by policy)
+GET {{baseUrl}}/opportunities/1/notes
+Authorization: Bearer {{token_sales}}

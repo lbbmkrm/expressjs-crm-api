@@ -80,6 +80,15 @@ const activityRepository = {
       include: activityRelation,
     });
   },
+  findByOpportunityId: async (opportunityId) => {
+    return prisma.activity.findMany({
+      where: {
+        opportunityId: opportunityId,
+        deletedAt: null,
+      },
+      include: activityRelation,
+    });
+  },
   create: async (data) => {
     return prisma.activity.create({
       data: data,

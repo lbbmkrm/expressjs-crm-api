@@ -16,19 +16,8 @@ const leadController = {
   },
   index: async (req, res, next) => {
     try {
-      const leads = await leadService.getAllLeads();
-      res.status(200).json({
-        status: "success",
-        message: "Leads retrieved successfully",
-        data: leads,
-      });
-    } catch (err) {
-      next(err);
-    }
-  },
-  indexByStatus: async (req, res, next) => {
-    try {
-      const leads = await leadService.getLeadsByStatus(req.params.status);
+      const { status } = req.query;
+      const leads = await leadService.getAllLeads(status);
       res.status(200).json({
         status: "success",
         message: "Leads retrieved successfully",

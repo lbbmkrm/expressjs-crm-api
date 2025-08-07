@@ -95,6 +95,14 @@ const saleRepository = {
       },
     });
   },
+  findByOpportunityId: async (opportunityId) => {
+    return prisma.sale.findMany({
+      where: {
+        opportunityId: opportunityId,
+        deletedAt: null,
+      },
+    });
+  },
   create: async (saleData, itemsData) => {
     return prisma.sale.create({
       data: {
@@ -139,6 +147,20 @@ const saleRepository = {
       },
       data: {
         status: data.status,
+      },
+      include: {
+        items: {
+          select: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            unitPrice: true,
+            quantity: true,
+          },
+        },
       },
     });
   },

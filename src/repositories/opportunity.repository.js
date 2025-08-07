@@ -26,11 +26,15 @@ const opportunityRepository = {
       },
     });
   },
-  all: async () => {
+  all: async (stage) => {
+    const whereClause = {
+      deletedAt: null,
+    };
+    if (stage) {
+      whereClause.stage = stage;
+    }
     return prisma.opportunity.findMany({
-      where: {
-        deletedAt: null,
-      },
+      where: whereClause,
     });
   },
   findById: async (id) => {

@@ -50,12 +50,7 @@ const updateLeadScheme = Joi.object({
 const leadStatusScheme = Joi.object({
   status: Joi.string()
     .valid(...Object.values(LeadStatus))
-    .optional()
-    .max(50)
-    .messages({
-      "string.valid":
-        "Status must be one of the following: NEW, CONTACTED, WON, LOST",
-    }),
+    .optional(),
 });
 
 const leadIdScheme = Joi.object({

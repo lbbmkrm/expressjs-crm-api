@@ -2,6 +2,9 @@ import opportunityRepository from "../repositories/opportunity.repository.js";
 import leadRepository from "../repositories/lead.repository.js";
 import customerRepository from "../repositories/customer.repository.js";
 import { AppError } from "../utils/AppError.js";
+import saleRepository from "../repositories/sale.repository.js";
+import activityRepository from "../repositories/activity.repository.js";
+import noteRepository from "../repositories/note.repository.js";
 
 const opportunityService = {
   createOpportunity: async (userId, requestData) => {
@@ -29,8 +32,8 @@ const opportunityService = {
     requestData.createdByUserId = userId;
     return opportunityRepository.create(requestData);
   },
-  getAllOpportunities: async () => {
-    return opportunityRepository.all();
+  getAllOpportunities: async (stage) => {
+    return opportunityRepository.all(stage);
   },
   getOpportunityById: async (id) => {
     const opportunity = await opportunityRepository.findById(id);
@@ -76,6 +79,27 @@ const opportunityService = {
       throw new AppError("Opportunity not found", 404);
     }
     return opportunityRepository.delete(opportunityId);
+  },
+  getOpportunitySales: async (opportunityId) => {
+    const opportunity = await opportunityRepository.findById(opportunityId);
+    if (!opportunity) {
+      throw new AppError("Opportunity not found", 404);
+    }
+    return saleRepository.findByOpportunityId(opportunityId);
+  },
+  getOpportunityActivities: async (opportunityId) => {
+    const opportunity = await opportunityRepository.findById(opportunityId);
+    if (!opportunity) {
+      throw new AppError("Opportunity not found", 404);
+    }
+    return activityRepository.findByOpportunityId(opportunityId);
+  },
+  getOpportunityNotes: async (opportunityId) => {
+    const opportunity = await opportunityRepository.findById(opportunityId);
+    if (!opportunity) {
+      throw new AppError("Opportunity not found", 404);
+    }
+    return noteRepository.findByOpportunityId(opportunityId);
   },
 };
 

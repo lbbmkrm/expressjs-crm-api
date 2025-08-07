@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { OpportunityStage } from "./../../generated/prisma/index.js";
 
 const createOpportunityScheme = Joi.object({
   name: Joi.string().required().max(255).messages({
@@ -94,9 +95,15 @@ const opportunityIdScheme = Joi.object({
     "number.integer": "Opportunity ID must be an integer",
   }),
 });
+const opportunityStageScheme = Joi.object({
+  stage: Joi.string()
+    .optional()
+    .valid(...Object.values(OpportunityStage)),
+});
 
 export {
   createOpportunityScheme,
   updateOpportunityScheme,
   opportunityIdScheme,
+  opportunityStageScheme,
 };

@@ -3,7 +3,8 @@ import opportunityService from "../services/opportunity.service.js";
 const opportunityController = {
   index: async (req, res, next) => {
     try {
-      const opportunities = await opportunityService.getAllOpportunities();
+      const { stage } = req.query;
+      const opportunities = await opportunityService.getAllOpportunities(stage);
       res.status(200).json({
         status: "success",
         message: "Opportunities retrieved successfully",
@@ -29,6 +30,7 @@ const opportunityController = {
   },
   create: async (req, res, next) => {
     try {
+      console.log("User", req.user);
       const opportunity = await opportunityService.createOpportunity(
         req.user.id,
         req.body
@@ -63,6 +65,56 @@ const opportunityController = {
       res.status(200).json({
         status: "success",
         message: "Opportunity deleted successfully",
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showSales: async (req, res, next) => {
+    try {
+      const sales = await opportunityService.getOpportunitySales(
+        parseInt(req.params.id)
+      );
+      const message =
+        sales.length === 0 ? "No sales found" : "Sales retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: sales,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showActivities: async (req, res, next) => {
+    try {
+      const activities = await opportunityService.getOpportunityActivities(
+        parseInt(req.params.id)
+      );
+      const message =
+        activities.length === 0
+          ? "No activities found"
+          : "Activities retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: activities,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showNotes: async (req, res, next) => {
+    try {
+      const notes = await opportunityService.getOpportunityNotes(
+        parseInt(req.params.id)
+      );
+      const message =
+        notes.length === 0 ? "No notes found" : "Notes retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: notes,
       });
     } catch (err) {
       next(err);

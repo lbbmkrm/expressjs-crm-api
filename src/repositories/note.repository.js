@@ -81,6 +81,15 @@ const noteRepository = {
       include: noteRelation,
     });
   },
+  findByOpportunityId: async (opportunityId) => {
+    return prisma.note.findMany({
+      where: {
+        opportunityId: opportunityId,
+        deletedAt: null,
+      },
+      include: noteRelation,
+    });
+  },
   update: async (id, data) => {
     return prisma.note.update({
       where: {

@@ -29,13 +29,9 @@ const leadService = {
     return lead;
   },
 
-  getAllLeads: async () => {
-    return leadRepository.all();
+  getAllLeads: async (status) => {
+    return leadRepository.all(status);
   },
-  getLeadsByStatus: async (status) => {
-    return leadRepository.findByStatus(status);
-  },
-
   getLeadById: async (id) => {
     const lead = await leadRepository.findById(id);
     if (!lead) {
