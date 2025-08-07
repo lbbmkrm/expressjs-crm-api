@@ -20,12 +20,17 @@ const leadRepository = {
     });
   },
   all: async () => {
-    return prisma.lead.findMany();
+    return prisma.lead.findMany({
+      where: {
+        deletedAt: null,
+      },
+    });
   },
   findById: async (id) => {
     const lead = await prisma.lead.findUnique({
       where: {
         id: id,
+        deletedAt: null,
       },
       include: {
         creator: {
@@ -48,6 +53,7 @@ const leadRepository = {
     return prisma.lead.findMany({
       where: {
         status: status,
+        deletedAt: null,
       },
       include: {
         creator: {
@@ -69,6 +75,7 @@ const leadRepository = {
     return prisma.lead.findMany({
       where: {
         customerId: customerId,
+        deletedAt: null,
       },
       include: {
         customer: {
@@ -96,6 +103,7 @@ const leadRepository = {
     const updatedLead = await prisma.lead.update({
       where: {
         id: id,
+        deletedAt: null,
       },
       data: data,
       include: {
@@ -116,19 +124,28 @@ const leadRepository = {
     return updatedLead;
   },
   delete: async (id) => {
-    return prisma.lead.delete({
+    return prisma.lead.update({
       where: {
         id: id,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   },
   countLeads: async () => {
-    return prisma.lead.count();
+    return prisma.lead.count({
+      where: {
+        deletedAt: null,
+      },
+    });
   },
   countNewsLeads: async () => {
     return prisma.lead.count({
       where: {
         status: "NEW",
+        deletedAt: null,
       },
       orderBy: {
         createdAt: "desc",
@@ -140,6 +157,7 @@ const leadRepository = {
       where: {
         createdByUserId: userId,
         status: "NEW",
+        deletedAt: null,
       },
       orderBy: {
         createdAt: "desc",

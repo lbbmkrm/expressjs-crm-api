@@ -7,6 +7,7 @@ const requestLogger = (req, res, next) => {
     timestamp: new Date().toISOString(),
     params: req.params,
     query: req.query,
+    body: req.body,
   });
   next();
 };

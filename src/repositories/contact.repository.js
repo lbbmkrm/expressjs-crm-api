@@ -16,7 +16,10 @@ const contactRepository = {
   },
   findById: async (id) => {
     return prisma.contact.findUnique({
-      where: { id },
+      where: {
+        id: id,
+        deletedAt: null,
+      },
       include: {
         creator: {
           select: {
@@ -29,7 +32,10 @@ const contactRepository = {
   },
   findByEmail: async (email) => {
     return prisma.contact.findFirst({
-      where: { email },
+      where: {
+        email: email,
+        deletedAt: null,
+      },
       include: {
         creator: {
           select: {
@@ -42,7 +48,10 @@ const contactRepository = {
   },
   findByCustomerId: async (customerId) => {
     return prisma.contact.findMany({
-      where: { customerId },
+      where: {
+        customerId: customerId,
+        deletedAt: null,
+      },
       include: {
         customer: {
           select: {
@@ -68,6 +77,9 @@ const contactRepository = {
   },
   all: async () => {
     return prisma.contact.findMany({
+      where: {
+        deletedAt: null,
+      },
       include: {
         creator: {
           select: {
@@ -80,7 +92,10 @@ const contactRepository = {
   },
   update: async (id, data) => {
     return prisma.contact.update({
-      where: { id },
+      where: {
+        id: id,
+        deletedAt: null,
+      },
       data: data,
       include: {
         creator: {
@@ -93,8 +108,14 @@ const contactRepository = {
     });
   },
   delete: async (id) => {
-    return prisma.contact.delete({
-      where: { id },
+    return prisma.contact.update({
+      where: {
+        id: id,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
     });
   },
 };

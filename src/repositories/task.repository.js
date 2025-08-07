@@ -41,12 +41,17 @@ const taskRepository = {
     });
   },
   all: async () => {
-    return prisma.task.findMany();
+    return prisma.task.findMany({
+      where: {
+        deletedAt: null,
+      },
+    });
   },
   findById: async (id) => {
     return prisma.task.findUnique({
       where: {
         id: id,
+        deletedAt: null,
       },
       include: taskRelation,
     });
@@ -55,6 +60,7 @@ const taskRepository = {
     return prisma.task.findMany({
       where: {
         assignedToUserId: assignedUserId,
+        deletedAt: null,
       },
       include: taskRelation,
     });
@@ -63,6 +69,7 @@ const taskRepository = {
     return prisma.task.findMany({
       where: {
         createdByUserId: creatorId,
+        deletedAt: null,
       },
       include: taskRelation,
     });
@@ -71,6 +78,7 @@ const taskRepository = {
     return prisma.task.findMany({
       where: {
         status: status,
+        deletedAt: null,
       },
       include: taskRelation,
     });
@@ -79,6 +87,7 @@ const taskRepository = {
     return prisma.task.findMany({
       where: {
         priority: priority,
+        deletedAt: null,
       },
       include: taskRelation,
     });
@@ -87,6 +96,7 @@ const taskRepository = {
     return prisma.task.findMany({
       where: {
         assignedToUserId: id,
+        deletedAt: null,
       },
       include: taskRelation,
     });
@@ -95,15 +105,20 @@ const taskRepository = {
     return prisma.task.update({
       where: {
         id: id,
+        deletedAt: null,
       },
       data: data,
       include: taskRelation,
     });
   },
   delete: async (id) => {
-    return prisma.task.delete({
+    return prisma.task.update({
       where: {
         id: id,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   },
@@ -111,6 +126,7 @@ const taskRepository = {
     return prisma.task.count({
       where: {
         status: "PENDING",
+        deletedAt: null,
       },
     });
   },

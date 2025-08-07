@@ -3,6 +3,9 @@ import prisma from "./prismaClient.js";
 const saleRepository = {
   all: async () => {
     return prisma.sale.findMany({
+      where: {
+        deletedAt: null,
+      },
       include: {
         customer: {
           select: {
@@ -26,6 +29,7 @@ const saleRepository = {
     return prisma.sale.findUnique({
       where: {
         id: id,
+        deletedAt: null,
       },
       include: {
         creator: {
@@ -65,6 +69,7 @@ const saleRepository = {
     return prisma.sale.findMany({
       where: {
         opportunityId: opportunityId,
+        deletedAt: null,
       },
     });
   },
@@ -72,6 +77,7 @@ const saleRepository = {
     return prisma.sale.findMany({
       where: {
         customerId: customerId,
+        deletedAt: null,
       },
       include: {
         customer: {
@@ -129,6 +135,7 @@ const saleRepository = {
     return prisma.sale.update({
       where: {
         id: id,
+        deletedAt: null,
       },
       data: {
         status: data.status,
@@ -137,6 +144,9 @@ const saleRepository = {
   },
   calculateTotalItemsSold: async () => {
     return prisma.saleItem.aggregate({
+      where: {
+        deletedAt: null,
+      },
       _sum: {
         quantity: true,
       },
@@ -151,6 +161,7 @@ const saleRepository = {
         sale: {
           createdByUserId: userId,
         },
+        deletedAt: null,
       },
     });
   },
@@ -162,6 +173,7 @@ const saleRepository = {
       where: {
         createdByUserId: userId,
         status: "COMPLETED",
+        deletedAt: null,
       },
     });
   },
@@ -172,6 +184,7 @@ const saleRepository = {
       },
       where: {
         status: "COMPLETED",
+        deletedAt: null,
       },
     });
   },

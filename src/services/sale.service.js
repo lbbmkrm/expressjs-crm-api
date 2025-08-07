@@ -20,9 +20,7 @@ const saleService = {
       throw new AppError("Customer ID and at least one item are required", 400);
     }
     if (opportunityId) {
-      const opportunity = await prisma.opportunity.findUnique({
-        where: { id: opportunityId },
-      });
+      const opportunity = await opportunityRepository.findById(opportunityId);
       if (!opportunity) {
         throw new AppError("Opportunity not found", 404);
       }
@@ -35,7 +33,7 @@ const saleService = {
     }
     return prisma.$transaction(async (tx) => {
       const customer = await tx.customer.findUnique({
-        where: { id: customerId },
+        where: { id: customerId, deletedAt: null },
       });
       if (!customer) {
         throw new AppError("Customer not found", 404);

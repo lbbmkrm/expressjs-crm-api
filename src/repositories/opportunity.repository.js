@@ -27,12 +27,17 @@ const opportunityRepository = {
     });
   },
   all: async () => {
-    return prisma.opportunity.findMany();
+    return prisma.opportunity.findMany({
+      where: {
+        deletedAt: null,
+      },
+    });
   },
   findById: async (id) => {
     return prisma.opportunity.findUnique({
       where: {
         id: id,
+        deletedAt: null,
       },
       include: {
         creator: {
@@ -56,10 +61,19 @@ const opportunityRepository = {
       },
     });
   },
+  findAllByLeadId: async (leadId) => {
+    return prisma.opportunity.findMany({
+      where: {
+        leadId: leadId,
+        deletedAt: null,
+      },
+    });
+  },
   findByLeadId: async (leadId) => {
     return prisma.opportunity.findUnique({
       where: {
         leadId: leadId,
+        deletedAt: null,
       },
     });
   },
@@ -67,6 +81,7 @@ const opportunityRepository = {
     return prisma.opportunity.findMany({
       where: {
         customerId: customerId,
+        deletedAt: null,
       },
       include: {
         customer: {
@@ -94,20 +109,26 @@ const opportunityRepository = {
     return prisma.opportunity.update({
       where: {
         id: id,
+        deletedAt: null,
       },
       data: data,
     });
   },
   delete: async (id) => {
-    return prisma.opportunity.delete({
+    return prisma.opportunity.update({
       where: {
         id: id,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   },
   countOpenOpportunities: async () => {
     return prisma.opportunity.count({
       where: {
+        deletedAt: null,
         NOT: {
           stage: {
             in: ["WON", "LOST"],
@@ -120,6 +141,7 @@ const opportunityRepository = {
     return prisma.opportunity.count({
       where: {
         createdByUserId: userId,
+        deletedAt: null,
         NOT: {
           stage: {
             in: ["WON", "LOST"],

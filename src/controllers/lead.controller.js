@@ -91,6 +91,56 @@ const leadController = {
       next(err);
     }
   },
+  showOpportunities: async (req, res, next) => {
+    try {
+      const opportunities = await leadService.getOpportunitiesByLeadId(
+        parseInt(req.params.id)
+      );
+      const message =
+        opportunities.length === 0
+          ? "No opportunities found"
+          : "Opportunities retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: opportunities,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showActivities: async (req, res, next) => {
+    try {
+      const activities = await leadService.getActivitiesByLeadId(
+        parseInt(req.params.id)
+      );
+      const message =
+        activities.length === 0
+          ? "No activities found"
+          : "Activities retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: activities,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showNotes: async (req, res, next) => {
+    try {
+      const notes = await leadService.getNotesByLeadId(parseInt(req.params.id));
+      const message =
+        notes.length === 0 ? "No notes found" : "Notes retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: notes,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 export default leadController;

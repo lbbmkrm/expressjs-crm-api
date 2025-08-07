@@ -34,7 +34,10 @@ const activityRelation = {
 const activityRepository = {
   findByRelation: async (relation) => {
     return prisma.activity.findMany({
-      where: relation,
+      where: {
+        relation,
+        deletedAt: null,
+      },
       include: activityRelation,
       orderBy: {
         createdAt: "desc",
@@ -45,6 +48,7 @@ const activityRepository = {
     return prisma.activity.findUnique({
       where: {
         id: id,
+        deletedAt: null,
       },
       include: activityRelation,
     });
@@ -53,6 +57,7 @@ const activityRepository = {
     return prisma.activity.findMany({
       where: {
         createdByUserId: userId,
+        deletedAt: null,
       },
       include: activityRelation,
     });
@@ -61,6 +66,16 @@ const activityRepository = {
     return prisma.activity.findMany({
       where: {
         customerId: customerId,
+        deletedAt: null,
+      },
+      include: activityRelation,
+    });
+  },
+  findByLeadId: async (leadId) => {
+    return prisma.activity.findMany({
+      where: {
+        leadId: leadId,
+        deletedAt: null,
       },
       include: activityRelation,
     });
@@ -75,20 +90,28 @@ const activityRepository = {
     return prisma.activity.update({
       where: {
         id: id,
+        deletedAt: null,
       },
       data: data,
       include: activityRelation,
     });
   },
   delete: async (id) => {
-    return prisma.activity.delete({
+    return prisma.activity.update({
       where: {
         id: id,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   },
   recentActivities: async () => {
     return prisma.activity.findMany({
+      where: {
+        deletedAt: null,
+      },
       include: activityRelation,
       orderBy: {
         createdAt: "desc",

@@ -40,12 +40,17 @@ const noteRepository = {
     });
   },
   all: async () => {
-    return prisma.note.findMany();
+    return prisma.note.findMany({
+      where: {
+        deletedAt: null,
+      },
+    });
   },
   findByUserId: async (id) => {
     return prisma.note.findMany({
       where: {
         createdByUserId: id,
+        deletedAt: null,
       },
     });
   },
@@ -53,6 +58,7 @@ const noteRepository = {
     return prisma.note.findUnique({
       where: {
         id: id,
+        deletedAt: null,
       },
       include: noteRelation,
     });
@@ -61,6 +67,16 @@ const noteRepository = {
     return prisma.note.findMany({
       where: {
         customerId: customerId,
+        deletedAt: null,
+      },
+      include: noteRelation,
+    });
+  },
+  findByLeadId: async (leadId) => {
+    return prisma.note.findMany({
+      where: {
+        leadId: leadId,
+        deletedAt: null,
       },
       include: noteRelation,
     });
@@ -69,14 +85,19 @@ const noteRepository = {
     return prisma.note.update({
       where: {
         id: id,
+        deletedAt: null,
       },
       data: data,
     });
   },
   delete: async (id) => {
-    return prisma.note.delete({
+    return prisma.note.update({
       where: {
         id: id,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   },

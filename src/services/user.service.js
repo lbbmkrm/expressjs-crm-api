@@ -3,6 +3,7 @@ import customerRepository from "../repositories/customer.repository.js";
 import taskRepository from "../repositories/task.repository.js";
 import { AppError } from "./../utils/AppError.js";
 import bcrypt from "bcrypt";
+import prisma from "../repositories/prismaClient.js";
 
 const userService = {
   getAllUsers: async () => {
@@ -67,7 +68,26 @@ const userService = {
     if (user.id === userId) {
       throw new AppError("You cannot delete yourself", 400);
     }
-    return userRepository.delete(id);
+    return prisma.$transaction(async (tx) => {
+      await tx.dashboard.update({
+        where: {
+          userId: id,
+          deletedAt: null,
+        },
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+      return tx.user.update({
+        where: {
+          id: id,
+          deletedAt: null,
+        },
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+    });
   },
 };
 
