@@ -66,6 +66,40 @@ const contactController = {
       next(err);
     }
   },
+  showActivities: async (req, res, next) => {
+    try {
+      const activities = await contactService.getContactActivites(
+        parseInt(req.params.id)
+      );
+      const message =
+        activities.length === 0
+          ? "No activities found"
+          : "Activities retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: activities,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  showNotes: async (req, res, next) => {
+    try {
+      const notes = await contactService.getContactNotes(
+        parseInt(req.params.id)
+      );
+      const message =
+        notes.length === 0 ? "No notes found" : "Notes retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: notes,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 export default contactController;

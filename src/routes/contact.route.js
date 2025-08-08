@@ -4,6 +4,8 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 import validate from "../middlewares/validate.middleware.js";
 import policyMiddleware from "../middlewares/policy.middleware.js";
 import contactPolicy from "../policies/contact.policy.js";
+import activityPolicy from "../policies/activity.policy.js";
+import notePolicy from "../policies/note.policy.js";
 import {
   createContactScheme,
   updateContactScheme,
@@ -53,6 +55,20 @@ router.delete(
     serviceMethod: contactService.getContact,
   }),
   contactController.destroy
+);
+router.get(
+  "/:id/activities",
+  authMiddleware,
+  validate(contactIdScheme, "params"),
+  policyMiddleware(activityPolicy, "canViewAll"),
+  contactController.showActivities
+);
+router.get(
+  "/:id/notes",
+  authMiddleware,
+  validate(contactIdScheme, "params"),
+  policyMiddleware(notePolicy, "canViewAll"),
+  contactController.showNotes
 );
 
 export default router;

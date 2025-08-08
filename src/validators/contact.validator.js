@@ -37,6 +37,7 @@ const updateContactScheme = Joi.object({
   phone: Joi.string().optional().allow(null).max(20).messages({
     "string.max": "Phone number cannot exceed 20 characters",
   }),
+  position: Joi.string().optional().allow(null).max(50),
 });
 const contactIdScheme = Joi.object({
   id: Joi.number().integer().required().messages({

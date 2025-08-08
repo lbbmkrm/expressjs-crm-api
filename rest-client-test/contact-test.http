@@ -1,133 +1,150 @@
-@baseUrl = http://localhost:3000
-### --- Token User: ADMIN ---
-@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUzNzgyNTAyLCJleHAiOjE3NTM4Njg5MDJ9.cmFwhq2QAf1S3NKcHxPHB0m9Z4tK8iDXvTurgpwNACQ
+@baseUrl = http://localhost:3000/api
 
-### --- Token User: SALES (ID: 2) ---
-@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzYWxlc0BleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoic2FsZXN1c2VyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzUzNzgyNTM5LCJleHAiOjE3NTM4Njg5Mzl9.x8zMzqNmkUiQb2ljGqZYyvwRtI9fNF2PVV6OKGFI2Og
-@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InNhbGVzMnVzZXIiLCJyb2xlIjoiU0FMRVMiLCJpYXQiOjE3NTM3ODI1NjcsImV4cCI6MTc1Mzg2ODk2N30.aP2uRbxrSwtX7dehCUzIhgg1mT9Acm5kflvNQF5ouLs
+# =================================================================
+# TOKENS
+# =================================================================
+@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBjcm0uY29tIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc1NDU2MDQ5MSwiZXhwIjoxNzU0NjQ2ODkxfQ.sXZekuDGiHv4_KVqCWM1Hz4bNyAh_bsRjYLIl7VRsfQ
+@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJtYW5hZ2VyQGNybS5jb20iLCJ1c2VybmFtZSI6Im1hbmFnZXIiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc1NDU2MDUyNywiZXhwIjoxNzU0NjQ2OTI3fQ.MitFAC5XKFKW-a-Q5UWVEWjYMSO-acMANuNfKs5V1_w
+@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczFAY3JtLmNvbSIsInVzZXJuYW1lIjoic2FsZXMxIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzU0NTYwNTg3LCJleHAiOjE3NTQ2NDY5ODd9.2ZN-WQdAFyF_6BybSd31GFpD8FLMXPlLtEU1uZQh1aI
+@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJzYWxlczJAY3JtLmNvbSIsInVzZXJuYW1lIjoic2FsZXMyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzU0NTYwNjA1LCJleHAiOjE3NTQ2NDcwMDV9.WbemKaKO3luLZ_1ldluzfwwmszWq2q2fxL9Z7_gdSho
+@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAY3JtLmNvbSIsInVzZXJuYW1lIjoidmlld2VyIiwicm9sZSI6IlZJRVdFUiIsImlhdCI6MTc1NDU3NzE3MiwiZXhwIjoxNzU0NjYzNTcyfQ.0RWXzPpemALcQxD6oHUnG7BBSs0WA85ZSPcsOmlEtR0
 
-### --- Token User: MANAGER (ID: 3) ---
-@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJtYW5hZ2VydXNlciIsInJvbGUiOiJNQU5BR0VSIiwiaWF0IjoxNzUzNzgyNjAxLCJleHAiOjE3NTM4NjkwMDF9.CZ1Xhq3Oxp1ahnHuMcGlfubLJemuTS5QFkclRmDQjho
 
-### --- Token User: VIEWER (ID: 4) ---
-@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InZpZXdlcnVzZXIiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzUzNzgyNjMwLCJleHAiOjE3NTM4NjkwMzB9.qy-GSJ1gz5FS2xoxctWvEh78EmIqJ45iFcnvzKPDo40
+# =================================================================
+# CONTACT CORE ENDPOINTS
+# =================================================================
 
-### Login untuk mendapatkan token
-POST {{baseUrl}}/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-
-### Membuat pelanggan baru (diperlukan untuk customerId pada Contact)
-POST {{baseUrl}}/api/customers
+### [SUCCESS] Sales user creates a new contact for a customer
+# @name createContact
+POST {{baseUrl}}/contacts
 Content-Type: application/json
 Authorization: Bearer {{token_sales}}
 
 {
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "phone": "1234567890",
-  "address": "123 Main St",
-  "company": "Doe Inc"
+  "firstName": "Budi",
+  "lastName": "Prasetyo",
+  "email": "budi.prasetyo@example.com",
+  "phone": "081212345678",
+  "position": "Technical Lead",
+  "customerId": 1
 }
 
-### Membuat kontak baru (kasus sukses)
-POST {{baseUrl}}/api/contacts
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
+### ----------------------------------------------------------------
 
-{
-  "customerId": 3,
-  "firstName": "Jane",
-  "lastName": "Doe",
-  "email": "jane.doe@example.com",
-  "phone": "09876543212",
-  "position": "Vice President"
-}
-
-### Menguji customerId tidak valid (harus gagal)
-POST {{baseUrl}}/api/contacts
+### [FAIL] Create contact with a non-existent customer ID
+POST {{baseUrl}}/contacts
 Content-Type: application/json
 Authorization: Bearer {{token_sales}}
 
 {
-  "customerId": 999,
-  "firstName": "Bob",
-  "lastName": "Jones",
-  "email": "bob.jones@example.com",
-  "phone": "1112223333",
-  "position": "Assistant"
+  "firstName": "Gagal",
+  "lastName": "Kontak",
+  "email": "gagal.kontak@example.com",
+  "phone": "081299998888",
+  "position": "Tester",
+  "customerId": 9999
 }
 
-### Menguji customerId bukan angka (harus gagal)
-POST {{baseUrl}}/api/contacts
+### ----------------------------------------------------------------
+
+### [FAIL] Create contact with a duplicate email
+POST {{baseUrl}}/contacts
 Content-Type: application/json
 Authorization: Bearer {{token_admin}}
 
 {
-  "customerId": "invalid",
-  "firstName": "Bob",
-  "lastName": "Jones",
-  "email": "bob.jones2@example.com",
-  "phone": "1112223333",
-  "position": "Assistant"
+  "firstName": "Budi",
+  "lastName": "Prasetyo",
+  "email": "budi.prasetyo@example.com",
+  "phone": "081211112222",
+  "position": "Manager",
+  "customerId": 2
 }
 
-### Menguji email tidak valid (harus gagal)
-POST {{baseUrl}}/api/contacts
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
+### ----------------------------------------------------------------
 
-{
-  "customerId": 1,
-  "firstName": "Bob",
-  "lastName": "Jones",
-  "email": "invalid-email",
-  "phone": "1112223333",
-  "position": "Assistant"
-}
+### [SUCCESS] Any authenticated user can get all contacts
+GET {{baseUrl}}/contacts
+Authorization: Bearer {{token_sales2}}
 
-### Menguji tanpa token (harus gagal)
-POST {{baseUrl}}/api/contacts
-Content-Type: application/json
+### ----------------------------------------------------------------
 
-{
-  "customerId": 1,
-  "firstName": "Bob",
-  "lastName": "Jones",
-  "email": "bob.jones3@example.com",
-  "phone": "1112223333",
-  "position": "Assistant"
-}
+### [SUCCESS] Any authenticated user can get a contact by ID
+# Ganti ID sesuai dengan data yang ada
+GET {{baseUrl}}/contacts/1
+Authorization: Bearer {{token_manager}}
 
-### Mendapatkan semua kontak
-GET {{baseUrl}}/api/contacts
-Authorization: Bearer {{token_viewer}}
+### ----------------------------------------------------------------
 
-### Mendapatkan kontak berdasarkan ID (kasus sukses)
-GET {{baseUrl}}/api/contacts/2
-Authorization: Bearer {{token_viewer}}
-
-### Mendapatkan kontak dengan ID tidak valid (harus gagal)
-GET {{baseUrl}}/api/contacts/999
-Authorization: Bearer {{token_admin}}
-
-### Memperbarui kontak (kasus sukses)
-PATCH {{baseUrl}}/api/contacts/1
+### [SUCCESS] Sales owner updates their own contact
+# Ganti ID dengan contact yang dimiliki oleh token_sales
+PATCH {{baseUrl}}/contacts/2
 Content-Type: application/json
 Authorization: Bearer {{token_sales}}
 
 {
-  "lastName": "doer"
+  "position": "Senior Technical Lead"
 }
 
-### Menghapus kontak (kasus sukses)
-DELETE {{baseUrl}}/api/contacts/1
+### ----------------------------------------------------------------
+
+### [FAIL] Sales user tries to update a contact they don't own
+# Ganti ID dengan contact yang TIDAK dimiliki oleh token_sales2
+PATCH {{baseUrl}}/contacts/3
+Content-Type: application/json
+Authorization: Bearer {{token_sales2}}
+
+{
+  "phone": "081200000000"
+}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Admin can update any contact
+# Ganti ID contact jika perlu
+PATCH {{baseUrl}}/contacts/2
+Content-Type: application/json
 Authorization: Bearer {{token_admin}}
 
-### Menghapus kontak dengan ID tidak valid (harus gagal)
-DELETE {{baseUrl}}/api/contacts/999
+{
+  "firstName": "Siti",
+  "lastName": "Aminah (Updated by Admin)"
+}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Sales owner deletes their own contact
+# Ganti ID dengan contact yang dimiliki oleh token_sales
+DELETE {{baseUrl}}/contacts/2
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Manager tries to delete a contact they don't own
+# Ganti ID dengan contact yang TIDAK dimiliki oleh token_manager
+DELETE {{baseUrl}}/contacts/3
+Authorization: Bearer {{token_manager}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Admin can delete any contact
+# Ganti ID contact jika perlu
+DELETE {{baseUrl}}/contacts/3
+Authorization: Bearer {{token_admin}}
+
+
+# =================================================================
+# CONTACT RELATIONSHIP ENDPOINTS
+# =================================================================
+
+### [SUCCESS] Get all activities for a specific contact
+# Ganti ID dengan contact yang memiliki aktivitas
+GET {{baseUrl}}/contacts/1/activities
+Authorization: Bearer {{token_admin}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Get all notes for a specific contact
+# Ganti ID dengan contact yang memiliki catatan
+GET {{baseUrl}}/contacts/4/notes
 Authorization: Bearer {{token_admin}}

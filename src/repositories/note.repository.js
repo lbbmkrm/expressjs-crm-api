@@ -90,6 +90,15 @@ const noteRepository = {
       include: noteRelation,
     });
   },
+  findByContactId: async (contactId) => {
+    return prisma.note.findMany({
+      where: {
+        contactId: contactId,
+        deletedAt: null,
+      },
+      include: noteRelation,
+    });
+  },
   update: async (id, data) => {
     return prisma.note.update({
       where: {

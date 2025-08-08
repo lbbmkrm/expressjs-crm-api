@@ -1,3 +1,5 @@
+import activityRepository from "../repositories/activity.repository.js";
+import noteRepository from "../repositories/note.repository.js";
 import { AppError } from "../utils/AppError.js";
 import contactRepository from "./../repositories/contact.repository.js";
 import customerRepository from "./../repositories/customer.repository.js";
@@ -29,7 +31,20 @@ const contactService = {
     }
     return contact;
   },
-
+  getContactActivites: async (contactId) => {
+    const contact = await contactRepository.findById(contactId);
+    if (!contact) {
+      throw new AppError("Contact not found", 404);
+    }
+    return activityRepository.findByContactId(contactId);
+  },
+  getContactNotes: async (contactId) => {
+    const contact = await contactRepository.findById(contactId);
+    if (!contact) {
+      throw new AppError("Contact not found", 404);
+    }
+    return noteRepository.findByContactId(contactId);
+  },
   updateContact: async (id, data) => {
     const contact = await contactRepository.findById(id);
     if (!contact) {

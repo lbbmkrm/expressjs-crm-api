@@ -1,169 +1,166 @@
-@baseUrl = http://localhost:3000
-@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiYWRtaW51c2VyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUzODYzNjEwLCJleHAiOjE3NTM5NTAwMTB9._8DehhGlexlYNI7D77QuK8AdffZjACUlzkIUJ1IpEtQ
+@baseUrl = http://localhost:3000/api
 
-@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwidXNlcm5hbWUiOiJtYW5hZ2VydXNlciIsInJvbGUiOiJNQU5BR0VSIiwiaWF0IjoxNzUzODYzNjY0LCJleHAiOjE3NTM5NTAwNjR9.ZPaVSoqi0yh4DNk6w2UIb2CTVwK_aUjGeVlHeujiJ8E
+# =================================================================
+# TOKENS
+# =================================================================
+@token_admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBjcm0uY29tIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc1NDU2MDQ5MSwiZXhwIjoxNzU0NjQ2ODkxfQ.sXZekuDGiHv4_KVqCWM1Hz4bNyAh_bsRjYLIl7VRsfQ
+@token_manager = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJtYW5hZ2VyQGNybS5jb20iLCJ1c2VybmFtZSI6Im1hbmFnZXIiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc1NDU2MDUyNywiZXhwIjoxNzU0NjQ2OTI3fQ.MitFAC5XKFKW-a-Q5UWVEWjYMSO-acMANuNfKs5V1_w
+@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczFAY3JtLmNvbSIsInVzZXJuYW1lIjoic2FsZXMxIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzU0NTYwNTg3LCJleHAiOjE3NTQ2NDY5ODd9.2ZN-WQdAFyF_6BybSd31GFpD8FLMXPlLtEU1uZQh1aI
+@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJzYWxlczJAY3JtLmNvbSIsInVzZXJuYW1lIjoic2FsZXMyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzU0NTYwNjA1LCJleHAiOjE3NTQ2NDcwMDV9.WbemKaKO3luLZ_1ldluzfwwmszWq2q2fxL9Z7_gdSho
+@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAY3JtLmNvbSIsInVzZXJuYW1lIjoidmlld2VyIiwicm9sZSI6IlZJRVdFUiIsImlhdCI6MTc1NDU3NzE3MiwiZXhwIjoxNzU0NjYzNTcyfQ.0RWXzPpemALcQxD6oHUnG7BBSs0WA85ZSPcsOmlEtR0
 
-@token_sales = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzYWxlc0BleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoic2FsZXN1c2VyIiwicm9sZSI6IlNBTEVTIiwiaWF0IjoxNzUzODYzNjgzLCJleHAiOjE3NTM5NTAwODN9.lWJaZ3UjVrZMa2GFmV8mf_oA49biW0SuIkJW45WFgEk
 
-@token_sales2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJzYWxlczJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InNhbGVzMnVzZXIiLCJyb2xlIjoiU0FMRVMiLCJpYXQiOjE3NTM4NjM2OTgsImV4cCI6MTc1Mzk1MDA5OH0.CkCqEBwtblx_bGNKiOwpT3yDjLajK6Jb7X1nVeTysJw
 
-@token_viewer = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ2aWV3ZXJAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6InZpZXdlcnVzZXIiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzUzODYzNzE5LCJleHAiOjE3NTM5NTAxMTl9.o187xpco6XOJRIkrO3uhMVO7W5XDpuCSSTGFqJTy4yw
+# =================================================================
+# NOTE CORE ENDPOINTS
+# =================================================================
 
-### Membuat catatan baru (kasus sukses, dengan customerId)
-POST {{baseUrl}}/api/notes
-Content-Type: application/json
-Authorization: Bearer {{token_viewer}}
-
-{
-  "content": "Met with customer to discuss project requirements",
-  "customerId": 1
-}
-
-### Membuat catatan baru (kasus sukses, dengan contactId)
-POST {{baseUrl}}/api/notes
-Content-Type: application/json
-Authorization: Bearer {{token_manager}}
-
-{
-  "content": "Follow-up call with contact scheduled",
-  "contactId": 1
-}
-
-### Membuat catatan baru (kasus sukses, dengan leadId)
-POST {{baseUrl}}/api/notes
+### [SUCCESS] Sales user creates a note for a CUSTOMER
+# @name createNoteForCustomer
+POST {{baseUrl}}/notes
 Content-Type: application/json
 Authorization: Bearer {{token_sales}}
 
 {
-  "content": "Lead expressed interest in product demo",
+  "content": "Diskusi awal dengan pelanggan mengenai kebutuhan mereka.",
+  "customerId": 1
+}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Manager creates a note for a LEAD
+# @name createNoteForLead
+POST {{baseUrl}}/notes
+Content-Type: application/json
+Authorization: Bearer {{token_manager}}
+
+{
+  "content": "Lead menunjukkan minat tinggi pada produk X, perlu follow-up.",
   "leadId": 2
 }
 
-### Membuat catatan baru (kasus sukses, dengan opportunityId)
-POST {{baseUrl}}/api/notes
+### ----------------------------------------------------------------
+
+### [SUCCESS] Admin creates a note for an OPPORTUNITY
+# @name createNoteForOpportunity
+POST {{baseUrl}}/notes
+Content-Type: application/json
+Authorization: Bearer {{token_admin}}
+
+{
+  "content": "Proposal telah dikirim, menunggu feedback dari opportunity.",
+  "opportunityId": 1
+}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Sales user creates a note for a CONTACT
+# @name createNoteForContact
+POST {{baseUrl}}/notes
 Content-Type: application/json
 Authorization: Bearer {{token_sales2}}
 
 {
-  "content": "Opportunity negotiation notes",
-  "opportunityId": 5
+  "content": "Kontak meminta demo produk dijadwalkan minggu depan.",
+  "contactId": 2
 }
 
-### Menguji tanpa relasi (harus gagal)
-POST {{baseUrl}}/api/notes
+### ----------------------------------------------------------------
+
+### [FAIL] Create a note with a non-existent LEAD ID
+POST {{baseUrl}}/notes
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "content": "This should fail.",
+  "leadId": 9999
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Create a note without any relation ID
+POST {{baseUrl}}/notes
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "content": "This should fail as it has no relation."
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Create a note with multiple relation IDs
+POST {{baseUrl}}/notes
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "content": "This should fail as it has multiple relations.",
+  "customerId": 1,
+  "leadId": 1
+}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Any authenticated user can get a note by ID
+# Ganti ID sesuai dengan data yang ada
+GET {{baseUrl}}/notes/1
+Authorization: Bearer {{token_sales}}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Sales owner updates their own note
+# Ganti ID dengan note yang dimiliki oleh token_sales
+PATCH {{baseUrl}}/notes/1
+Content-Type: application/json
+Authorization: Bearer {{token_sales}}
+
+{
+  "content": "(Updated) Diskusi awal dengan pelanggan mengenai kebutuhan mereka dan potensi upsell."
+}
+
+### ----------------------------------------------------------------
+
+### [FAIL] Sales user tries to update a note they don't own
+# Ganti ID dengan note yang TIDAK dimiliki oleh token_sales2
+PATCH {{baseUrl}}/notes/1
+Content-Type: application/json
+Authorization: Bearer {{token_sales2}}
+
+{
+  "content": "Attempt to update failed."
+}
+
+### ----------------------------------------------------------------
+
+### [SUCCESS] Admin can update any note
+# Ganti ID note jika perlu
+PATCH {{baseUrl}}/notes/2
 Content-Type: application/json
 Authorization: Bearer {{token_admin}}
 
 {
-  "content": "Invalid note without relation"
+  "content": "(Updated by Admin) Lead menunjukkan minat tinggi pada produk X."
 }
 
-### Menguji multiple relasi (harus gagal)
-POST {{baseUrl}}/api/notes
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
+### ----------------------------------------------------------------
 
-{
-  "content": "Invalid note with multiple relations",
-  "customerId": 4,
-  "contactId": 4
-}
+### [SUCCESS] Sales owner deletes their own note
+# Ganti ID dengan note yang dimiliki oleh token_sales
+DELETE {{baseUrl}}/notes/1
+Authorization: Bearer {{token_sales}}
 
-### Menguji customerId tidak valid (harus gagal)
-POST {{baseUrl}}/api/notes
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
+### ----------------------------------------------------------------
 
-{
-  "content": "Invalid customer note",
-  "customerId": 999
-}
-
-### Menguji content kosong (harus gagal)
-POST {{baseUrl}}/api/notes
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
-
-{
-  "content": "",
-  "customerId": 1
-}
-
-### Menguji tanpa token (harus gagal)
-POST {{baseUrl}}/api/notes
-Content-Type: application/json
-
-{
-  "content": "Note without token",
-  "customerId": 1
-}
-
-### Menguji token tidak valid (harus gagal)
-POST {{baseUrl}}/api/notes
-Content-Type: application/json
-Authorization: Bearer invalid-token
-
-{
-  "content": "Note with invalid token",
-  "customerId": 1
-}
-
-### Mendapatkan semua catatan
-GET {{baseUrl}}/api/notes
+### [FAIL] Manager tries to delete a note they don't own
+# Ganti ID dengan note yang TIDAK dimiliki oleh token_manager
+DELETE {{baseUrl}}/notes/4
 Authorization: Bearer {{token_manager}}
 
-### Mendapatkan catatan berdasarkan ID (kasus sukses)
-GET {{baseUrl}}/api/notes/4
-Authorization: Bearer {{token_sales}}
+### ----------------------------------------------------------------
 
-### Mendapatkan catatan dengan ID tidak valid (harus gagal)
-GET {{baseUrl}}/api/notes/999
-Authorization: Bearer {{token_admin}}
-
-### Memperbarui catatan (kasus sukses, ubah content dan customerId)
-PATCH {{baseUrl}}/api/notes/2
-Content-Type: application/json
-Authorization: Bearer {{token_sales}}
-
-{
-  "content": "Updated meeting notes with customer",
-  "customerId": 4
-}
-
-### Memperbarui catatan (kasus sukses, hapus relasi)
-PATCH {{baseUrl}}/api/notes/1
-Content-Type: application/json
-Authorization: Bearer {{token_sales}}
-
-{
-  "content": "Updated note",
-  "leadId": null,
-  "customerId" : 1
-}
-
-### Menguji pembaruan tanpa relasi (harus gagal)
-PATCH {{baseUrl}}/api/notes/3
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
-
-{
-  "content": "Updated note without relation"
-}
-
-### Menguji pembaruan dengan ID tidak valid (harus gagal)
-PATCH {{baseUrl}}/api/notes/999
-Content-Type: application/json
-Authorization: Bearer {{token_admin}}
-
-{
-  "content": "Invalid note ID",
-  "customerId": 3
-}
-
-### Menghapus catatan (kasus sukses)
-DELETE {{baseUrl}}/api/notes/9
-Authorization: Bearer {{token_sales2}}
-
-### Menghapus catatan dengan ID tidak valid (harus gagal)
-DELETE {{baseUrl}}/api/notes/999
+### [SUCCESS] Admin can delete any note
+# Ganti ID note jika perlu
+DELETE {{baseUrl}}/notes/2
 Authorization: Bearer {{token_admin}}
