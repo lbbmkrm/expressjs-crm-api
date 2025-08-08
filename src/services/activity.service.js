@@ -35,13 +35,8 @@ const checkRelationExists = async (relation) => {
   return true;
 };
 const activityService = {
-  getAllActivities: async (relation) => {
-    const sanitizedQuery = Object.fromEntries(
-      Object.entries(relation).map(([key, value]) => {
-        return key === "type" ? [key, value] : [key, Number(value)];
-      })
-    );
-    return activityRepository.findByRelation(sanitizedQuery);
+  getAllActivities: async (type) => {
+    return activityRepository.all(type);
   },
   getByUserId: async (userId) => {
     return activityRepository.findByUserId(userId);
@@ -52,10 +47,6 @@ const activityService = {
       throw new AppError("Activity not found", 404);
     }
     return activity;
-  },
-  getActivityByRelation: async (relation) => {
-    await checkRelationExists(relation);
-    return activityRepository.findByRelation(relation);
   },
   getActivityById: async (activityId) => {
     const activity = await activityRepository.findById(activityId);

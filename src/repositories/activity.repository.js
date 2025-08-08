@@ -32,16 +32,16 @@ const activityRelation = {
   },
 };
 const activityRepository = {
-  findByRelation: async (relation) => {
+  all: async (type) => {
+    const whereClause = {
+      deletedAt: null,
+    };
+    if (type) {
+      whereClause.type = type;
+    }
     return prisma.activity.findMany({
-      where: {
-        relation,
-        deletedAt: null,
-      },
+      where: whereClause,
       include: activityRelation,
-      orderBy: {
-        createdAt: "desc",
-      },
     });
   },
   findById: async (id) => {

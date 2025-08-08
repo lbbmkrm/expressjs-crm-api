@@ -39,17 +39,13 @@ const activityIdScheme = Joi.object({
   id: Joi.number().integer().required(),
 });
 
-const relationQueryScheme = Joi.object({
-  customerId: Joi.number().integer().optional(),
-  contactId: Joi.number().integer().optional(),
-  leadId: Joi.number().integer().optional(),
-  opportunityId: Joi.number().integer().optional(),
-  type: Joi.string().valid(...Object.values(ActivityType)).optional(),
+const activityTypeScheme = Joi.object({
+  type: Joi.string().valid(...Object.values(ActivityType)),
 });
 
 export {
   createActivityScheme,
   updateActivityScheme,
   activityIdScheme,
-  relationQueryScheme,
+  activityTypeScheme,
 };

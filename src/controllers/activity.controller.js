@@ -3,7 +3,8 @@ import activityService from "../services/activity.service.js";
 const activityController = {
   index: async (req, res, next) => {
     try {
-      const activities = await activityService.getAllActivities(req.query);
+      const { type } = req.query;
+      const activities = await activityService.getAllActivities(type);
       const message =
         activities.length === 0
           ? "No activities found"
@@ -19,6 +20,7 @@ const activityController = {
   },
   indexByUser: async (req, res, next) => {
     try {
+      console.log("user", req.user);
       const activities = await activityService.getByUserId(req.user.id);
       const message =
         activities.length === 0

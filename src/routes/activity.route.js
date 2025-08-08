@@ -8,7 +8,7 @@ import {
   createActivityScheme,
   updateActivityScheme,
   activityIdScheme,
-  relationQueryScheme,
+  activityTypeScheme,
 } from "./../validators/activity.validator.js";
 import activityService from "../services/activity.service.js";
 const router = express.Router();
@@ -16,11 +16,11 @@ const router = express.Router();
 router.get(
   "/",
   authMiddleware,
-  validate(relationQueryScheme, "query"),
+  validate(activityTypeScheme, "query"),
   policyMiddleware(activityPolicy, "canViewAll"),
   activityController.index
 );
-router.get("/myActivities", authMiddleware, activityController.indexByUser);
+router.get("/my-activities", authMiddleware, activityController.indexByUser);
 router.get(
   "/:id",
   authMiddleware,
