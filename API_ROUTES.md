@@ -1,114 +1,112 @@
-## Daftar Rute API CRM
+# Daftar Endpoint API CRM
 
-Berikut adalah daftar lengkap semua endpoint yang tersedia dalam aplikasi, diorganisir berdasarkan fitur/modul.
+Dokumen ini merinci semua endpoint yang tersedia di aplikasi CRM.
 
-### Modul: Authentication (`/api/auth`)
-| Method | Path                  | Deskripsi                  |
-| :----- | :-------------------- | :------------------------- |
-| `POST` | `/register`           | Registrasi pengguna baru   |
-| `POST` | `/login`              | Login untuk mendapatkan token |
+## Otentikasi (`/api/auth`)
 
-### Modul: Users (`/api/users`)
-| Method | Path                  | Deskripsi                           |
-| :----- | :-------------------- | :---------------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua pengguna (ADMIN)  |
-| `POST` | `/`                   | Membuat pengguna baru (ADMIN)       |
-| `GET`  | `/:id`                | Mendapatkan detail satu pengguna    |
-| `PATCH`| `/:id`                | Memperbarui satu pengguna           |
-| `DELETE`| `/:id`               | Menghapus satu pengguna (soft delete) |
-| `GET`  | `/:id/customers`      | Mendapatkan semua customer oleh pengguna |
-| `GET`  | `/:id/tasks/assigned` | Mendapatkan semua task untuk pengguna |
+- `POST /register`: Mendaftarkan pengguna baru.
+- `POST /login`: Login pengguna dan mendapatkan token.
 
-### Modul: Customers (`/api/customers`)
-| Method | Path                  | Deskripsi                      |
-| :----- | :-------------------- | :----------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua customer     |
-| `POST` | `/`                   | Membuat customer baru          |
-| `GET`  | `/:id`                | Mendapatkan detail satu customer |
-| `PATCH`| `/:id`                | Memperbarui satu customer      |
-| `DELETE`| `/:id`               | Menghapus satu customer        |
+## Pengguna (`/api/users`)
 
-### Modul: Contacts (`/api/contacts`)
-| Method | Path                  | Deskripsi                     |
-| :----- | :-------------------- | :---------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua contact     |
-| `POST` | `/`                   | Membuat contact baru          |
-| `GET`  | `/:id`                | Mendapatkan detail satu contact |
-| `PATCH`| `/:id`                | Memperbarui satu contact      |
-| `DELETE`| `/:id`               | Menghapus satu contact        |
+- `GET /`: Mendapatkan semua pengguna (hanya Admin).
+- `POST /`: Membuat pengguna baru (hanya Admin).
+- `GET /:id`: Mendapatkan detail pengguna berdasarkan ID.
+- `PATCH /:id`: Memperbarui pengguna berdasarkan ID.
+- `DELETE /:id`: Menghapus pengguna berdasarkan ID (hanya Admin).
 
-### Modul: Leads (`/api/leads`)
-| Method | Path                  | Deskripsi                           |
-| :----- | :-------------------- | :---------------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua lead              |
-| `POST` | `/`                   | Membuat lead baru                   |
-| `GET`  | `/status/:status`     | Mendapatkan lead berdasarkan status |
-| `GET`  | `/:id`                | Mendapatkan detail satu lead        |
-| `PATCH`| `/:id`                | Memperbarui satu lead               |
-| `DELETE`| `/:id`               | Menghapus satu lead                 |
-| `POST` | `/:id/convert`        | Mengonversi lead menjadi customer, contact, & opportunity |
+## Pelanggan (`/api/customers`)
 
-### Modul: Opportunities (`/api/opportunities`)
-| Method | Path                  | Deskripsi                         |
-| :----- | :-------------------- | :-------------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua opportunity     |
-| `POST` | `/`                   | Membuat opportunity baru          |
-| `GET`  | `/:id`                | Mendapatkan detail satu opportunity |
-| `PATCH`| `/:id`                | Memperbarui satu opportunity      |
-| `DELETE`| `/:id`               | Menghapus satu opportunity        |
+- `GET /`: Mendapatkan semua pelanggan.
+- `POST /`: Membuat pelanggan baru.
+- `GET /:id`: Mendapatkan detail pelanggan berdasarkan ID.
+- `PATCH /:id`: Memperbarui pelanggan berdasarkan ID.
+- `DELETE /:id`: Menghapus pelanggan berdasarkan ID.
+- `GET /:id/contacts`: Mendapatkan semua kontak yang terkait dengan pelanggan.
+- `GET /:id/leads`: Mendapatkan semua lead yang terkait dengan pelanggan.
+- `GET /:id/opportunities`: Mendapatkan semua peluang yang terkait dengan pelanggan.
+- `GET /:id/sales`: Mendapatkan semua penjualan yang terkait dengan pelanggan.
+- `GET /:id/activities`: Mendapatkan semua aktivitas yang terkait dengan pelanggan.
 
-### Modul: Products (`/api/products`)
-| Method | Path                  | Deskripsi                      |
-| :----- | :-------------------- | :----------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua produk aktif |
-| `POST` | `/`                   | Membuat produk baru (ADMIN)    |
-| `GET`  | `/:id`                | Mendapatkan detail satu produk |
-| `PATCH`| `/:id`                | Memperbarui satu produk (ADMIN)|
-| `DELETE`| `/:id`               | Menonaktifkan satu produk (ADMIN)|
+## Kontak (`/api/contacts`)
 
-### Modul: Sales (`/api/sales`)
-| Method | Path                  | Deskripsi                  |
-| :----- | :-------------------- | :------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua penjualan|
-| `POST` | `/`                   | Membuat penjualan baru     |
-| `GET`  | `/:id`                | Mendapatkan detail satu penjualan |
-| `PATCH`| `/:id`                | Memperbarui status penjualan |
+- `GET /`: Mendapatkan semua kontak.
+- `POST /`: Membuat kontak baru.
+- `GET /:id`: Mendapatkan detail kontak berdasarkan ID.
+- `PATCH /:id`: Memperbarui kontak berdasarkan ID.
+- `DELETE /:id`: Menghapus kontak berdasarkan ID.
+- `GET /:id/activities`: Mendapatkan semua aktivitas yang terkait dengan kontak.
+- `GET /:id/notes`: Mendapatkan semua catatan yang terkait dengan kontak.
 
-### Modul: Tasks (`/api/tasks`)
-| Method | Path                  | Deskripsi                        |
-| :----- | :-------------------- | :------------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua task (ADMIN)   |
-| `POST` | `/`                   | Membuat task baru                |
-| `GET`  | `/myTasks`            | Mendapatkan task milik pengguna    |
-| `GET`  | `/status/:status`     | Mendapatkan task berdasarkan status |
-| `GET`  | `/priority/:priority` | Mendapatkan task berdasarkan prioritas |
-| `GET`  | `/assigned/:assignedUserId` | Mendapatkan task berdasarkan siapa yang ditugaskan |
-| `GET`  | `/:id`                | Mendapatkan detail satu task     |
-| `PATCH`| `/:id`                | Memperbarui satu task            |
-| `DELETE`| `/:id`               | Menghapus satu task              |
+## Lead (`/api/leads`)
 
-### Modul: Notes (`/api/notes`)
-| Method | Path                  | Deskripsi                        |
-| :----- | :-------------------- | :------------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua note (ADMIN/MANAGER) |
-| `POST` | `/`                   | Membuat note baru                |
-| `GET`  | `/myNotes`            | Mendapatkan note milik pengguna    |
-| `GET`  | `/:id`                | Mendapatkan detail satu note     |
-| `PATCH`| `/:id`                | Memperbarui satu note            |
-| `DELETE`| `/:id`               | Menghapus satu note              |
+- `GET /`: Mendapatkan semua lead. Dapat difilter berdasarkan status (`?status=...`).
+- `POST /`: Membuat lead baru.
+- `GET /:id`: Mendapatkan detail lead berdasarkan ID.
+- `PATCH /:id`: Memperbarui lead berdasarkan ID.
+- `DELETE /:id`: Menghapus lead berdasarkan ID.
+- `POST /:id/convert`: Mengonversi lead menjadi pelanggan, kontak, dan peluang.
+- `GET /:id/opportunities`: Mendapatkan peluang yang terkait dengan lead.
+- `GET /:id/activities`: Mendapatkan semua aktivitas yang terkait dengan lead.
+- `GET /:id/notes`: Mendapatkan semua catatan yang terkait dengan lead.
 
-### Modul: Activities (`/api/activities`)
-| Method | Path                  | Deskripsi                        |
-| :----- | :-------------------- | :------------------------------- |
-| `GET`  | `/`                   | Mendapatkan semua activity (ADMIN/MANAGER) |
-| `POST` | `/`                   | Membuat activity baru            |
-| `GET`  | `/myActivities`       | Mendapatkan activity milik pengguna |
-| `GET`  | `/:id`                | Mendapatkan detail satu activity |
-| `PATCH`| `/:id`                | Memperbarui satu activity        |
-| `DELETE`| `/:id`               | Menghapus satu activity          |
+## Peluang (`/api/opportunities`)
 
-### Modul: Dashboard (`/api/dashboard`)
-| Method | Path                  | Deskripsi                  |
-| :----- | :-------------------- | :------------------------- |
-| `GET`  | `/`                   | Mendapatkan data dasbor pengguna |
-| `PATCH`| `/`                   | Memperbarui layout dasbor pengguna |
+- `GET /`: Mendapatkan semua peluang. Dapat difilter berdasarkan tahap (`?stage=...`).
+- `POST /`: Membuat peluang baru.
+- `GET /:id`: Mendapatkan detail peluang berdasarkan ID.
+- `PATCH /:id`: Memperbarui peluang berdasarkan ID.
+- `DELETE /:id`: Menghapus peluang berdasarkan ID.
+- `GET /:id/sales`: Mendapatkan semua penjualan yang terkait dengan peluang.
+- `GET /:id/activities`: Mendapatkan semua aktivitas yang terkait dengan peluang.
+- `GET /:id/notes`: Mendapatkan semua catatan yang terkait dengan peluang.
+
+## Penjualan (`/api/sales`)
+
+- `GET /`: Mendapatkan semua data penjualan.
+- `POST /`: Membuat data penjualan baru.
+- `GET /:id`: Mendapatkan detail penjualan berdasarkan ID.
+- `PATCH /:id`: Memperbarui status penjualan berdasarkan ID.
+
+## Produk (`/api/products`)
+
+- `GET /`: Mendapatkan semua produk.
+- `POST /`: Membuat produk baru.
+- `GET /:id`: Mendapatkan detail produk berdasarkan ID.
+- `PATCH /:id`: Memperbarui produk berdasarkan ID.
+- `DELETE /:id`: Menghapus produk berdasarkan ID.
+
+## Aktivitas (`/api/activities`)
+
+- `GET /`: Mendapatkan semua aktivitas. Dapat difilter berdasarkan tipe (`?type=...`).
+- `POST /`: Membuat aktivitas baru.
+- `GET /my-activities`: Mendapatkan semua aktivitas yang dibuat oleh pengguna saat ini.
+- `GET /:id`: Mendapatkan detail aktivitas berdasarkan ID.
+- `PATCH /:id`: Memperbarui aktivitas berdasarkan ID.
+- `DELETE /:id`: Menghapus aktivitas berdasarkan ID.
+
+## Catatan (`/api/notes`)
+
+- `GET /`: Mendapatkan semua catatan.
+- `POST /`: Membuat catatan baru.
+- `GET /myNotes`: Mendapatkan semua catatan yang dibuat oleh pengguna saat ini.
+- `GET /:id`: Mendapatkan detail catatan berdasarkan ID.
+- `PATCH /:id`: Memperbarui catatan berdasarkan ID.
+- `DELETE /:id`: Menghapus catatan berdasarkan ID.
+
+## Tugas (`/api/tasks`)
+
+- `GET /`: Mendapatkan semua tugas.
+- `POST /`: Membuat tugas baru.
+- `GET /myTasks`: Mendapatkan semua tugas milik pengguna saat ini.
+- `GET /status/:status`: Mendapatkan tugas berdasarkan status.
+- `GET /priority/:priority`: Mendapatkan tugas berdasarkan prioritas.
+- `GET /assigned/:assignedUserId`: Mendapatkan tugas berdasarkan ID pengguna yang ditugaskan.
+- `GET /:id`: Mendapatkan detail tugas berdasarkan ID.
+- `PATCH /:id`: Memperbarui tugas berdasarkan ID.
+- `DELETE /:id`: Menghapus tugas berdasarkan ID.
+
+## Dasbor (`/api/dashboard`)
+
+- `GET /`: Mendapatkan data dasbor untuk pengguna saat ini.
+- `PATCH /`: Memperbarui pengaturan dasbor (jika ada).
