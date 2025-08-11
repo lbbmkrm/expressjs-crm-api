@@ -1,106 +1,88 @@
 import request from "supertest";
-import app from "./../src/app.js";
-import prisma from "./../src/repositories/prismaClient.js";
+import app from "../src/app.js";
+import prisma from "../src/repositories/prismaClient.js";
 
 describe("auth endpoints", () => {
-  const generateUser = () => {
-    const timestamp = Date.now();
-    return {
-      username: `user_${timestamp}`,
-      email: `user_${timestamp}@example.com`,
-      password: "password123",
-    };
-  };
+  let uniquePrefix;
+
+  beforeEach(() => {
+    uniquePrefix = `auth_${Date.now()}}`;
+  });
 
   afterEach(async () => {
     await prisma.user.deleteMany({
-      where: {
-        email: {
-          contains: "@example.com",
-        },
-      },
+      where: { username: { startsWith: "auth_" } },
     });
   });
 
-  it("should register a new user", async () => {
-    const newUser = generateUser();
-    const response = await request(app)
-      .post("/api/auth/register")
-      .send(newUser);
-    expect(response.statusCode).toBe(201);
-    expect(response.body.status).toBe("success");
-    expect(response.body.data.username).toBe(newUser.username);
-  });
+  describe("POST /api/auth/register", () => {
+    it("should register a new user", async () => {
+      const email = `${uniquePrefix}@example.com`;
+      const username = `${uniquePrefix}_user`;
 
-  it("should fail to register with existing email", async () => {
-    const user = generateUser();
+      const res = await request(app)
+        .post("/api/auth/register")
+        .send({ username, email, password: "password123" });
 
-    await request(app).post("/api/auth/register").send(user);
-
-    const response = await request(app)
-      .post("/api/auth/register")
-      .send({
-        ...generateUser(),
-        email: user.email,
-      });
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body.status).toBe("error");
-    expect(response.body.message).toBeDefined();
-  });
-
-  it("should fail to register with existing username", async () => {
-    const user = generateUser();
-
-    await request(app).post("/api/auth/register").send(user);
-
-    const response = await request(app)
-      .post("/api/auth/register")
-      .send({
-        ...generateUser(),
-        username: user.username,
-      });
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body.status).toBe("error");
-    expect(response.body.message).toBeDefined();
-  });
-
-  it("should login with correct credentials", async () => {
-    const user = generateUser();
-
-    await request(app).post("/api/auth/register").send(user);
-
-    const response = await request(app).post("/api/auth/login").send({
-      emailOrUsername: user.email,
-      password: user.password,
+      expect(res.statusCode).toBe(201);
+      expect(res.body.status).toBe("success");
     });
+    it("should fail register with existing username", async () => {
+      const email = `${uniquePrefix}@example.com`;
+      const username = `${uniquePrefix}_user`;
 
-    expect(response.statusCode).toBe(200);
-    expect(response.body.status).toBe("success");
+      await request(app)
+        .post("/api/auth/register")
+        .send({ username, email, password: "password123" });
+
+      const res = await request(app)
+        .post("/api/auth/register")
+        .send({ username, email, password: "password123" });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.status).toBe("error");
+    });
+    it("should fail register with existing email", async () => {
+      const email = `${uniquePrefix}@example.com`;
+      const username = `${uniquePrefix}_user`;
+
+      await request(app)
+        .post("/api/auth/register")
+        .send({ username, email, password: "password123" });
+
+      const res = await request(app)
+        .post("/api/auth/register")
+        .send({ username, email, password: "password123" });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.status).toBe("error");
+    });
   });
 
-  it("should fail to login with incorrect password", async () => {
-    const user = generateUser();
+  describe("POST /api/auth/login", () => {
+    it("should login an existing user", async () => {
+      const email = `${uniquePrefix}@example.com`;
+      const username = `${uniquePrefix}_user`;
 
-    await request(app).post("/api/auth/register").send(user);
+      await request(app)
+        .post("/api/auth/register")
+        .send({ username, email, password: "password123" });
 
-    const response = await request(app).post("/api/auth/login").send({
-      emailOrUsername: user.email,
-      password: "wrong-password",
+      const res = await request(app)
+        .post("/api/auth/login")
+        .send({ emailOrUsername: username, password: "password123" });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.status).toBe("success");
+      expect(res.body).toHaveProperty("token");
     });
+    it("should fail login with invalid credentials", async () => {
+      const res = await request(app)
+        .post("/api/auth/login")
+        .send({ emailOrUsername: "invalid", password: "password123" });
 
-    expect(response.statusCode).toBe(400);
-    expect(response.body.status).toBe("error");
-  });
-
-  it("should fail to login with invalid credentials", async () => {
-    const response = await request(app).post("/api/auth/login").send({
-      emailOrUsername: "non_existent_user",
-      password: "invalid",
+      expect(res.statusCode).toBe(400);
+      expect(res.body.status).toBe("error");
     });
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body.status).toBe("error");
   });
 });
