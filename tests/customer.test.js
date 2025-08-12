@@ -5,6 +5,14 @@ import prisma from "./../src/repositories/prismaClient.js";
 describe("customer endpoints", () => {
   let uniquePrefix;
 
+  const cleanupData = async () => {
+    await prisma.customer.deleteMany({
+      where: { email: { startsWith: "cstm_" } },
+    });
+    await prisma.user.deleteMany({
+      where: { email: { startsWith: "customer_" } },
+    });
+  };
   const userData = {
     admin: {
       username: "",
@@ -44,13 +52,7 @@ describe("customer endpoints", () => {
   };
 
   beforeAll(async () => {
-    await prisma.customer.deleteMany({
-      where: { email: { startsWith: "cstm_" } },
-    });
-    await prisma.user.deleteMany({
-      where: { email: { startsWith: "customer_" } },
-    });
-
+    await cleanupData();
     uniquePrefix = `cstm_${Date.now()}`;
     userData.admin.username = `${uniquePrefix}_admin`;
     userData.admin.email = `${uniquePrefix}_admin@example.com`;
@@ -110,21 +112,45 @@ describe("customer endpoints", () => {
       data: { role: "VIEWER" },
     });
 
-    userData.admin.id = (
-      await prisma.user.findUnique({ where: { email: userData.admin.email } })
-    ).id;
-    userData.sales1.id = (
-      await prisma.user.findUnique({ where: { email: userData.sales1.email } })
-    ).id;
-    userData.sales2.id = (
-      await prisma.user.findUnique({ where: { email: userData.sales2.email } })
-    ).id;
-    userData.manager.id = (
-      await prisma.user.findUnique({ where: { email: userData.manager.email } })
-    ).id;
-    userData.viewer.id = (
-      await prisma.user.findUnique({ where: { email: userData.viewer.email } })
-    ).id;
+    const admin = await prisma.user.findUnique({
+      where: { username: userData.admin.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.admin.id = admin.id;
+
+    const sales1 = await prisma.user.findUnique({
+      where: { username: userData.sales1.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.sales1.id = sales1.id;
+
+    const sales2 = await prisma.user.findUnique({
+      where: { username: userData.sales2.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.sales2.id = sales2.id;
+
+    const manager = await prisma.user.findUnique({
+      where: { username: userData.manager.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.manager.id = manager.id;
+
+    const viewer = await prisma.user.findUnique({
+      where: { username: userData.viewer.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.viewer.id = viewer.id;
 
     const loginAdmin = await request(app).post("/api/auth/login").send({
       emailOrUsername: userData.admin.email,
@@ -159,12 +185,6 @@ describe("customer endpoints", () => {
 
   beforeEach(() => {
     uniquePrefix = `customer_${Date.now()}`;
-  });
-
-  afterEach(async () => {
-    await prisma.customer.deleteMany({
-      where: { email: { startsWith: "customer_" } },
-    });
   });
 
   const createCustomer = async (token) => {
@@ -418,12 +438,6 @@ describe("customer endpoints", () => {
       expect(response.statusCode).toBe(200);
       expect(response.body.status).toBe("success");
       expect(response.body.data).toBeDefined();
-    });
-  });
-
-  afterAll(async () => {
-    await prisma.user.deleteMany({
-      where: { email: { startsWith: "customer_" } },
     });
   });
 });

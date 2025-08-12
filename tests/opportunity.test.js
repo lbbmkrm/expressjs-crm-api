@@ -5,6 +5,20 @@ import prisma from "./../src/repositories/prismaClient.js";
 describe("Opportunity Endpoints", () => {
   let uniquePrefix;
 
+  const cleanupData = async () => {
+    await prisma.opportunity.deleteMany({
+      where: { name: { startsWith: "opp_" } },
+    });
+    await prisma.lead.deleteMany({
+      where: { name: { startsWith: "opp_" } },
+    });
+    await prisma.customer.deleteMany({
+      where: { name: { startsWith: "opp_" } },
+    });
+    await prisma.user.deleteMany({
+      where: { email: { startsWith: "opp_" } },
+    });
+  };
   const userData = {
     admin: {
       username: "",
@@ -44,19 +58,7 @@ describe("Opportunity Endpoints", () => {
   };
 
   beforeAll(async () => {
-    await prisma.opportunity.deleteMany({
-      where: { name: { startsWith: "opp_" } },
-    });
-    await prisma.lead.deleteMany({
-      where: { name: { startsWith: "opp_" } },
-    });
-    await prisma.customer.deleteMany({
-      where: { name: { startsWith: "opp_" } },
-    });
-    await prisma.user.deleteMany({
-      where: { email: { startsWith: "opp_" } },
-    });
-
+    await cleanupData();
     uniquePrefix = `opp_${Date.now()}`;
     userData.admin.username = `${uniquePrefix}_admin`;
     userData.admin.email = `${uniquePrefix}_admin@example.com`;
@@ -116,21 +118,45 @@ describe("Opportunity Endpoints", () => {
       data: { role: "VIEWER" },
     });
 
-    userData.admin.id = (
-      await prisma.user.findUnique({ where: { email: userData.admin.email } })
-    ).id;
-    userData.sales1.id = (
-      await prisma.user.findUnique({ where: { email: userData.sales1.email } })
-    ).id;
-    userData.sales2.id = (
-      await prisma.user.findUnique({ where: { email: userData.sales2.email } })
-    ).id;
-    userData.manager.id = (
-      await prisma.user.findUnique({ where: { email: userData.manager.email } })
-    ).id;
-    userData.viewer.id = (
-      await prisma.user.findUnique({ where: { email: userData.viewer.email } })
-    ).id;
+    const admin = await prisma.user.findUnique({
+      where: { username: userData.admin.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.admin.id = admin.id;
+
+    const sales1 = await prisma.user.findUnique({
+      where: { username: userData.sales1.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.sales1.id = sales1.id;
+
+    const sales2 = await prisma.user.findUnique({
+      where: { username: userData.sales2.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.sales2.id = sales2.id;
+
+    const manager = await prisma.user.findUnique({
+      where: { username: userData.manager.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.manager.id = manager.id;
+
+    const viewer = await prisma.user.findUnique({
+      where: { username: userData.viewer.username },
+      select: {
+        id: true,
+      },
+    });
+    userData.viewer.id = viewer.id;
 
     const loginAdmin = await request(app).post("/api/auth/login").send({
       emailOrUsername: userData.admin.email,
@@ -166,18 +192,6 @@ describe("Opportunity Endpoints", () => {
   beforeEach(() => {
     uniquePrefix = `opp_${Date.now()}`;
   });
-
-  const cleanupData = async () => {
-    await prisma.opportunity.deleteMany({
-      where: { name: { startsWith: "opp_" } },
-    });
-    await prisma.lead.deleteMany({
-      where: { name: { startsWith: "opp_" } },
-    });
-    await prisma.customer.deleteMany({
-      where: { name: { startsWith: "opp_" } },
-    });
-  };
 
   const createCustomer = async (token) => {
     const response = await request(app)
@@ -498,13 +512,6 @@ describe("Opportunity Endpoints", () => {
       expect(response.statusCode).toBe(200);
       expect(response.body.status).toBe("success");
       expect(response.body.data).toBeDefined();
-    });
-  });
-
-  afterAll(async () => {
-    await cleanupData();
-    await prisma.user.deleteMany({
-      where: { email: { startsWith: "opp_" } },
     });
   });
 });
