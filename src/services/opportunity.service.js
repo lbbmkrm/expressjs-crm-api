@@ -30,17 +30,28 @@ const opportunityService = {
     }
 
     requestData.createdByUserId = userId;
-    return opportunityRepository.create(requestData);
+    const opportuity = await opportunityRepository.create(requestData);
+    return {
+      ...opportuity,
+      amount: opportuity.amount.toFixed(2),
+    };
   },
   getAllOpportunities: async (stage) => {
-    return opportunityRepository.all(stage);
+    const opportunities = await opportunityRepository.all(stage);
+    return opportunities.map((opportunity) => ({
+      ...opportunity,
+      amount: opportunity.amount.toFixed(2),
+    }));
   },
   getOpportunityById: async (id) => {
     const opportunity = await opportunityRepository.findById(id);
     if (!opportunity) {
       throw new AppError("Opportunity not found", 404);
     }
-    return opportunity;
+    return {
+      ...opportunity,
+      amount: opportunity.amount.toFixed(2),
+    };
   },
   updateOpportunity: async (opportunityId, requestData) => {
     const opportunity = await opportunityRepository.findById(opportunityId);
@@ -71,7 +82,10 @@ const opportunityService = {
       opportunityId,
       requestData
     );
-    return updatedOpportunity;
+    return {
+      ...updatedOpportunity,
+      amount: updatedOpportunity.amount.toFixed(2),
+    };
   },
   deleteOpportunity: async (opportunityId) => {
     const opportunity = await opportunityRepository.findById(opportunityId);
