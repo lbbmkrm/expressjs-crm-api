@@ -18,7 +18,7 @@ router.get(
   policyMiddleware(notePolicy, "canViewAll"),
   noteController.index
 );
-router.get("/myNotes", authMiddleware, noteController.indexByUser);
+router.get("/my-notes", authMiddleware, noteController.indexByUser);
 router.get(
   "/:id",
   authMiddleware,

@@ -74,12 +74,10 @@ const noteService = {
     return note;
   },
   updateNote: async (id, requestData) => {
-    await checkRequestRelation(requestData);
     const note = await noteRepository.findById(id);
     if (!note) {
       throw new AppError("Note not found", 404);
     }
-    await checkRelationExists(requestData);
     return noteRepository.update(id, requestData);
   },
   deleteNote: async (id) => {

@@ -28,22 +28,6 @@ const updateNoteScheme = Joi.object({
     "string.empty": "Content cannot be empty",
     "string.min": "Content cannot be empty",
   }),
-  customerId: Joi.number().integer().optional().allow(null).messages({
-    "number.base": "Customer ID must be a number",
-    "number.integer": "Customer ID must be an integer",
-  }),
-  contactId: Joi.number().integer().optional().allow(null).messages({
-    "number.base": "Contact ID must be a number",
-    "number.integer": "Contact ID must be an integer",
-  }),
-  leadId: Joi.number().integer().optional().allow(null).messages({
-    "number.base": "Lead ID must be a number",
-    "number.integer": "Lead ID must be an integer",
-  }),
-  opportunityId: Joi.number().integer().optional().allow(null).messages({
-    "number.base": "Opportunity ID must be a number",
-    "number.integer": "Opportunity ID must be an integer",
-  }),
 });
 const noteIdScheme = Joi.object({
   id: Joi.number().integer().required().messages({
