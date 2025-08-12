@@ -54,7 +54,7 @@ router.get(
 router.get("/assigned", (req, res, next) => {
   next(new AppError("Route parameters is required", 400));
 });
-router.get("/myTasks", authMiddleware, taskController.indexByUserTasks);
+router.get("/my-tasks", authMiddleware, taskController.indexByUserTasks);
 router.post(
   "/",
   authMiddleware,

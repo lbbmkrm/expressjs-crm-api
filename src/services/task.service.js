@@ -31,7 +31,6 @@ async function checkOpportunityExists(opportunityId) {
 }
 const taskService = {
   createTask: async (userId, requestData) => {
-    console.log(`Request body : ${JSON.stringify(requestData)}`);
     await checkAssignedUserExists(requestData.assignedToUserId);
     if (requestData.customerId) {
       await checkCustomerExists(requestData.customerId);
@@ -56,7 +55,12 @@ const taskService = {
     return task;
   },
   getTasksByAssignedUserId: async (assignedToUserId) => {
-    return taskRepository.findByAssignedUserId(assignedToUserId);
+    const user = await userRepository.findById(assignedToUserId);
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+    const tasks = await taskRepository.findByAssignedUserId(assignedToUserId);
+    return tasks;
   },
   getTasksByStatus: async (status) => {
     if (!status) {
@@ -72,7 +76,6 @@ const taskService = {
   },
   updateTask: async (taskId, requestData) => {
     const task = await taskRepository.findById(taskId);
-    console.log(task);
     if (!task) {
       throw new AppError("Task not found", 404);
     }

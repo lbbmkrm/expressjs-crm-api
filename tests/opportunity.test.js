@@ -308,7 +308,7 @@ describe("Opportunity Endpoints", () => {
       expect(response.body.status).toBe("error");
     });
 
-    it("should fail to create opportunity with non-existent customer", async () => {
+    it("should fail to create opportunity with invalid customer", async () => {
       const response = await request(app)
         .post("/api/opportunities")
         .set("Authorization", `Bearer ${userData.sales1.token}`)
@@ -322,7 +322,7 @@ describe("Opportunity Endpoints", () => {
       expect(response.body.status).toBe("error");
     });
 
-    it("should fail to create opportunity with non-existent lead", async () => {
+    it("should fail to create opportunity with invalid lead", async () => {
       const response = await request(app)
         .post("/api/opportunities")
         .set("Authorization", `Bearer ${userData.sales1.token}`)
@@ -364,7 +364,7 @@ describe("Opportunity Endpoints", () => {
       expect(response.body.data.id).toBe(opportunity.id);
     });
 
-    it("should fail to get a non-existent opportunity", async () => {
+    it("should fail to get opportunity with invalid id", async () => {
       const response = await request(app)
         .get("/api/opportunities/99999")
         .set("Authorization", `Bearer ${userData.sales2.token}`);
@@ -396,7 +396,7 @@ describe("Opportunity Endpoints", () => {
       expect(response.body.data.closeDate).not.toEqual(opportunity.closeDate);
     });
 
-    it("should fail to update a non-existent opportunity", async () => {
+    it("should fail to update opportunity with invalid id", async () => {
       const response = await request(app)
         .patch("/api/opportunities/99999")
         .set("Authorization", `Bearer ${userData.sales1.token}`)
@@ -450,7 +450,7 @@ describe("Opportunity Endpoints", () => {
       expect(response.body.status).toBe("success");
     });
 
-    it("should fail to delete a non-existent opportunity", async () => {
+    it("should fail to delete opportunity with invalid id", async () => {
       const response = await request(app)
         .delete("/api/opportunities/99999")
         .set("Authorization", `Bearer ${userData.sales1.token}`);

@@ -266,7 +266,7 @@ describe("customer endpoints", () => {
       expect(response.body.data.id).toBe(customer.id);
     });
 
-    it("should fail to get a non-existent customer", async () => {
+    it("should fail to get customer with invalid id", async () => {
       const response = await request(app)
         .get("/api/customers/99999")
         .set("Authorization", `Bearer ${userData.sales2.token}`);
@@ -290,7 +290,7 @@ describe("customer endpoints", () => {
       expect(response.body.data.name).toBe(`${uniquePrefix}_Customer_Updated`);
     });
 
-    it("should fail to update non-existent customer", async () => {
+    it("should fail to update customer with invalid id", async () => {
       const response = await request(app)
         .patch("/api/customers/99999")
         .set("Authorization", `Bearer ${userData.sales1.token}`)
@@ -340,7 +340,7 @@ describe("customer endpoints", () => {
       expect(response.body.status).toBe("success");
     });
 
-    it("should fail to delete non-existent customer", async () => {
+    it("should fail to delete customer with invalid id", async () => {
       const response = await request(app)
         .delete("/api/customers/99999")
         .set("Authorization", `Bearer ${userData.sales1.token}`);

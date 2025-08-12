@@ -320,7 +320,7 @@ describe("Lead Endpoints", () => {
       expect(response.body.data.id).toBe(lead.id);
     });
 
-    it("should fail to get a non-existent lead", async () => {
+    it("should fail to get lead with invalid id", async () => {
       const response = await request(app)
         .get("/api/leads/99999")
         .set("Authorization", `Bearer ${userData.sales2.token}`);
@@ -346,7 +346,7 @@ describe("Lead Endpoints", () => {
       expect(response.body.data.status).toBe("CONTACTED");
     });
 
-    it("should fail to update a non-existent lead", async () => {
+    it("should fail to update lead with invalid id", async () => {
       const response = await request(app)
         .patch("/api/leads/99999")
         .set("Authorization", `Bearer ${userData.sales1.token}`)
@@ -428,7 +428,7 @@ describe("Lead Endpoints", () => {
       expect(response.body.status).toBe("success");
     });
 
-    it("should fail to delete a non-existent lead", async () => {
+    it("should fail to delete lead with invalid id", async () => {
       const response = await request(app)
         .delete("/api/leads/99999")
         .set("Authorization", `Bearer ${userData.sales1.token}`);
@@ -529,7 +529,7 @@ describe("Lead Endpoints", () => {
       expect(response2.body.status).toBe("error");
     });
 
-    it("should fail to convert non-existent lead", async () => {
+    it("should fail to convert lead with invalid id", async () => {
       const response = await request(app)
         .post("/api/leads/99999/convert")
         .set("Authorization", `Bearer ${userData.sales1.token}`);

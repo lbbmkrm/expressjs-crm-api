@@ -48,7 +48,6 @@ const taskController = {
   },
   indexByStatus: async (req, res, next) => {
     try {
-      console.log(req.params.status);
       const tasks = await taskService.getTasksByStatus(req.params.status);
       const message =
         tasks.length === 0 ? "No tasks found" : "Tasks retrieved successfully";

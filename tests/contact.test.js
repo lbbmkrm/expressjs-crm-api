@@ -301,7 +301,7 @@ describe("Contact Endpoints", () => {
       expect(response.body.data.id).toBe(contact.id);
     });
 
-    it("should fail to get a non-existent contact", async () => {
+    it("should fail to get contact with invalid id", async () => {
       const response = await request(app)
         .get("/api/contacts/99999")
         .set("Authorization", `Bearer ${userData.sales2.token}`);
@@ -327,7 +327,7 @@ describe("Contact Endpoints", () => {
       );
     });
 
-    it("should fail to update a non-existent contact", async () => {
+    it("should fail to update contact with invalid id", async () => {
       const response = await request(app)
         .patch("/api/contacts/99999")
         .set("Authorization", `Bearer ${userData.sales1.token}`)
@@ -379,7 +379,7 @@ describe("Contact Endpoints", () => {
       expect(response.body.status).toBe("success");
     });
 
-    it("should fail to delete a non-existent contact", async () => {
+    it("should fail to delete contact with invalid id", async () => {
       const response = await request(app)
         .delete("/api/contacts/99999")
         .set("Authorization", `Bearer ${userData.sales1.token}`);
