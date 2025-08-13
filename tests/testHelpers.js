@@ -1,0 +1,344 @@
+import app from "../src/app";
+import request from "supertest";
+import prisma from "../src/repositories/prismaClient";
+export const setupUsers = async (prefix) => {
+  try {
+    const usersData = {
+      admin: {
+        username: `${prefix}_admin`,
+        email: `${prefix}_admin@example.com`,
+        password: "password123",
+        token: "",
+        id: null,
+      },
+      sales1: {
+        username: `${prefix}_sales1`,
+        email: `${prefix}_sales1@example.com`,
+        password: "password123",
+        token: "",
+        id: null,
+      },
+      sales2: {
+        username: `${prefix}_sales2`,
+        email: `${prefix}_sales2@example.com`,
+        password: "password123",
+        token: "",
+        id: null,
+      },
+      manager: {
+        username: `${prefix}_manager`,
+        email: `${prefix}_manager@example.com`,
+        password: "password123",
+        token: "",
+        id: null,
+      },
+      viewer: {
+        username: `${prefix}_viewer`,
+        email: `${prefix}_viewer@example.com`,
+        password: "password123",
+        token: "",
+        id: null,
+      },
+    };
+
+    for (const key in usersData) {
+      await request(app).post("/api/auth/register").send({
+        username: usersData[key].username,
+        email: usersData[key].email,
+        password: usersData[key].password,
+      });
+    }
+
+    await prisma.user.update({
+      where: { username: usersData.admin.username },
+      data: { role: "ADMIN" },
+    });
+    await prisma.user.update({
+      where: { username: usersData.sales1.username },
+      data: { role: "SALES" },
+    });
+    await prisma.user.update({
+      where: { username: usersData.sales2.username },
+      data: { role: "SALES" },
+    });
+    await prisma.user.update({
+      where: { username: usersData.manager.username },
+      data: { role: "MANAGER" },
+    });
+    await prisma.user.update({
+      where: { username: usersData.viewer.username },
+      data: { role: "VIEWER" },
+    });
+
+    for (const key in usersData) {
+      const userRecord = await prisma.user.findUnique({
+        where: { username: usersData[key].username },
+        select: { id: true },
+      });
+
+      usersData[key].id = userRecord.id;
+
+      const loginResponse = await request(app).post("/api/auth/login").send({
+        emailOrUsername: usersData[key].username,
+        password: usersData[key].password,
+      });
+
+      usersData[key].token = loginResponse.body.token;
+    }
+
+    return usersData;
+  } catch (error) {
+    console.error("Error setting up users", error);
+  }
+};
+
+export const cleanupUsers = async (prefix) => {
+  try {
+    await prisma.user.deleteMany({
+      where: {
+        username: {
+          startsWith: prefix,
+        },
+      },
+    });
+  } catch (error) {
+    console.log("error cleaning up users", error);
+  }
+};
+
+export const cleanupModels = async (prefix, models = []) => {
+  try {
+    const deleteOperation = {
+      customer: async () => {
+        await prisma.customer.deleteMany({
+          where: {
+            name: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
+      contact: async () => {
+        await prisma.contact.deleteMany({
+          where: {
+            firstName: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
+      lead: async () => {
+        await prisma.lead.deleteMany({
+          where: {
+            name: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
+      opportunity: async () => {
+        await prisma.opportunity.deleteMany({
+          where: {
+            name: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
+      task: async () => {
+        await prisma.task.deleteMany({
+          where: {
+            name: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
+      note: async () => {
+        await prisma.note.deleteMany({
+          where: {
+            content: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
+    };
+    for (const model of models) {
+      if (deleteOperation[model]) {
+        await deleteOperation[model]();
+      }
+    }
+  } catch (error) {
+    console.log("error cleaning up models", error);
+  }
+};
+export const makeDate = (day) => {
+  try {
+    const time = new Date();
+    time.setDate(time.getDate() + day);
+    return time;
+  } catch (error) {
+    console.log("error making date", error);
+  }
+};
+
+export const createCustomer = async (token, prefix) => {
+  try {
+    const response = await request(app)
+      .post("/api/customers")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: `${prefix}_Customer`,
+        email: `${prefix}_cust@example.com`,
+        phone: "1234567890",
+        company: `${prefix}_Company`,
+        address: `${prefix} Address St`,
+      });
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating customer", error);
+  }
+};
+export const createContact = async (token, prefix, customerId) => {
+  try {
+    const response = await request(app)
+      .post("/api/contacts")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        customerId: customerId,
+        firstName: `${prefix}_First`,
+        lastName: `${prefix}_Last`,
+        email: `${prefix}_cont@example.com`,
+        phone: "1234567890",
+        position: "Manager",
+      });
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating contact", error);
+  }
+};
+
+export const createLead = async (token, prefix, customerId = null) => {
+  try {
+    const leadData = {
+      name: `${prefix}_Lead`,
+      email: `${prefix}_lead@example.com`,
+      phone: "1234567890",
+      status: "NEW",
+    };
+
+    if (customerId) {
+      leadData.customerId = customerId;
+    }
+
+    const response = await request(app)
+      .post("/api/leads")
+      .set("Authorization", `Bearer ${token}`)
+      .send(leadData);
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating lead", error);
+  }
+};
+
+export const createOpportunity = async (
+  token,
+  prefix,
+  customerId = null,
+  leadId = null
+) => {
+  try {
+    const opportunityData = {
+      name: `${prefix}_Opportunity`,
+      amount: 10000.0,
+      stage: "QUALIFICATION",
+      description: `${prefix} opportunity description`,
+    };
+
+    if (customerId) {
+      opportunityData.customerId = customerId;
+    }
+    if (leadId) {
+      opportunityData.leadId = leadId;
+    }
+
+    const response = await request(app)
+      .post("/api/opportunities")
+      .set("Authorization", `Bearer ${token}`)
+      .send(opportunityData);
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating opportunity", error);
+  }
+};
+
+export const createTask = async (
+  token,
+  prefix,
+  assignedToUserId,
+  customerId = null,
+  leadId = null,
+  opportunityId = null
+) => {
+  try {
+    const taskData = {
+      name: `${prefix}_Task`,
+      assignedToUserId: assignedToUserId,
+      description: `${prefix}_Task_Description`,
+      dueDate: makeDate(1),
+    };
+
+    if (customerId) {
+      taskData.customerId = customerId;
+    }
+    if (leadId) {
+      taskData.leadId = leadId;
+    }
+    if (opportunityId) {
+      taskData.opportunityId = opportunityId;
+    }
+
+    const response = await request(app)
+      .post("/api/tasks")
+      .set("Authorization", `Bearer ${token}`)
+      .send(taskData);
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating task", error);
+  }
+};
+
+export const createNote = async (
+  token,
+  prefix,
+  customerId = null,
+  contactId = null,
+  leadId = null,
+  opportunityId = null
+) => {
+  try {
+    const noteData = {
+      content: `${prefix}_Note`,
+    };
+    if (customerId) {
+      noteData.customerId = customerId;
+    }
+    if (contactId) {
+      noteData.contactId = contactId;
+    }
+    if (leadId) {
+      noteData.leadId = leadId;
+    }
+    if (opportunityId) {
+      noteData.opportunityId = opportunityId;
+    }
+    const response = await request(app)
+      .post("/api/notes")
+      .set("Authorization", `Bearer ${token}`)
+      .send(noteData);
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating note", error);
+  }
+};

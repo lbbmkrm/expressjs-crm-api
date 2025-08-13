@@ -1,189 +1,23 @@
 import request from "supertest";
 import app from "./../src/app.js";
 import prisma from "./../src/repositories/prismaClient.js";
+import {
+  setupUsers,
+  cleanupUsers,
+  cleanupModels,
+  createCustomer,
+  createLead,
+} from "./testHelpers.js";
 
 describe("Lead Endpoints", () => {
   let uniquePrefix;
-
-  const cleanupData = async () => {
-    await prisma.lead.deleteMany({
-      where: { name: { startsWith: "lead_" } },
-    });
-    await prisma.customer.deleteMany({
-      where: { name: { startsWith: "lead_" } },
-    });
-    await prisma.user.deleteMany({
-      where: { email: { startsWith: "ld_" } },
-    });
-  };
-  const userData = {
-    admin: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-    sales1: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-    sales2: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-    manager: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-    viewer: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-  };
+  let userData;
 
   beforeAll(async () => {
-    await cleanupData();
+    await cleanupModels("lead_", ["lead", "customer"]);
+    await cleanupUsers("cnt_");
     uniquePrefix = `ld_${Date.now()}`;
-    userData.admin.username = `${uniquePrefix}_admin`;
-    userData.admin.email = `${uniquePrefix}_admin@example.com`;
-    userData.sales1.username = `${uniquePrefix}_sales1`;
-    userData.sales1.email = `${uniquePrefix}_sales1@example.com`;
-    userData.sales2.username = `${uniquePrefix}_sales2`;
-    userData.sales2.email = `${uniquePrefix}_sales2@example.com`;
-    userData.manager.username = `${uniquePrefix}_manager`;
-    userData.manager.email = `${uniquePrefix}_manager@example.com`;
-    userData.viewer.username = `${uniquePrefix}_viewer`;
-    userData.viewer.email = `${uniquePrefix}_viewer@example.com`;
-
-    await request(app).post("/api/auth/register").send({
-      username: userData.admin.username,
-      email: userData.admin.email,
-      password: userData.admin.password,
-    });
-    await request(app).post("/api/auth/register").send({
-      username: userData.sales1.username,
-      email: userData.sales1.email,
-      password: userData.sales1.password,
-    });
-    await request(app).post("/api/auth/register").send({
-      username: userData.sales2.username,
-      email: userData.sales2.email,
-      password: userData.sales2.password,
-    });
-    await request(app).post("/api/auth/register").send({
-      username: userData.manager.username,
-      email: userData.manager.email,
-      password: userData.manager.password,
-    });
-    await request(app).post("/api/auth/register").send({
-      username: userData.viewer.username,
-      email: userData.viewer.email,
-      password: userData.viewer.password,
-    });
-
-    await prisma.user.update({
-      where: { username: userData.admin.username },
-      data: { role: "ADMIN" },
-    });
-    await prisma.user.update({
-      where: { username: userData.sales1.username },
-      data: { role: "SALES" },
-    });
-    await prisma.user.update({
-      where: { username: userData.sales2.username },
-      data: { role: "SALES" },
-    });
-    await prisma.user.update({
-      where: { username: userData.manager.username },
-      data: { role: "MANAGER" },
-    });
-    await prisma.user.update({
-      where: { username: userData.viewer.username },
-      data: { role: "VIEWER" },
-    });
-
-    const admin = await prisma.user.findUnique({
-      where: { username: userData.admin.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.admin.id = admin.id;
-
-    const sales1 = await prisma.user.findUnique({
-      where: { username: userData.sales1.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.sales1.id = sales1.id;
-
-    const sales2 = await prisma.user.findUnique({
-      where: { username: userData.sales2.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.sales2.id = sales2.id;
-
-    const manager = await prisma.user.findUnique({
-      where: { username: userData.manager.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.manager.id = manager.id;
-
-    const viewer = await prisma.user.findUnique({
-      where: { username: userData.viewer.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.viewer.id = viewer.id;
-
-    const loginAdmin = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.admin.email,
-      password: userData.admin.password,
-    });
-    userData.admin.token = loginAdmin.body.token;
-
-    const loginSales1 = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.sales1.email,
-      password: userData.sales1.password,
-    });
-    userData.sales1.token = loginSales1.body.token;
-
-    const loginSales2 = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.sales2.email,
-      password: userData.sales2.password,
-    });
-    userData.sales2.token = loginSales2.body.token;
-
-    const loginManager = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.manager.email,
-      password: userData.manager.password,
-    });
-    userData.manager.token = loginManager.body.token;
-
-    const loginUser = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.viewer.email,
-      password: userData.viewer.password,
-    });
-    userData.viewer.token = loginUser.body.token;
+    userData = await setupUsers(uniquePrefix);
   });
 
   beforeEach(() => {
@@ -211,39 +45,6 @@ describe("Lead Endpoints", () => {
     });
   };
 
-  const createCustomer = async (token) => {
-    const response = await request(app)
-      .post("/api/customers")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: `${uniquePrefix}_Customer`,
-        email: `${uniquePrefix}_cust@example.com`,
-        phone: "1234567890",
-        company: `${uniquePrefix}_Company`,
-        address: `${uniquePrefix} Address St`,
-      });
-    return response.body.data;
-  };
-
-  const createLead = async (token, customerId = null) => {
-    const leadData = {
-      name: `${uniquePrefix}_Lead`,
-      email: `${uniquePrefix}_lead@example.com`,
-      phone: "1234567890",
-      status: "NEW",
-    };
-
-    if (customerId) {
-      leadData.customerId = customerId;
-    }
-
-    const response = await request(app)
-      .post("/api/leads")
-      .set("Authorization", `Bearer ${token}`)
-      .send(leadData);
-    return response.body.data;
-  };
-
   describe("POST /api/leads", () => {
     it("should create a new lead (all roles except VIEWER)", async () => {
       const response = await request(app)
@@ -260,7 +61,10 @@ describe("Lead Endpoints", () => {
     });
 
     it("should create a lead with customer ID", async () => {
-      const customer = await createCustomer(userData.sales1.token);
+      const customer = await createCustomer(
+        userData.sales1.token,
+        uniquePrefix
+      );
       const response = await request(app)
         .post("/api/leads")
         .set("Authorization", `Bearer ${userData.sales1.token}`)
@@ -303,7 +107,10 @@ describe("Lead Endpoints", () => {
     });
 
     it("should fail to create lead with invalid status", async () => {
-      const customer = await createCustomer(userData.sales1.token);
+      const customer = await createCustomer(
+        userData.sales1.token,
+        uniquePrefix
+      );
       const response = await request(app)
         .post("/api/leads")
         .set("Authorization", `Bearer ${userData.sales1.token}`)
@@ -337,7 +144,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should get a lead by ID", async () => {
-      const lead = await createLead(userData.sales2.token);
+      const lead = await createLead(userData.sales2.token, uniquePrefix);
       const response = await request(app)
         .get(`/api/leads/${lead.id}`)
         .set("Authorization", `Bearer ${userData.sales2.token}`);
@@ -357,7 +164,7 @@ describe("Lead Endpoints", () => {
 
   describe("PATCH /api/leads/:id", () => {
     it("should update a lead", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       expect(lead.name).toBe(`${uniquePrefix}_Lead`);
       const response = await request(app)
         .patch(`/api/leads/${lead.id}`)
@@ -384,9 +191,12 @@ describe("Lead Endpoints", () => {
     });
 
     it("should update customerId", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       expect(lead.customerId).toBe(null);
-      const customer = await createCustomer(userData.sales1.token);
+      const customer = await createCustomer(
+        userData.sales1.token,
+        uniquePrefix
+      );
       const response = await request(app)
         .patch(`/api/leads/${lead.id}`)
         .set("Authorization", `Bearer ${userData.sales1.token}`)
@@ -399,7 +209,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should fail to update with invalid customerId", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       expect(lead.customerId).toBe(null);
       const response = await request(app)
         .patch(`/api/leads/${lead.id}`)
@@ -412,7 +222,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should update a lead by ADMIN", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       expect(lead.name).toBe(`${uniquePrefix}_Lead`);
       const response = await request(app)
         .patch(`/api/leads/${lead.id}`)
@@ -430,7 +240,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should fail to update a non-owned lead", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       expect(lead.createdByUserId).not.toBe(userData.sales2.id);
       const response = await request(app)
         .patch(`/api/leads/${lead.id}`)
@@ -445,7 +255,7 @@ describe("Lead Endpoints", () => {
 
   describe("DELETE /api/leads/:id", () => {
     it("should delete a lead", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       expect(lead.name).toBe(`${uniquePrefix}_Lead`);
       const response = await request(app)
         .delete(`/api/leads/${lead.id}`)
@@ -463,7 +273,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should delete a lead by ADMIN", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       expect(lead.name).toBe(`${uniquePrefix}_Lead`);
       const response = await request(app)
         .delete(`/api/leads/${lead.id}`)
@@ -473,7 +283,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should fail to delete a non-owned lead", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       expect(lead.createdByUserId).not.toBe(userData.sales2.id);
       const response = await request(app)
         .delete(`/api/leads/${lead.id}`)
@@ -485,7 +295,7 @@ describe("Lead Endpoints", () => {
 
   describe("GET lead relations", () => {
     it("should get lead activities for admin and manager", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       const response = await request(app)
         .get(`/api/leads/${lead.id}/activities`)
         .set("Authorization", `Bearer ${userData.manager.token}`);
@@ -495,7 +305,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should get lead notes for admin and manager", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       const response = await request(app)
         .get(`/api/leads/${lead.id}/notes`)
         .set("Authorization", `Bearer ${userData.manager.token}`);
@@ -505,7 +315,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should get lead opportunities (all roles)", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       expect(lead.name).toBe(`${uniquePrefix}_Lead`);
       const response = await request(app)
         .get(`/api/leads/${lead.id}/opportunities`)
@@ -518,7 +328,7 @@ describe("Lead Endpoints", () => {
 
   describe("POST /api/leads/:id/convert", () => {
     it("should convert a lead", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
 
       const response = await request(app)
         .post(`/api/leads/${lead.id}/convert`)
@@ -540,7 +350,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should fail to convert already converted lead", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
 
       const response1 = await request(app)
         .post(`/api/leads/${lead.id}/convert`)
@@ -565,7 +375,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should allow ADMIN to convert any lead", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
 
       const response = await request(app)
         .post(`/api/leads/${lead.id}/convert`)
@@ -580,7 +390,7 @@ describe("Lead Endpoints", () => {
     });
 
     it("should fail when non-owner tries to convert lead", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
 
       const response = await request(app)
         .post(`/api/leads/${lead.id}/convert`)

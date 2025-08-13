@@ -1,301 +1,30 @@
 import request from "supertest";
 import app from "./../src/app.js";
-import prisma from "./../src/repositories/prismaClient.js";
+import {
+  setupUsers,
+  cleanupUsers,
+  cleanupModels,
+  makeDate,
+  createCustomer,
+  createLead,
+  createOpportunity,
+  createTask,
+} from "./testHelpers.js";
 
 describe("Task Endpoints", () => {
   let uniquePrefix;
-  const cleanupData = async () => {
-    await prisma.task.deleteMany({
-      where: {
-        name: { startsWith: "task_" },
-      },
-    });
-    await prisma.opportunity.deleteMany({
-      where: {
-        name: { startsWith: "task_" },
-      },
-    });
-    await prisma.lead.deleteMany({
-      where: {
-        name: { startsWith: "task_" },
-      },
-    });
-    await prisma.customer.deleteMany({
-      where: {
-        name: { startsWith: "task_" },
-      },
-    });
-    await prisma.user.deleteMany({
-      where: {
-        username: { startsWith: "tsk_" },
-      },
-    });
-  };
-  const userData = {
-    admin: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-    sales1: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-    sales2: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-    manager: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-    viewer: {
-      username: "",
-      email: "",
-      password: "password123",
-      token: "",
-      id: null,
-    },
-  };
+  let userData;
 
   beforeAll(async () => {
-    await cleanupData();
+    await cleanupModels("task_", ["task", "opportunity", "lead", "customer"]);
+    await cleanupUsers("tsk_");
     uniquePrefix = `tsk_${Date.now()}`;
-    userData.admin.username = `${uniquePrefix}_admin`;
-    userData.admin.email = `${uniquePrefix}_admin@example.com`;
-    userData.sales1.username = `${uniquePrefix}_sales1`;
-    userData.sales1.email = `${uniquePrefix}_sales1@example.com`;
-    userData.sales2.username = `${uniquePrefix}_sales2`;
-    userData.sales2.email = `${uniquePrefix}_sales2@example.com`;
-    userData.manager.username = `${uniquePrefix}_manager`;
-    userData.manager.email = `${uniquePrefix}_manager@example.com`;
-    userData.viewer.username = `${uniquePrefix}_viewer`;
-    userData.viewer.email = `${uniquePrefix}_viewer@example.com`;
-
-    await request(app).post("/api/auth/register").send({
-      username: userData.admin.username,
-      email: userData.admin.email,
-      password: userData.admin.password,
-    });
-    await request(app).post("/api/auth/register").send({
-      username: userData.sales1.username,
-      email: userData.sales1.email,
-      password: userData.sales1.password,
-    });
-    await request(app).post("/api/auth/register").send({
-      username: userData.sales2.username,
-      email: userData.sales2.email,
-      password: userData.sales2.password,
-    });
-    await request(app).post("/api/auth/register").send({
-      username: userData.manager.username,
-      email: userData.manager.email,
-      password: userData.manager.password,
-    });
-    await request(app).post("/api/auth/register").send({
-      username: userData.viewer.username,
-      email: userData.viewer.email,
-      password: userData.viewer.password,
-    });
-
-    await prisma.user.update({
-      where: { username: userData.admin.username },
-      data: { role: "ADMIN" },
-    });
-    await prisma.user.update({
-      where: { username: userData.sales1.username },
-      data: { role: "SALES" },
-    });
-    await prisma.user.update({
-      where: { username: userData.sales2.username },
-      data: { role: "SALES" },
-    });
-    await prisma.user.update({
-      where: { username: userData.manager.username },
-      data: { role: "MANAGER" },
-    });
-    await prisma.user.update({
-      where: { username: userData.viewer.username },
-      data: { role: "VIEWER" },
-    });
-
-    const admin = await prisma.user.findUnique({
-      where: { username: userData.admin.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.admin.id = admin.id;
-
-    const sales1 = await prisma.user.findUnique({
-      where: { username: userData.sales1.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.sales1.id = sales1.id;
-
-    const sales2 = await prisma.user.findUnique({
-      where: { username: userData.sales2.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.sales2.id = sales2.id;
-
-    const manager = await prisma.user.findUnique({
-      where: { username: userData.manager.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.manager.id = manager.id;
-
-    const viewer = await prisma.user.findUnique({
-      where: { username: userData.viewer.username },
-      select: {
-        id: true,
-      },
-    });
-    userData.viewer.id = viewer.id;
-
-    const loginAdmin = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.admin.email,
-      password: userData.admin.password,
-    });
-    userData.admin.token = loginAdmin.body.token;
-
-    const loginSales1 = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.sales1.email,
-      password: userData.sales1.password,
-    });
-    userData.sales1.token = loginSales1.body.token;
-
-    const loginSales2 = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.sales2.email,
-      password: userData.sales2.password,
-    });
-    userData.sales2.token = loginSales2.body.token;
-
-    const loginManager = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.manager.email,
-      password: userData.manager.password,
-    });
-    userData.manager.token = loginManager.body.token;
-
-    const loginUser = await request(app).post("/api/auth/login").send({
-      emailOrUsername: userData.viewer.email,
-      password: userData.viewer.password,
-    });
-    userData.viewer.token = loginUser.body.token;
+    userData = await setupUsers(uniquePrefix);
   });
 
   beforeEach(async () => {
     uniquePrefix = `task_${Date.now()}`;
   });
-
-  const makeDate = (day) => {
-    const time = new Date();
-    time.setDate(time.getDate() + day);
-    return time;
-  };
-
-  const createCustomer = async (token) => {
-    const response = await request(app)
-      .post("/api/customers")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: `${uniquePrefix}_Customer`,
-        email: `${uniquePrefix}_cust@example.com`,
-        phone: "1234567890",
-        company: `${uniquePrefix}_Company`,
-        address: `${uniquePrefix} Address St`,
-      });
-    return response.body.data;
-  };
-
-  const createLead = async (token, customerId = null) => {
-    const leadData = {
-      name: `${uniquePrefix}_Lead`,
-      email: `${uniquePrefix}_lead@example.com`,
-      phone: "1234567890",
-      status: "NEW",
-    };
-
-    if (customerId) {
-      leadData.customerId = customerId;
-    }
-
-    const response = await request(app)
-      .post("/api/leads")
-      .set("Authorization", `Bearer ${token}`)
-      .send(leadData);
-    return response.body.data;
-  };
-
-  const createOpportunity = async (token, customerId = null, leadId = null) => {
-    const opportunityData = {
-      name: `${uniquePrefix}_Opportunity`,
-      amount: 10000.0,
-      stage: "QUALIFICATION",
-      description: `${uniquePrefix} opportunity description`,
-    };
-
-    if (customerId) {
-      opportunityData.customerId = customerId;
-    }
-    if (leadId) {
-      opportunityData.leadId = leadId;
-    }
-
-    const response = await request(app)
-      .post("/api/opportunities")
-      .set("Authorization", `Bearer ${token}`)
-      .send(opportunityData);
-    return response.body.data;
-  };
-
-  const createTask = async (
-    token,
-    assignedToUserId,
-    customerId = null,
-    leadId = null,
-    opportunityId = null
-  ) => {
-    const taskData = {
-      name: `${uniquePrefix}_Task`,
-      assignedToUserId: assignedToUserId,
-      description: `${uniquePrefix}_Task_Description`,
-      dueDate: makeDate(1),
-    };
-
-    if (customerId) {
-      taskData.customerId = customerId;
-    }
-    if (leadId) {
-      taskData.leadId = leadId;
-    }
-    if (opportunityId) {
-      taskData.opportunityId = opportunityId;
-    }
-
-    const response = await request(app)
-      .post("/api/tasks")
-      .set("Authorization", `Bearer ${token}`)
-      .send(taskData);
-    return response.body.data;
-  };
 
   describe("POST /api/tasks", () => {
     it("should create a task for admin and manager", async () => {
@@ -312,7 +41,10 @@ describe("Task Endpoints", () => {
       expect(response.body.status).toBe("success");
     });
     it("should create task with customerId", async () => {
-      const customer = await createCustomer(userData.sales1.token);
+      const customer = await createCustomer(
+        userData.sales1.token,
+        uniquePrefix
+      );
       const response = await request(app)
         .post("/api/tasks")
         .set("Authorization", `Bearer ${userData.manager.token}`)
@@ -327,7 +59,7 @@ describe("Task Endpoints", () => {
       expect(response.body.status).toBe("success");
     });
     it("should create task with leadId", async () => {
-      const lead = await createLead(userData.sales1.token);
+      const lead = await createLead(userData.sales1.token, uniquePrefix);
       const response = await request(app)
         .post("/api/tasks")
         .set("Authorization", `Bearer ${userData.manager.token}`)
@@ -342,7 +74,10 @@ describe("Task Endpoints", () => {
       expect(response.body.status).toBe("success");
     });
     it("should create task with opportunityId", async () => {
-      const opportunity = await createOpportunity(userData.sales1.token);
+      const opportunity = await createOpportunity(
+        userData.sales1.token,
+        uniquePrefix
+      );
       const response = await request(app)
         .post("/api/tasks")
         .set("Authorization", `Bearer ${userData.manager.token}`)
@@ -357,10 +92,18 @@ describe("Task Endpoints", () => {
       expect(response.body.status).toBe("success");
     });
     it("should create task with customerId, leadId and opportunityId", async () => {
-      const customer = await createCustomer(userData.sales1.token);
-      const lead = await createLead(userData.sales1.token, customer.id);
+      const customer = await createCustomer(
+        userData.sales1.token,
+        uniquePrefix
+      );
+      const lead = await createLead(
+        userData.sales1.token,
+        uniquePrefix,
+        customer.id
+      );
       const opportunity = await createOpportunity(
         userData.sales1.token,
+        uniquePrefix,
         customer.id,
         lead.id
       );
@@ -457,7 +200,11 @@ describe("Task Endpoints", () => {
       expect(response.body.status).toBe("success");
     });
     it("should get task by id (for admin, creator and asigned user)", async () => {
-      const task = await createTask(userData.manager.token, userData.sales1.id);
+      const task = await createTask(
+        userData.manager.token,
+        uniquePrefix,
+        userData.sales1.id
+      );
       expect(task.assignedToUserId).toBe(userData.sales1.id);
       const response = await request(app)
         .get(`/api/tasks/${task.id}`)
@@ -524,9 +271,17 @@ describe("Task Endpoints", () => {
   });
   describe("PATCH /api/tasks/:id", () => {
     it("should update task (only admin and manager)", async () => {
-      const task = await createTask(userData.manager.token, userData.sales1.id);
-      const customer = await createCustomer(userData.admin.token);
-      const lead = await createLead(userData.admin.token, customer.id);
+      const task = await createTask(
+        userData.manager.token,
+        uniquePrefix,
+        userData.sales1.id
+      );
+      const customer = await createCustomer(userData.admin.token, uniquePrefix);
+      const lead = await createLead(
+        userData.admin.token,
+        uniquePrefix,
+        customer.id
+      );
       expect(task.assignedToUserId).toBe(userData.sales1.id);
       const response = await request(app)
         .patch(`/api/tasks/${task.id}`)
@@ -558,7 +313,11 @@ describe("Task Endpoints", () => {
       expect(response.body.status).toBe("error");
     });
     it("should fail to update task by assigned user", async () => {
-      const task = await createTask(userData.manager.token, userData.sales1.id);
+      const task = await createTask(
+        userData.manager.token,
+        uniquePrefix,
+        userData.sales1.id
+      );
       expect(task.assignedToUserId).toBe(userData.sales1.id);
       const response = await request(app)
         .patch(`/api/tasks/${task.id}`)
@@ -576,7 +335,11 @@ describe("Task Endpoints", () => {
   });
   describe("DELETE /api/tasks/:id", () => {
     it("should delete task (only admin)", async () => {
-      const task = await createTask(userData.manager.token, userData.sales2.id);
+      const task = await createTask(
+        userData.manager.token,
+        uniquePrefix,
+        userData.sales2.id
+      );
       const response = await request(app)
         .delete(`/api/tasks/${task.id}`)
         .set("Authorization", `Bearer ${userData.admin.token}`);
@@ -591,7 +354,11 @@ describe("Task Endpoints", () => {
       expect(response.body.status).toBe("error");
     });
     it("should fail to delete task by not authorized role", async () => {
-      const task = await createTask(userData.manager.token, userData.sales1.id);
+      const task = await createTask(
+        userData.manager.token,
+        uniquePrefix,
+        userData.sales1.id
+      );
       expect(task.assignedToUserId).toBe(userData.sales1.id);
       const response = await request(app)
         .delete(`/api/tasks/${task.id}`)
