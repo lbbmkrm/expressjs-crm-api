@@ -32,7 +32,7 @@ const productController = {
   },
   create: async (req, res, next) => {
     try {
-      const product = await productService.createProduct(req.body);
+      const product = await productService.createProduct(req.user.id, req.body);
       res.status(201).json({
         status: "success",
         message: "Product created successfully",

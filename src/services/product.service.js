@@ -12,8 +12,12 @@ const productService = {
     }
     return product;
   },
-  createProduct: async (requestData) => {
-    return productRepository.create(requestData);
+  createProduct: async (userId, requestData) => {
+    const productData = {
+      ...requestData,
+      createdByUserId: userId,
+    };
+    return productRepository.create(productData);
   },
   updateProduct: async (id, requestData) => {
     const product = await productRepository.findById(id);

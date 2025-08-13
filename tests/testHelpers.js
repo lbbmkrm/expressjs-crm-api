@@ -172,6 +172,15 @@ export const cleanupModels = async (prefix, models = []) => {
           },
         });
       },
+      product: async () => {
+        await prisma.product.deleteMany({
+          where: {
+            name: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
     };
     for (const model of models) {
       if (deleteOperation[model]) {
