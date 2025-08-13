@@ -396,3 +396,44 @@ export const createActivity = async (
     console.log("error creating activity", error);
   }
 };
+
+export const createProduct = async (token, prefix, price = 1.0) => {
+  try {
+    const response = await request(app)
+      .post("/api/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: `${prefix}_Product`, price: price });
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating product", error);
+  }
+};
+
+export const createSale = async (
+  token,
+  customerId,
+  productId,
+  opportunityId = null
+) => {
+  try {
+    const saleData = {
+      customerId: customerId,
+      items: [
+        {
+          productId: productId,
+          quantity: 1,
+        },
+      ],
+    };
+    if (opportunityId) {
+      saleData.opportunityId = opportunityId;
+    }
+    const response = await request(app)
+      .post("/api/sales")
+      .set("Authorization", `Bearer ${token}`)
+      .send(saleData);
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating sale", error);
+  }
+};

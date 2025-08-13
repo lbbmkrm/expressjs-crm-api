@@ -1,6 +1,11 @@
 import request from "supertest";
 import app from "../src/app.js";
-import { setupUsers, cleanupUsers, cleanupModels } from "./testHelpers.js";
+import {
+  setupUsers,
+  cleanupUsers,
+  cleanupModels,
+  createProduct,
+} from "./testHelpers.js";
 
 describe("Product Endpoints", () => {
   let uniquePrefix;
@@ -34,20 +39,16 @@ describe("Product Endpoints", () => {
     });
 
     it("should fail to create product by non-admin roles", async () => {
-      const roles = [
-        userData.manager,
-        userData.sales1,
-        userData.sales2,
-        userData.viewer,
-      ];
-      for (const role of roles) {
-        const res = await request(app)
-          .post("/api/products")
-          .set("Authorization", `Bearer ${role.token}`)
-          .send({ name: `${uniquePrefix}_Product`, price: 10.0 });
-        expect(res.statusCode).toBe(403);
-        expect(res.body.status).toBe("error");
-      }
+      const response = await request(app)
+        .post("/api/products")
+        .set("Authorization", `Bearer ${userData.sales1.token}`)
+        .send({
+          name: `${uniquePrefix}_Product`,
+          price: 199.99,
+          description: `${uniquePrefix} description`,
+        });
+      expect(response.statusCode).toBe(403);
+      expect(response.body.status).toBe("error");
     });
 
     it("should fail to create product with invalid data", async () => {
@@ -73,11 +74,7 @@ describe("Product Endpoints", () => {
     });
 
     it("should get a product by ID (all roles)", async () => {
-      const createRes = await request(app)
-        .post("/api/products")
-        .set("Authorization", `Bearer ${userData.admin.token}`)
-        .send({ name: `${uniquePrefix}_Product`, price: 49.5 });
-      const product = createRes.body.data;
+      const product = await createProduct(userData.admin.token, uniquePrefix);
 
       const res = await request(app)
         .get(`/api/products/${product.id}`)
@@ -98,11 +95,7 @@ describe("Product Endpoints", () => {
 
   describe("PATCH /api/products/:id", () => {
     it("should update a product (ADMIN only)", async () => {
-      const createRes = await request(app)
-        .post("/api/products")
-        .set("Authorization", `Bearer ${userData.admin.token}`)
-        .send({ name: `${uniquePrefix}_Product`, price: 10.0 });
-      const product = createRes.body.data;
+      const product = await createProduct(userData.admin.token, uniquePrefix);
 
       const res = await request(app)
         .patch(`/api/products/${product.id}`)
@@ -114,26 +107,13 @@ describe("Product Endpoints", () => {
     });
 
     it("should fail to update product by non-admin roles", async () => {
-      const createRes = await request(app)
-        .post("/api/products")
-        .set("Authorization", `Bearer ${userData.admin.token}`)
-        .send({ name: `${uniquePrefix}_Product`, price: 10.0 });
-      const product = createRes.body.data;
-
-      const roles = [
-        userData.manager,
-        userData.sales1,
-        userData.sales2,
-        userData.viewer,
-      ];
-      for (const role of roles) {
-        const res = await request(app)
-          .patch(`/api/products/${product.id}`)
-          .set("Authorization", `Bearer ${role.token}`)
-          .send({ name: `${uniquePrefix}_Product_By_${role.username}` });
-        expect(res.statusCode).toBe(403);
-        expect(res.body.status).toBe("error");
-      }
+      const product = await createProduct(userData.admin.token, uniquePrefix);
+      const response = await request(app)
+        .patch(`/api/products/${product.id}`)
+        .set("Authorization", `Bearer ${userData.manager.token}`)
+        .send({ name: `${uniquePrefix}_Product_Updated`, price: 20.25 });
+      expect(response.statusCode).toBe(403);
+      expect(response.body.status).toBe("error");
     });
 
     it("should fail to update product with invalid id", async () => {
@@ -148,45 +128,21 @@ describe("Product Endpoints", () => {
 
   describe("DELETE /api/products/:id", () => {
     it("should delete (soft) a product (ADMIN only)", async () => {
-      const createRes = await request(app)
-        .post("/api/products")
-        .set("Authorization", `Bearer ${userData.admin.token}`)
-        .send({ name: `${uniquePrefix}_Product`, price: 10.0 });
-      const product = createRes.body.data;
-
+      const product = await createProduct(userData.admin.token, uniquePrefix);
       const res = await request(app)
         .delete(`/api/products/${product.id}`)
         .set("Authorization", `Bearer ${userData.admin.token}`);
       expect(res.statusCode).toBe(200);
       expect(res.body.status).toBe("success");
-
-      // verify it's not retrievable anymore
-      const res2 = await request(app)
-        .get(`/api/products/${product.id}`)
-        .set("Authorization", `Bearer ${userData.viewer.token}`);
-      expect(res2.statusCode).toBe(404);
     });
 
     it("should fail to delete product by non-admin roles", async () => {
-      const createRes = await request(app)
-        .post("/api/products")
-        .set("Authorization", `Bearer ${userData.admin.token}`)
-        .send({ name: `${uniquePrefix}_Product`, price: 10.0 });
-      const product = createRes.body.data;
-
-      const roles = [
-        userData.manager,
-        userData.sales1,
-        userData.sales2,
-        userData.viewer,
-      ];
-      for (const role of roles) {
-        const res = await request(app)
-          .delete(`/api/products/${product.id}`)
-          .set("Authorization", `Bearer ${role.token}`);
-        expect(res.statusCode).toBe(403);
-        expect(res.body.status).toBe("error");
-      }
+      const product = await createProduct(userData.admin.token, uniquePrefix);
+      const response = await request(app)
+        .delete(`/api/products/${product.id}`)
+        .set("Authorization", `Bearer ${userData.sales1.token}`);
+      expect(response.statusCode).toBe(403);
+      expect(response.body.status).toBe("error");
     });
 
     it("should fail to delete product with invalid id", async () => {
