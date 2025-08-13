@@ -53,12 +53,18 @@ const userService = {
     requestData.password = hashPassword;
     return userRepository.create(requestData);
   },
-  updateUser: async (id, requestData) => {
-    const user = await userRepository.findById(id);
+  updateUser: async (requestUserId, targetUserId, requestData) => {
+    if (requestData.role) {
+      const requestUser = await userRepository.findById(requestUserId);
+      if (requestUser.role !== "ADMIN") {
+        throw new AppError("Unauthorized", 403);
+      }
+    }
+    const user = await userRepository.findById(targetUserId);
     if (!user) {
       throw new AppError("User not found", 404);
     }
-    return userRepository.update(id, requestData);
+    return userRepository.update(targetUserId, requestData);
   },
   deleteUser: async (id, userId) => {
     const user = await userRepository.findById(id);
@@ -69,15 +75,23 @@ const userService = {
       throw new AppError("You cannot delete yourself", 400);
     }
     return prisma.$transaction(async (tx) => {
-      await tx.dashboard.update({
+      const dashboard = await tx.dashboard.findUnique({
         where: {
           userId: id,
           deletedAt: null,
         },
-        data: {
-          deletedAt: new Date(),
-        },
       });
+      if (dashboard) {
+        return tx.dashboard.update({
+          where: {
+            userId: id,
+            deletedAt: null,
+          },
+          data: {
+            deletedAt: new Date(),
+          },
+        });
+      }
       return tx.user.update({
         where: {
           id: id,

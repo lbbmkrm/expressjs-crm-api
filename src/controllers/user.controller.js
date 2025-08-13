@@ -39,7 +39,11 @@ const userController = {
   },
   update: async (req, res, next) => {
     try {
-      const user = await userService.updateUser(req.params.id, req.body);
+      const user = await userService.updateUser(
+        parseInt(req.user.id),
+        parseInt(req.params.id),
+        req.body
+      );
       res.status(200).json({
         status: "success",
         message: "User updated successfully",

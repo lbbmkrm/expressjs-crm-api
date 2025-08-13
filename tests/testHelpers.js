@@ -437,3 +437,20 @@ export const createSale = async (
     console.log("error creating sale", error);
   }
 };
+
+export const createUser = async (adminToken, prefix, role = VIEWER) => {
+  try {
+    const response = await request(app)
+      .post("/api/users")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({
+        username: `${prefix}_User`,
+        email: `${prefix}@email.com`,
+        password: "password123",
+        role: role,
+      });
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating user", error);
+  }
+};

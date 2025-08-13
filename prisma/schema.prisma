@@ -304,6 +304,6 @@ model Dashboard{
   updatedAt DateTime @map("updated_at") @updatedAt
   deletedAt DateTime? @map("deleted_at")
 
-  user User @relation("dashboardUser", fields: [userId], references: [id], onDelete: Restrict)
+  user User @relation("dashboardUser", fields: [userId], references: [id], onDelete: Cascade)
   @@map("dashboards")
 }
