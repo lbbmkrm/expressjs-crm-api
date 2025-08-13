@@ -163,6 +163,15 @@ export const cleanupModels = async (prefix, models = []) => {
           },
         });
       },
+      activity: async () => {
+        await prisma.activity.deleteMany({
+          where: {
+            subject: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
     };
     for (const model of models) {
       if (deleteOperation[model]) {
@@ -340,5 +349,41 @@ export const createNote = async (
     return response.body.data;
   } catch (error) {
     console.log("error creating note", error);
+  }
+};
+
+export const createActivity = async (
+  token,
+  prefix,
+  customerId = null,
+  contactId = null,
+  leadId = null,
+  opportunityId = null
+) => {
+  try {
+    const activityData = {
+      type: "NOTE",
+      subject: `${prefix}_Activity`,
+      content: `${prefix}_Activity_Content`,
+    };
+    if (customerId) {
+      activityData.customerId = customerId;
+    }
+    if (contactId) {
+      activityData.contactId = contactId;
+    }
+    if (leadId) {
+      activityData.leadId = leadId;
+    }
+    if (opportunityId) {
+      activityData.opportunityId = opportunityId;
+    }
+    const response = await request(app)
+      .post("/api/activities")
+      .set("Authorization", `Bearer ${token}`)
+      .send(activityData);
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating activity", error);
   }
 };
