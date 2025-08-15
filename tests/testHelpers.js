@@ -181,6 +181,15 @@ export const cleanupModels = async (prefix, models = []) => {
           },
         });
       },
+      ticket: async () => {
+        await prisma.ticket.deleteMany({
+          where: {
+            subject: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
     };
     for (const model of models) {
       if (deleteOperation[model]) {
@@ -438,7 +447,7 @@ export const createSale = async (
   }
 };
 
-export const createUser = async (adminToken, prefix, role = VIEWER) => {
+export const createUser = async (adminToken, prefix, role = "VIEWER") => {
   try {
     const response = await request(app)
       .post("/api/users")
@@ -452,5 +461,27 @@ export const createUser = async (adminToken, prefix, role = VIEWER) => {
     return response.body.data;
   } catch (error) {
     console.log("error creating user", error);
+  }
+};
+
+export const createTicket = async (
+  token,
+  prefix,
+  assignedUserId,
+  customerId
+) => {
+  try {
+    const response = await request(app)
+      .post("/api/tickets")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        assignedToUserId: assignedUserId,
+        customerId: customerId,
+        subject: `${prefix}_Ticket`,
+        description: `${prefix}_Ticket_Description`,
+      });
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating ticket", error);
   }
 };

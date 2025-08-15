@@ -34,6 +34,8 @@ model User {
   activities Activity[] @relation("activityCreator")
   products Product[] @relation("productCreator")
   sales Sale[] @relation("saleUser")
+  ticketCreator Ticket[] @relation("ticketCreator")
+  ticketAssigned Ticket[] @relation("ticketAssigned")
     
   @@map("users")
 }
@@ -57,6 +59,7 @@ model Customer{
   note Note[] @relation("noteCustomer")
   activity Activity[] @relation("activityCustomer")
   sales Sale[] @relation("saleCustomer")
+  ticket Ticket[] @relation("ticketCustomer")
 
   @@map("customers")
 }
@@ -293,7 +296,6 @@ model SaleItem{
   @@id([saleId, productId])
   @@map("sale_items")
 }
-
 model Dashboard{
   id Int @id @default(autoincrement())
   name String @db.VarChar(255)
@@ -306,4 +308,29 @@ model Dashboard{
 
   user User @relation("dashboardUser", fields: [userId], references: [id], onDelete: Cascade)
   @@map("dashboards")
+}
+
+enum TicketStatus{
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+model Ticket{
+  id Int @id @default(autoincrement())
+  subject String @db.VarChar(255)
+  description String? @db.Text
+  status TicketStatus @default(OPEN)
+  customerId Int @map("customer_id")
+  assignedToUserId Int @map("assigned_to_user_id")
+  createdByUserId Int @map("created_by_user_id")
+  resolvedAt DateTime?
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+  deletedAt DateTime? @map("deleted_at")
+
+  creator User @relation("ticketCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  customer Customer @relation("ticketCustomer", fields: [customerId], references: [id], onDelete: Restrict)
+  assignedToUser User @relation("ticketAssigned", fields: [assignedToUserId], references: [id], onDelete: Restrict)
+  @@map("tickets")
 }
