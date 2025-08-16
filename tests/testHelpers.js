@@ -190,6 +190,15 @@ export const cleanupModels = async (prefix, models = []) => {
           },
         });
       },
+      campaign: async () => {
+        await prisma.campaign.deleteMany({
+          where: {
+            name: {
+              startsWith: prefix,
+            },
+          },
+        });
+      },
     };
     for (const model of models) {
       if (deleteOperation[model]) {
@@ -483,5 +492,25 @@ export const createTicket = async (
     return response.body.data;
   } catch (error) {
     console.log("error creating ticket", error);
+  }
+};
+
+export const createCampaign = async (token, prefix) => {
+  try {
+    const response = await request(app)
+      .post("/api/campaigns")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: `${prefix}_Campaign`,
+        description: `${prefix}_Campaign_Description`,
+        type: "OTHER",
+        status: "PLANNING",
+        startDate: makeDate(1),
+        endDate: makeDate(2),
+        budget: 1000,
+      });
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating campaign", error);
   }
 };

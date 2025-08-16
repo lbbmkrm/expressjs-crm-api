@@ -12,6 +12,7 @@ import productRoute from "./product.route.js";
 import saleRoute from "./sale.route.js";
 import dashboardroute from "./dashboard.route.js";
 import ticketRoute from "./ticket.route.js";
+import campaignRoute from "./campaign.route.js";
 
 const router = express.Router();
 
@@ -28,5 +29,6 @@ router.use("/products", productRoute);
 router.use("/sales", saleRoute);
 router.use("/dashboard", dashboardroute);
 router.use("/tickets", ticketRoute);
+router.use("/campaigns", campaignRoute);
 
 export default router;

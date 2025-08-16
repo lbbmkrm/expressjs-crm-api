@@ -81,6 +81,14 @@ const leadRepository = {
       },
     });
   },
+  findByCampaignId: async (campaignId) => {
+    return prisma.lead.findMany({
+      where: {
+        campaignId: campaignId,
+        deletedAt: null,
+      },
+    });
+  },
   update: async (id, data) => {
     const updatedLead = await prisma.lead.update({
       where: {
