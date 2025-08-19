@@ -13,7 +13,7 @@ import saleRoute from "./sale.route.js";
 import dashboardroute from "./dashboard.route.js";
 import ticketRoute from "./ticket.route.js";
 import campaignRoute from "./campaign.route.js";
-
+import documentRoute from "./document.route.js";
 const router = express.Router();
 
 router.use("/auth", authRoute);
@@ -30,5 +30,6 @@ router.use("/sales", saleRoute);
 router.use("/dashboard", dashboardroute);
 router.use("/tickets", ticketRoute);
 router.use("/campaigns", campaignRoute);
+router.use("/documents", documentRoute);
 
 export default router;

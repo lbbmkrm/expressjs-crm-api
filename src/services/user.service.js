@@ -78,7 +78,6 @@ const userService = {
       const dashboard = await tx.dashboard.findUnique({
         where: {
           userId: id,
-          deletedAt: null,
         },
       });
       if (dashboard) {

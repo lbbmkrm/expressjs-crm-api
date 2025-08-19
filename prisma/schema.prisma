@@ -1,4 +1,4 @@
-generator client {
+generator client { 
   provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
@@ -7,12 +7,88 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+/* ================= ENUM ================= */
 enum Roles {
   ADMIN
   MANAGER
   SALES
   VIEWER
 }
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  WON
+  LOST
+  CONVERTED
+}
+
+enum OpportunityStage {
+  QUALIFICATION
+  NEED_ANALYSIS
+  PROPOSAL_PRESENTATION
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  MEETING
+  NOTE
+}
+
+enum SaleStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum CampaignStatus {
+  PLANNING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum CampaignType {
+  EMAIL
+  SOCIAL_MEDIA
+  ADS
+  OTHER
+}
+
+enum DocumentType {
+  PROPOSAL
+  INVOICE
+  QUOTE
+  CONTRACT
+  IMAGE
+  OTHER
+}
+
+/* ================= CORE MODELS ================= */
 model User {
   id Int @id @default(autoincrement())
   role Roles @default(VIEWER)
@@ -37,11 +113,12 @@ model User {
   sales Sale[] @relation("saleUser")
   ticketCreator Ticket[] @relation("ticketCreator")
   ticketAssigned Ticket[] @relation("ticketAssigned")
+  documents Document[] @relation("documentCreator")
     
   @@map("users")
 }
 
-model Customer{
+model Customer {
   id Int @id @default(autoincrement())
   name String @db.VarChar(100)
   email String? @db.VarChar(100)
@@ -52,6 +129,7 @@ model Customer{
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
   deletedAt DateTime? @map("deleted_at")
+
   creator User @relation("customerCreator" ,fields: [createdByUserId], references: [id], onDelete: Restrict)
   contact Contact[] @relation("customerContact")
   lead Lead[] @relation("customerLead")
@@ -61,6 +139,7 @@ model Customer{
   activity Activity[] @relation("activityCustomer")
   sales Sale[] @relation("saleCustomer")
   ticket Ticket[] @relation("ticketCustomer")
+  document Document[] @relation("documentCustomer")
 
   @@map("customers")
 }
@@ -82,20 +161,32 @@ model Contact {
   creator User @relation("contactCreator" ,fields: [createdByUserId], references: [id], onDelete: Cascade)
   note Note[] @relation("noteContact")
   activity Activity[] @relation("activityContact")
-
+  document Document[] @relation("documentContact")
 
   @@map("contacts")
 }
 
-enum LeadStatus{
-  NEW
-  CONTACTED
-  WON
-  LOST
-  CONVERTED
+/* ================= MARKETING & SALES PIPELINE ================= */
+model Campaign {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  description String? @db.Text
+  type CampaignType @default(OTHER)
+  status CampaignStatus @default(PLANNING)
+  startDate DateTime @map("start_date")
+  endDate DateTime @map("end_date")
+  budget Decimal @map("budget") @db.Decimal(15,2)
+  createdByUserId Int @map("created_by_user_id")
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+  deletedAt DateTime? @map("deleted_at")
+
+  lead Lead[] @relation("leadCampaign")
+  creator User @relation("campaignCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  @@map("campaigns")
 }
 
-model Lead{
+model Lead {
   id Int @id @default(autoincrement())
   name String @db.VarChar(100) 
   email String? @db.VarChar(100)
@@ -115,20 +206,12 @@ model Lead{
   task Task[] @relation("taskLead")
   note Note[] @relation("noteLead")
   activity Activity[] @relation("activityLead")
+  document Document[] @relation("documentLead")
 
   @@map("leads")
 }
 
-enum OpportunityStage{
-  QUALIFICATION
-  NEED_ANALYSIS
-  PROPOSAL_PRESENTATION
-  NEGOTIATION
-  WON
-  LOST
-}
-
-model Opportunity{
+model Opportunity {
   id Int @id @default(autoincrement())
   name String @db.VarChar(255)
   amount Decimal @db.Decimal(15,2)
@@ -149,23 +232,13 @@ model Opportunity{
   note Note[] @relation("noteOpportunity")
   activity Activity[] @relation("activityOpportunity")
   sales Sale? @relation("saleOpportunity")
+  document Document[] @relation("documentOpportunity")
 
   @@map("opportunities")
 }
 
-enum TaskStatus{
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-enum TaskPriority{
-  LOW
-  MEDIUM
-  HIGH
-}
-
-model Task{
+/* ================= TASK & SUPPORT ================= */
+model Task {
   id Int @id @default(autoincrement())
   name String @db.VarChar(255)
   description String? @db.Text
@@ -191,7 +264,27 @@ model Task{
   @@map("tasks")
 }
 
-model Note{
+model Ticket {
+  id Int @id @default(autoincrement())
+  subject String @db.VarChar(255)
+  description String? @db.Text
+  status TicketStatus @default(OPEN)
+  customerId Int @map("customer_id")
+  assignedToUserId Int @map("assigned_to_user_id")
+  createdByUserId Int @map("created_by_user_id")
+  resolvedAt DateTime?
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+  deletedAt DateTime? @map("deleted_at")
+
+  creator User @relation("ticketCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  customer Customer @relation("ticketCustomer", fields: [customerId], references: [id], onDelete: Restrict)
+  assignedToUser User @relation("ticketAssigned", fields: [assignedToUserId], references: [id], onDelete: Restrict)
+  @@map("tickets")
+}
+
+/* ================= INTERACTIONS & DOCUMENTS ================= */
+model Note {
   id Int @id @default(autoincrement())
   content String @db.Text
   customerId Int? @map("customer_id")
@@ -212,14 +305,7 @@ model Note{
   @@map("notes") 
 }
 
-enum ActivityType{
-  CALL
-  EMAIL
-  MEETING
-  NOTE
-}
-
-model Activity{
+model Activity {
   id Int @id @default(autoincrement())
   type ActivityType @default(NOTE)
   subject String @db.VarChar(255)
@@ -242,7 +328,35 @@ model Activity{
   @@map("activities")
 }
 
-model Product{
+model Document {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  path String @db.VarChar(255)
+  size Int 
+  fileType String @map("file_type") @db.VarChar(255)
+  documentType DocumentType @default(OTHER)
+  createdByUserId Int @map("created_by_user_id")
+  customerId Int? @map("customer_id")
+  contactId Int? @map("contact_id")
+  leadId Int? @map("lead_id")
+  opportunityId Int? @map("opportunity_id")
+  saleId Int? @map("sale_id")
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+  deletedAt DateTime? @map("deleted_at")
+
+  creator User @relation("documentCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  customer Customer? @relation("documentCustomer", fields: [customerId], references: [id], onDelete: SetNull)
+  contact Contact? @relation("documentContact", fields: [contactId], references: [id], onDelete: SetNull)
+  lead Lead? @relation("documentLead", fields: [leadId], references: [id], onDelete: SetNull)
+  opportunity Opportunity? @relation("documentOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
+  sale Sale? @relation("documentSale", fields: [saleId], references: [id], onDelete: SetNull)
+
+  @@map("documents")
+}
+
+/* ================= PRODUCT & SALES ================= */
+model Product {
   id Int @id @default(autoincrement())
   name String @db.VarChar(255)
   description String? @db.Text
@@ -257,13 +371,7 @@ model Product{
   @@map("products")
 }
 
-enum SaleStatus{
-  PENDING
-  COMPLETED
-  CANCELLED
-}
-
-model Sale{
+model Sale {
   id Int @id @default(autoincrement())
   customerId Int @map("customer_id")
   opportunityId Int? @map("opportunity_id") @unique
@@ -279,12 +387,12 @@ model Sale{
   customer Customer @relation("saleCustomer", fields: [customerId], references: [id], onDelete: Restrict)
   opportunity Opportunity? @relation("saleOpportunity", fields: [opportunityId], references: [id], onDelete: Restrict)
   items SaleItem[] @relation("saleItemSale")
-
+  document Document[] @relation("documentSale")
   
   @@map("sales")
 }
 
-model SaleItem{
+model SaleItem {
   saleId Int @map("sale_id")
   productId Int @map("product_id")
   quantity Int @map("quantity")
@@ -299,74 +407,16 @@ model SaleItem{
   @@id([saleId, productId])
   @@map("sale_items")
 }
-model Dashboard{
+
+/* ================= DASHBOARD ================= */
+model Dashboard {
   id Int @id @default(autoincrement())
   name String @db.VarChar(255)
   description String? @db.Text
   layout Json
   userId Int @map("user_id") @unique
   createdAt DateTime @map("created_at") @default(now())
-  updatedAt DateTime @map("updated_at") @updatedAt
-  deletedAt DateTime? @map("deleted_at")
 
-  user User @relation("dashboardUser", fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation("dashboardUser", fields: [userId], references: [id], onDelete: Restrict)
   @@map("dashboards")
-}
-
-enum TicketStatus{
-  OPEN
-  IN_PROGRESS
-  RESOLVED
-  CLOSED
-}
-model Ticket{
-  id Int @id @default(autoincrement())
-  subject String @db.VarChar(255)
-  description String? @db.Text
-  status TicketStatus @default(OPEN)
-  customerId Int @map("customer_id")
-  assignedToUserId Int @map("assigned_to_user_id")
-  createdByUserId Int @map("created_by_user_id")
-  resolvedAt DateTime?
-  createdAt DateTime @map("created_at") @default(now())
-  updatedAt DateTime @map("updated_at") @updatedAt
-  deletedAt DateTime? @map("deleted_at")
-
-  creator User @relation("ticketCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
-  customer Customer @relation("ticketCustomer", fields: [customerId], references: [id], onDelete: Restrict)
-  assignedToUser User @relation("ticketAssigned", fields: [assignedToUserId], references: [id], onDelete: Restrict)
-  @@map("tickets")
-}
-
-enum CampaignStatus{
-  PLANNING
-  ACTIVE
-  COMPLETED
-  CANCELLED
-}
-
-enum CampaignType{
-  EMAIL
-  SOCIAL_MEDIA
-  ADS
-  OTHER
-}
-
-model Campaign{
-  id Int @id @default(autoincrement())
-  name String @db.VarChar(255)
-  description String? @db.Text
-  type CampaignType @default(OTHER)
-  status CampaignStatus @default(PLANNING)
-  startDate DateTime @map("start_date")
-  endDate DateTime @map("end_date")
-  budget Decimal @map("budget") @db.Decimal(15,2)
-  createdByUserId Int @map("created_by_user_id")
-  createdAt DateTime @map("created_at") @default(now())
-  updatedAt DateTime @map("updated_at") @updatedAt
-  deletedAt DateTime? @map("deleted_at")
-
-  lead Lead[] @relation("leadCampaign")
-  creator User @relation("campaignCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
-  @@map("campaigns")
 }

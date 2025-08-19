@@ -5,7 +5,6 @@ const dashboardRepository = {
     return prisma.dashboard.findFirst({
       where: {
         userId: userId,
-        deletedAt: null,
       },
       include: {
         user: {
@@ -36,7 +35,6 @@ const dashboardRepository = {
     return prisma.dashboard.update({
       where: {
         userId: userId,
-        deletedAt: null,
       },
       data: data,
       include: {
@@ -54,7 +52,6 @@ const dashboardRepository = {
     return prisma.dashboard.update({
       where: {
         userId: userId,
-        deletedAt: null,
       },
       data: {
         deletedAt: new Date(),
