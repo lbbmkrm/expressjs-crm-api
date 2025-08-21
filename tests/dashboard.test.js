@@ -1,12 +1,18 @@
 import request from "supertest";
 import app from "../src/app.js";
-import { setupUsers, cleanupUsers, createUser } from "./testHelpers.js";
+import {
+  setupUsers,
+  cleanupUsers,
+  cleanupModels,
+  createUser,
+} from "./testHelpers.js";
 
 describe("Dashboard Endpoints", () => {
   let uniquePrefix;
   let userData;
 
   beforeAll(async () => {
+    await cleanupModels("dash", ["dashboard"]);
     await cleanupUsers("dash_");
     uniquePrefix = `dash_${Date.now()}`;
     userData = await setupUsers(uniquePrefix);
@@ -14,10 +20,6 @@ describe("Dashboard Endpoints", () => {
 
   beforeEach(() => {
     uniquePrefix = `dash_${Date.now()}`;
-  });
-
-  afterAll(async () => {
-    await cleanupUsers("dash_");
   });
 
   describe("GET /api/dashboard", () => {

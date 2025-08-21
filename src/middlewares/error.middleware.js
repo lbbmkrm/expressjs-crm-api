@@ -17,6 +17,10 @@ const globalErrorHandler = (err, req, res, next) => {
       message = "Something went wrong on the server!";
     }
   }
+  if (err.message == "Invalid file type") {
+    statusCode = 400;
+    message = err.message;
+  }
 
   if (err.name === "PrismaClientKnownRequestError") {
     if (err.code === "P2002") {

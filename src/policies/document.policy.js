@@ -2,11 +2,21 @@ import { AppError } from "../utils/AppError.js";
 
 const documentPolicy = {
   canViewAll: async (user) => {
-    return true;
+    if (user.role === "ADMIN") {
+      return true;
+    }
+    throw new AppError("Unauthorized", 403);
   },
 
-  canView: async (user) => {
-    return true;
+  canView: async (user, model) => {
+    if (
+      user.role === "ADMIN" ||
+      user.role === "MANAGER" ||
+      user.id === model.createdByUserId
+    ) {
+      return true;
+    }
+    throw new AppError("Unauthorized", 403);
   },
 
   canCreate: async (user) => {
@@ -20,10 +30,10 @@ const documentPolicy = {
     throw new AppError("Unauthorized", 403);
   },
 
-  canUpdate: async (user, document) => {
+  canUpdate: async (user, model) => {
     if (
       user.role === "ADMIN" ||
-      (user.role === "SALES" && user.id === document.createdByUserId) ||
+      (user.role === "SALES" && user.id === model.createdByUserId) ||
       user.role === "MANAGER"
     ) {
       return true;
@@ -31,11 +41,8 @@ const documentPolicy = {
     throw new AppError("Unauthorized", 403);
   },
 
-  canDelete: async (user, document) => {
-    if (
-      user.role === "ADMIN" ||
-      (user.role === "SALES" && user.id === document.createdByUserId)
-    ) {
+  canDelete: async (user, model) => {
+    if (user.role === "ADMIN" || user.id === model.createdByUserId) {
       return true;
     }
     throw new AppError("Unauthorized", 403);

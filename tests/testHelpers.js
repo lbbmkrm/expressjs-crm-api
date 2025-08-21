@@ -1,6 +1,8 @@
-import app from "../src/app";
+import app from "./../src/app.js";
 import request from "supertest";
-import prisma from "../src/repositories/prismaClient";
+import prisma from "./../src/repositories/prismaClient.js";
+import path from "path";
+import fsPromises from "fs/promises";
 export const setupUsers = async (prefix) => {
   try {
     const usersData = {
@@ -181,6 +183,32 @@ export const cleanupModels = async (prefix, models = []) => {
           },
         });
       },
+      sale: async () => {
+        await prisma.sale.deleteMany({
+          where: {
+            OR: [
+              {
+                customer: {
+                  is: {
+                    name: {
+                      startsWith: prefix,
+                    },
+                  },
+                },
+              },
+              {
+                opportunity: {
+                  is: {
+                    name: {
+                      startsWith: prefix,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        });
+      },
       ticket: async () => {
         await prisma.ticket.deleteMany({
           where: {
@@ -204,6 +232,17 @@ export const cleanupModels = async (prefix, models = []) => {
           where: {
             name: {
               startsWith: prefix,
+            },
+          },
+        });
+      },
+      dashboard: async () => {
+        await prisma.dashboard.deleteMany({
+          where: {
+            user: {
+              username: {
+                startsWith: prefix,
+              },
             },
           },
         });
@@ -521,5 +560,35 @@ export const createCampaign = async (token, prefix) => {
     return response.body.data;
   } catch (error) {
     console.log("error creating campaign", error);
+  }
+};
+
+export const createFile = async (uniquePrefix, extension) => {
+  try {
+    const targetDir = path.join(process.cwd(), "uploads", "documents", "tests");
+    try {
+      await fsPromises.access(targetDir);
+    } catch (err) {
+      await fsPromises.mkdir(targetDir);
+    }
+    const filePath = path.join(targetDir, `${uniquePrefix}_test.${extension}`);
+    await fsPromises.writeFile(filePath, "test");
+    return filePath;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createDocument = async (token, file, documentType = "OTHER") => {
+  try {
+    const response = await request(app)
+      .post("/api/documents?isTesting=true")
+      .set("Authorization", `Bearer ${token}`)
+      .set("Content-Type", "multipart/form-data")
+      .field("documentType", documentType)
+      .attach("file", file);
+    return response.body.data;
+  } catch (error) {
+    console.log("error creating document", error);
   }
 };

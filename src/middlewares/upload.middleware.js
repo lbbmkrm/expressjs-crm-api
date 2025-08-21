@@ -4,26 +4,49 @@ import fsPromises from "fs/promises";
 import { AppError } from "./../utils/AppError.js";
 
 const baseDir = process.cwd();
-const uploadDir = path.join(baseDir, "uploads/documents");
-const checkDir = async () => {
+const baseUploadDir = path.join(baseDir, "uploads", "documents");
+
+const checkDir = async (dirPath) => {
   try {
-    await fsPromises.access(uploadDir);
+    await fsPromises.access(dirPath);
   } catch (error) {
-    await fsPromises.mkdir(uploadDir, { recursive: true });
+    await fsPromises.mkdir(dirPath, { recursive: true });
   }
 };
-checkDir();
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
+  destination: async (req, file, cb) => {
+    try {
+      const isTesting = req.query.isTesting === "true";
+      const targetDir = isTesting
+        ? path.join(baseUploadDir, "tests")
+        : baseUploadDir;
+
+      await checkDir(targetDir);
+
+      cb(null, targetDir);
+    } catch (err) {
+      cb(err);
+    }
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+    const isTesting = req.query.isTesting === "true";
+
+    if (isTesting) {
+      cb(null, file.originalname);
+    } else {
+      cb(
+        null,
+        `${req.body.documentType}${Date.now()}${path.extname(
+          file.originalname
+        )}`
+      );
+    }
   },
 });
 
 const upload = multer({
-  storage: storage,
+  storage,
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       "application/pdf",
@@ -42,11 +65,12 @@ const upload = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      return cb(new AppError("Invalid file type", 400));
+      req.fileValidationError = "Invalid file type";
+      return cb(null, false, new Error("Invalid file type"));
     }
   },
   limits: {
-    fileSize: 1024 * 1024 * 5,
+    fileSize: 5 * 1024 * 1024, // 5MB
   },
 });
 

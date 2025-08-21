@@ -8,7 +8,7 @@ import {
   createDocumentScheme,
   updateDocumentScheme,
   documentIdScheme,
-  documentFilterScheme,
+  documentTypeScheme,
 } from "./../validators/document.validator.js";
 import documentService from "../services/document.service.js";
 import uploadMiddleware from "./../middlewares/upload.middleware.js";
@@ -18,7 +18,7 @@ router.use(authMiddleware);
 
 router.get(
   "/",
-  validate(documentFilterScheme, "query"),
+  validate(documentTypeScheme, "query"),
   policyMiddleware(documentPolicy, "canViewAll"),
   documentController.index
 );
@@ -26,7 +26,10 @@ router.get(
 router.get(
   "/:id",
   validate(documentIdScheme, "params"),
-  policyMiddleware(documentPolicy, "canView"),
+  policyMiddleware(documentPolicy, "canView", {
+    needModel: true,
+    serviceMethod: documentService.getDocumentById,
+  }),
   documentController.show
 );
 

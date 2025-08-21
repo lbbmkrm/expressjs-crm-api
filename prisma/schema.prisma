@@ -81,6 +81,7 @@ enum CampaignType {
 
 enum DocumentType {
   PROPOSAL
+  ORDER
   INVOICE
   QUOTE
   CONTRACT
@@ -181,8 +182,9 @@ model Campaign {
   updatedAt DateTime @map("updated_at") @updatedAt
   deletedAt DateTime? @map("deleted_at")
 
-  lead Lead[] @relation("leadCampaign")
   creator User @relation("campaignCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  lead Lead[] @relation("leadCampaign")
+  document Document[] @relation("documentCampaign")
   @@map("campaigns")
 }
 
@@ -334,12 +336,13 @@ model Document {
   path String @db.VarChar(255)
   size Int 
   fileType String @map("file_type") @db.VarChar(255)
-  documentType DocumentType @default(OTHER)
+  documentType DocumentType @default(OTHER) @map("document_type")
   createdByUserId Int @map("created_by_user_id")
   customerId Int? @map("customer_id")
   contactId Int? @map("contact_id")
   leadId Int? @map("lead_id")
   opportunityId Int? @map("opportunity_id")
+  campaignId Int? @map("campaign_id")
   saleId Int? @map("sale_id")
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
@@ -350,6 +353,7 @@ model Document {
   contact Contact? @relation("documentContact", fields: [contactId], references: [id], onDelete: SetNull)
   lead Lead? @relation("documentLead", fields: [leadId], references: [id], onDelete: SetNull)
   opportunity Opportunity? @relation("documentOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
+  campaign Campaign? @relation("documentCampaign", fields: [campaignId], references: [id], onDelete: SetNull)
   sale Sale? @relation("documentSale", fields: [saleId], references: [id], onDelete: SetNull)
 
   @@map("documents")

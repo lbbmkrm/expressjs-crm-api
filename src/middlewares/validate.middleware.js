@@ -1,4 +1,5 @@
 import { AppError } from "../utils/AppError.js";
+import fsPromises from "fs/promises";
 
 const validate =
   (schema, property = "body") =>
@@ -16,7 +17,14 @@ const validate =
       await schema.validateAsync(dataToValidate);
       next();
     } catch (err) {
-      next(new AppError(err.message, 400));
+      if (req.file) {
+        try {
+          await fsPromises.unlink(req.file.path);
+        } catch (err) {
+          return next(err);
+        }
+      }
+      return next(new AppError(err.message, 400));
     }
   };
 

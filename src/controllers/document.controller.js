@@ -19,7 +19,9 @@ const documentController = {
   },
   show: async (req, res, next) => {
     try {
-      const document = await documentService.getDocumentById(req.params.id);
+      const document = await documentService.getDocumentById(
+        parseInt(req.params.id)
+      );
       res.status(200).json({
         status: "success",
         message: "Document retrieved successfully",
@@ -31,6 +33,9 @@ const documentController = {
   },
   create: async (req, res, next) => {
     try {
+      if (req.fileValidationError) {
+        throw new AppError(req.fileValidationError, 400);
+      }
       const document = await documentService.createDocument(
         req.user.id,
         req.file,
@@ -47,8 +52,12 @@ const documentController = {
   },
   update: async (req, res, next) => {
     try {
+      if (req.fileValidationError) {
+        throw new AppError(req.fileValidationError, 400);
+      }
       const document = await documentService.updateDocument(
-        req.params.id,
+        parseInt(req.params.id),
+        req.file,
         req.body
       );
       res.status(200).json({
@@ -62,7 +71,7 @@ const documentController = {
   },
   destroy: async (req, res, next) => {
     try {
-      await documentService.deleteDocument(req.params.id);
+      await documentService.deleteDocument(parseInt(req.params.id));
       res.status(200).json({
         status: "success",
         message: "Document deleted successfully",

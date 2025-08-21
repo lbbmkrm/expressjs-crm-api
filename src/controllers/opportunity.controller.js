@@ -30,7 +30,6 @@ const opportunityController = {
   },
   create: async (req, res, next) => {
     try {
-      console.log("User", req.user);
       const opportunity = await opportunityService.createOpportunity(
         req.user.id,
         req.body
