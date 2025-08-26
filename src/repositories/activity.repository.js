@@ -30,6 +30,7 @@ const activityRelation = {
       name: true,
     },
   },
+  documents: true,
 };
 const activityRepository = {
   all: async (type) => {

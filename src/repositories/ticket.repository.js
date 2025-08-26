@@ -19,7 +19,9 @@ const ticketRelation = {
       name: true,
     },
   },
+  documents: true,
 };
+
 const ticketRepository = {
   all: async (status) => {
     const whereClause = {

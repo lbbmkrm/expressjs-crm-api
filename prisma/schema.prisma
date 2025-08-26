@@ -282,6 +282,7 @@ model Ticket {
   creator User @relation("ticketCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
   customer Customer @relation("ticketCustomer", fields: [customerId], references: [id], onDelete: Restrict)
   assignedToUser User @relation("ticketAssigned", fields: [assignedToUserId], references: [id], onDelete: Restrict)
+  documents Document[] @relation("documentTicket")
   @@map("tickets")
 }
 
@@ -326,6 +327,7 @@ model Activity {
   lead Lead? @relation("activityLead", fields: [leadId], references: [id], onDelete: SetNull)
   opportunity Opportunity? @relation("activityOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
   creator User @relation("activityCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  documents Document[] @relation("documentActivity")
 
   @@map("activities")
 }
@@ -344,6 +346,8 @@ model Document {
   opportunityId Int? @map("opportunity_id")
   campaignId Int? @map("campaign_id")
   saleId Int? @map("sale_id")
+  ticketId Int? @map("ticket_id")
+  activityId Int? @map("activity_id")
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
   deletedAt DateTime? @map("deleted_at")
@@ -355,6 +359,8 @@ model Document {
   opportunity Opportunity? @relation("documentOpportunity", fields: [opportunityId], references: [id], onDelete: SetNull)
   campaign Campaign? @relation("documentCampaign", fields: [campaignId], references: [id], onDelete: SetNull)
   sale Sale? @relation("documentSale", fields: [saleId], references: [id], onDelete: SetNull)
+  ticket Ticket? @relation("documentTicket", fields: [ticketId], references: [id], onDelete: SetNull)
+  activity Activity? @relation("documentActivity", fields: [activityId], references: [id], onDelete: SetNull)
 
   @@map("documents")
 }

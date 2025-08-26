@@ -8,6 +8,7 @@ import {
   ticketIdScheme,
   ticketStatusScheme,
 } from "./../validators/ticket.validator.js";
+import { documentIdScheme } from "./../validators/document.validator.js";
 import policyMiddleware from "./../middlewares/policy.middleware.js";
 import ticketPolicy from "./../policies/ticket.policy.js";
 
@@ -65,6 +66,29 @@ router.delete(
   policyMiddleware(ticketPolicy, "canDelete"),
   validate(ticketIdScheme, "params"),
   ticketController.destroy
+);
+
+router.get(
+  "/:id/documents",
+  policyMiddleware(ticketPolicy, "canView"),
+  validate(ticketIdScheme, "params"),
+  ticketController.getDocumentsForTicket
+);
+
+router.post(
+  "/:id/documents/:documentId",
+  policyMiddleware(ticketPolicy, "canUpdate"),
+  validate(ticketIdScheme, "params"),
+  validate(documentIdScheme, "params"),
+  ticketController.addDocumentToTicket
+);
+
+router.delete(
+  "/:id/documents/:documentId",
+  policyMiddleware(ticketPolicy, "canUpdate"),
+  validate(ticketIdScheme, "params"),
+  validate(documentIdScheme, "params"),
+  ticketController.removeDocumentFromTicket
 );
 
 export default router;

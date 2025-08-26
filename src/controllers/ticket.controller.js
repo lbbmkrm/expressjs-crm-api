@@ -115,5 +115,47 @@ const ticketController = {
       next(err);
     }
   },
+  getDocumentsForTicket: async (req, res, next) => {
+    try {
+      const documents = await ticketService.getTicketDocuments(parseInt(req.params.id));
+      const message =
+        documents.length === 0
+          ? "No documents found for this ticket"
+          : "Documents retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: documents,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  addDocumentToTicket: async (req, res, next) => {
+    try {
+      const { id, documentId } = req.params;
+      const document = await ticketService.addDocumentToTicket(parseInt(id), parseInt(documentId));
+      res.status(200).json({
+        status: "success",
+        message: "Document added to ticket successfully",
+        data: document,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  removeDocumentFromTicket: async (req, res, next) => {
+    try {
+      const { id, documentId } = req.params;
+      const document = await ticketService.removeDocumentFromTicket(parseInt(id), parseInt(documentId));
+      res.status(200).json({
+        status: "success",
+        message: "Document removed from ticket successfully",
+        data: document,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 export default ticketController;

@@ -1,299 +1,219 @@
-import { PrismaClient, Roles } from "../generated/prisma/index.js";
-import bcrypt from "bcrypt";
+import { PrismaClient } from '../generated/prisma/index.js';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-// Helper function to get a random item from an array
-const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
 async function main() {
-  console.log("🚀 Starting interactive transaction seeder...");
-
   await prisma.$transaction(async (tx) => {
-    console.log("🧹 Starting seeder cleanup...");
-    // Clean up database in the correct order to avoid foreign key constraint errors
     await tx.saleItem.deleteMany();
-    await tx.sale.deleteMany();
+    await tx.document.deleteMany();
     await tx.activity.deleteMany();
     await tx.note.deleteMany();
-    await tx.document.deleteMany();
+    await tx.sale.deleteMany();
     await tx.task.deleteMany();
     await tx.ticket.deleteMany();
-    await tx.campaign.deleteMany();
     await tx.opportunity.deleteMany();
     await tx.lead.deleteMany();
+    await tx.campaign.deleteMany();
     await tx.contact.deleteMany();
     await tx.customer.deleteMany();
     await tx.product.deleteMany();
     await tx.dashboard.deleteMany();
     await tx.user.deleteMany();
-    console.log("✅ Cleanup complete.");
 
-    console.log("🌱 Starting seeding process...");
+    const hashedPassword = await bcrypt.hash('password123', 10);
 
-    // --- 1. Create Users ---
-    const password = "password123";
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const admin = await tx.user.create({
+      data: {
+        username: 'admin',
+        email: 'admin@crm.com',
+        password: hashedPassword,
+        role: 'ADMIN',
+      },
+    });
 
-    const usersData = [
-      { username: "admin", email: "admin@crm.com", role: Roles.ADMIN },
-      { username: "manager", email: "manager@crm.com", role: Roles.MANAGER },
-      { username: "sales1", email: "sales1@crm.com", role: Roles.SALES },
-      { username: "sales2", email: "sales2@crm.com", role: Roles.SALES },
-      { username: "viewer", email: "viewer@crm.com", role: Roles.VIEWER },
-    ];
+    const manager = await tx.user.create({
+      data: {
+        username: 'manager',
+        email: 'manager@crm.com',
+        password: hashedPassword,
+        role: 'MANAGER',
+      },
+    });
 
-    const createdUsers = [];
-    for (const u of usersData) {
-      const user = await tx.user.create({
-        data: { ...u, password: hashedPassword },
-      });
-      createdUsers.push(user);
-      console.log(`- Created User: ${user.username}`);
-    }
-    const adminUser = createdUsers.find((u) => u.role === "ADMIN");
-    const salesUsers = createdUsers.filter((u) => u.role === "SALES");
+    const salesUser = await tx.user.create({
+      data: {
+        username: 'sales',
+        email: 'sales@crm.com',
+        password: hashedPassword,
+        role: 'SALES',
+      },
+    });
 
-    // --- 2. Create Dashboards for each User ---
-    for (const user of createdUsers) {
+    const users = [admin, manager, salesUser];
+    for (const user of users) {
       await tx.dashboard.create({
         data: {
           name: `${user.username}'s Dashboard`,
-          description: `Default dashboard for ${user.username}`,
-          layout: {
-            widgets: [
-              {
-                id: "welcome",
-                type: "text",
-                content: "Welcome to your dashboard!",
-              },
-              { id: "sales_overview", type: "chart", chartType: "bar" },
-              { id: "task_list", type: "list" },
-            ],
-          },
+          layout: {},
           userId: user.id,
         },
       });
-      console.log(`- Created Dashboard for ${user.username}`);
     }
 
-    // --- 3. Create Products ---
-    const productsData = [
-      {
-        name: "Lisensi Software Pro",
+    const product1 = await tx.product.create({
+      data: {
+        name: 'Lisensi Software Pro',
         price: 5000000,
-        description: "Lisensi tahunan untuk software Pro.",
+        description: 'Lisensi tahunan untuk software Pro.',
+        createdByUserId: admin.id,
       },
-      {
-        name: "Paket Konsultasi Basic",
+    });
+
+    const product2 = await tx.product.create({
+      data: {
+        name: 'Paket Konsultasi Basic',
         price: 2500000,
-        description: "10 jam konsultasi basic.",
+        description: '10 jam konsultasi basic.',
+        createdByUserId: admin.id,
       },
-      {
-        name: "Layanan Maintenance Tahunan",
-        price: 1500000,
-        description: "Maintenance server dan aplikasi.",
+    });
+
+    const customer1 = await tx.customer.create({
+      data: {
+        name: 'PT Teknologi Nusantara',
+        email: 'contact@nusantara.com',
+        phone: '081234567890',
+        company: 'Nusantara Group',
+        createdByUserId: salesUser.id,
       },
-      {
-        name: "Modul Tambahan CRM",
-        price: 2000000,
-        description: "Modul analytics untuk CRM.",
+    });
+
+    await tx.contact.create({
+      data: {
+        firstName: 'Budi',
+        lastName: 'Santoso',
+        email: 'budi.s@nusantara.com',
+        phone: '081234567891',
+        position: 'IT Manager',
+        customerId: customer1.id,
+        createdByUserId: salesUser.id,
       },
-      {
-        name: "Training Pengguna (per sesi)",
-        price: 750000,
-        description: "Sesi training untuk tim.",
+    });
+
+    const lead1 = await tx.lead.create({
+      data: {
+        name: 'Proyek Website Baru - PT Sejahtera',
+        email: 'info@sejahtera.com',
+        phone: '089876543210',
+        status: 'NEW',
+        createdByUserId: salesUser.id,
       },
-    ];
-    const createdProducts = [];
-    for (const p of productsData) {
-      const product = await tx.product.create({
-        data: { ...p, createdByUserId: adminUser.id },
-      });
-      createdProducts.push(product);
-    }
-    console.log(`- Created ${createdProducts.length} Products`);
+    });
 
-    // --- 4. Create Customers & Contacts ---
-    const customersData = [
-      {
-        name: "PT Teknologi Nusantara",
-        company: "Nusantara Group",
-        address: "Jl. Sudirman No. 1, Jakarta",
+    const opportunity1 = await tx.opportunity.create({
+      data: {
+        name: 'Peluang dari PT Teknologi Nusantara',
+        amount: 7500000,
+        stage: 'PROPOSAL_PRESENTATION',
+        closeDate: new Date(),
+        customerId: customer1.id,
+        createdByUserId: salesUser.id,
       },
-      {
-        name: "CV Solusi Digital",
-        company: "Solusi Group",
-        address: "Jl. Gatot Subroto No. 2, Bandung",
+    });
+
+    const sale1 = await tx.sale.create({
+      data: {
+        customerId: customer1.id,
+        opportunityId: opportunity1.id,
+        totalAmount: 7500000,
+        status: 'COMPLETED',
+        createdByUserId: salesUser.id,
       },
-      {
-        name: "PT Inovasi Cipta Karya",
-        company: "Inovasi Corp",
-        address: "Jl. Thamrin No. 3, Surabaya",
+    });
+
+    await tx.saleItem.create({
+      data: {
+        saleId: sale1.id,
+        productId: product1.id,
+        quantity: 1,
+        unitPrice: product1.price,
       },
-      {
-        name: "UD Maju Jaya",
-        company: "Maju Jaya",
-        address: "Jl. Merdeka No. 4, Medan",
+    });
+
+    await tx.saleItem.create({
+      data: {
+        saleId: sale1.id,
+        productId: product2.id,
+        quantity: 1,
+        unitPrice: product2.price,
       },
-      {
-        name: "PT Sinar Harapan",
-        company: "Sinar Corp",
-        address: "Jl. Diponegoro No. 5, Makassar",
-      },
-    ];
-    const createdCustomers = [];
-    const createdContacts = [];
+    });
 
-    for (const c of customersData) {
-      const customer = await tx.customer.create({
-        data: {
-          ...c,
-          email: `contact@${c.name.toLowerCase().replace(/\s/g, "")}.com`,
-          phone: `0812${Math.floor(10000000 + Math.random() * 90000000)}`,
-          createdByUserId: getRandomItem(salesUsers).id,
-        },
-      });
-      createdCustomers.push(customer);
-
-      const contact = await tx.contact.create({
-        data: {
-          customerId: customer.id,
-          firstName: `Budi`,
-          lastName: `${c.name.split(" ")[1]}`,
-          email: `budi@${c.name.toLowerCase().replace(/\s/g, "")}.com`,
-          phone: `0813${Math.floor(10000000 + Math.random() * 90000000)}`,
-          position: "Manager IT",
-          createdByUserId: customer.createdByUserId,
-        },
-      });
-      createdContacts.push(contact);
-    }
-    console.log(`- Created ${createdCustomers.length} Customers and Contacts`);
-
-    // --- 5. Create Leads -> Opportunities -> Sales ---
-    const leadsData = [
-      { name: "Proyek Website Baru - PT Sejahtera", status: "CONVERTED" },
-      { name: "Integrasi API - CV Makmur", status: "CONVERTED" },
-      { name: "Pengadaan Software HR - PT Bahagia", status: "LOST" },
-      {
-        name: "Konsultasi Digital Marketing - UD Sentosa",
-        status: "CONTACTED",
-      },
-      { name: "Training Tim Sales - PT Abadi", status: "NEW" },
-    ];
-
-    for (const l of leadsData) {
-      const assignedUser = getRandomItem(salesUsers);
-      const customer = getRandomItem(createdCustomers);
-
-      const lead = await tx.lead.create({
-        data: {
-          ...l,
-          email: `${l.name.split(" ")[0].toLowerCase()}@example.com`,
-          phone: `0857${Math.floor(10000000 + Math.random() * 90000000)}`,
-          createdByUserId: assignedUser.id,
-          customerId: customer.id,
-        },
-      });
-      console.log(`- Created Lead: ${lead.name}`);
-
-      // Create an activity for the new lead
-      await tx.activity.create({
-        data: {
-          type: "NOTE",
-          subject: "Lead Dibuat",
-          content: `Lead baru "${lead.name}" telah dibuat dan ditugaskan kepada ${assignedUser.username}.`,
-          leadId: lead.id,
-          createdByUserId: adminUser.id,
-        },
-      });
-
-      if (lead.status === "CONVERTED" || lead.status === "LOST") {
-        const stage = lead.status === "CONVERTED" ? "WON" : "LOST";
-        const opportunity = await tx.opportunity.create({
-          data: {
-            name: `Peluang dari ${lead.name}`,
-            amount: Math.floor(5 + Math.random() * 50) * 1000000,
-            stage: stage,
-            closeDate: new Date(),
-            description: `Peluang yang dikonversi dari lead ${lead.name}`,
-            customerId: customer.id,
-            leadId: lead.id,
-            createdByUserId: assignedUser.id,
-          },
-        });
-        console.log(
-          `-- Converted to Opportunity: ${opportunity.name} (${opportunity.stage})`
-        );
-
-        if (opportunity.stage === "WON") {
-          const saleItems = [
-            {
-              productId: createdProducts[0].id,
-              quantity: 1,
-              unitPrice: createdProducts[0].price,
-            },
-            {
-              productId: createdProducts[2].id,
-              quantity: 1,
-              unitPrice: createdProducts[2].price,
-            },
-          ];
-          const totalAmount = saleItems.reduce(
-            (sum, item) => sum + item.quantity * item.unitPrice,
-            0
-          );
-
-          await tx.sale.create({
-            data: {
-              customerId: opportunity.customerId,
-              opportunityId: opportunity.id,
-              totalAmount: totalAmount,
-              status: "COMPLETED",
-              createdByUserId: opportunity.createdByUserId,
-              items: {
-                create: saleItems,
-              },
-            },
-          });
-          console.log(`--- Created Sale for Opportunity: ${opportunity.name}`);
-        }
-      }
-    }
-
-    // --- 6. Create some standalone Tasks and Notes ---
     await tx.task.create({
       data: {
-        name: "Follow up dengan semua lead baru",
-        description: "Hubungi semua lead yang statusnya masih NEW minggu ini.",
-        status: "PENDING",
-        priority: "HIGH",
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Due in 7 days
-        assignedToUserId: createdUsers.find((u) => u.role === "MANAGER").id,
-        createdByUserId: adminUser.id,
+        name: 'Follow up proposal PT Teknologi Nusantara',
+        description: 'Hubungi Budi Santoso untuk follow up proposal yang dikirim minggu lalu.',
+        status: 'PENDING',
+        priority: 'HIGH',
+        dueDate: new Date(),
+        assignedToUserId: salesUser.id,
+        createdByUserId: manager.id,
+        opportunityId: opportunity1.id,
       },
     });
+
+    await tx.activity.create({
+      data: {
+        type: 'EMAIL',
+        subject: 'Proposal Penawaran Software CRM',
+        content: 'Proposal telah dikirimkan ke Budi Santoso.',
+        createdByUserId: salesUser.id,
+        opportunityId: opportunity1.id,
+      },
+    });
+
     await tx.note.create({
       data: {
-        content:
-          "Meeting Q3 akan diadakan pada akhir bulan. Siapkan laporan penjualan.",
-        customerId: createdCustomers[0].id,
-        createdByUserId: adminUser.id,
+        content: 'Budi Santoso meminta diskon 10% untuk paket konsultasi.',
+        createdByUserId: salesUser.id,
+        opportunityId: opportunity1.id,
       },
     });
-    console.log(`- Created additional Tasks and Notes.`);
-  }); // End of transaction
 
-  console.log("✅ Seeding finished successfully!");
+    await tx.campaign.create({
+      data: {
+        name: 'Diskon Akhir Tahun 2025',
+        type: 'EMAIL',
+        status: 'ACTIVE',
+        startDate: new Date(),
+        endDate: new Date(new Date().setDate(new Date().getDate() + 30)),
+        budget: 10000000,
+        createdByUserId: manager.id,
+      },
+    });
+
+    await tx.ticket.create({
+        data: {
+            subject: 'Tidak bisa login ke sistem',
+            description: 'Salah satu user kami, Budi Santoso, tidak bisa login.',
+            status: 'OPEN',
+            customerId: customer1.id,
+            assignedToUserId: manager.id,
+            createdByUserId: admin.id,
+        }
+    });
+
+  });
 }
 
 main()
-  .catch((e) => {
-    console.error("❌ An error occurred during seeding:");
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
+  .then(async () => {
+    console.log('Database seeding completed successfully.');
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error('Error during database seeding:', e);
+    await prisma.$disconnect();
+    process.exit(1);
   });

@@ -73,6 +73,38 @@ const ticketService = {
     }
     return await ticketRepository.softDelete(id);
   },
+  getTicketDocuments: async (ticketId) => {
+    const ticket = await ticketRepository.findById(ticketId);
+    if (!ticket) {
+      throw new AppError("Ticket not found", 404);
+    }
+    return await documentRepository.findByTicketId(ticketId);
+  },
+  addDocumentToTicket: async (ticketId, documentId) => {
+    const ticket = await ticketRepository.findById(ticketId);
+    if (!ticket) {
+      throw new AppError("Ticket not found", 404);
+    }
+    const document = await documentRepository.findById(documentId);
+    if (!document) {
+      throw new AppError("Document not found", 404);
+    }
+    return await documentRepository.associateDocumentWithTicket(documentId, ticketId);
+  },
+  removeDocumentFromTicket: async (ticketId, documentId) => {
+    const ticket = await ticketRepository.findById(ticketId);
+    if (!ticket) {
+      throw new AppError("Ticket not found", 404);
+    }
+    const document = await documentRepository.findById(documentId);
+    if (!document) {
+      throw new AppError("Document not found", 404);
+    }
+    if (document.ticketId !== ticketId) {
+      throw new AppError("Document is not associated with this ticket", 400);
+    }
+    return await documentRepository.associateDocumentWithTicket(documentId, null);
+  },
 };
 
 export default ticketService;

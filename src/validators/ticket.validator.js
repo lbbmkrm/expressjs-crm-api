@@ -26,6 +26,10 @@ const ticketStatusScheme = Joi.object({
     .valid(...Object.values(TicketStatus)),
 });
 
+const documentIdScheme = Joi.object({
+  documentId: Joi.number().integer().required(),
+});
+
 export {
   createTicketScheme,
   updateTicketScheme,

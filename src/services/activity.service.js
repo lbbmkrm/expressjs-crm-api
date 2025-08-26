@@ -75,5 +75,37 @@ const activityService = {
     }
     return activityRepository.delete(id);
   },
+  getActivityDocuments: async (activityId) => {
+    const activity = await activityRepository.findById(activityId);
+    if (!activity) {
+      throw new AppError("Activity not found", 404);
+    }
+    return await documentRepository.findByActivityId(activityId);
+  },
+  addDocumentToActivity: async (activityId, documentId) => {
+    const activity = await activityRepository.findById(activityId);
+    if (!activity) {
+      throw new AppError("Activity not found", 404);
+    }
+    const document = await documentRepository.findById(documentId);
+    if (!document) {
+      throw new AppError("Document not found", 404);
+    }
+    return await documentRepository.associateDocumentWithActivity(documentId, activityId);
+  },
+  removeDocumentFromActivity: async (activityId, documentId) => {
+    const activity = await activityRepository.findById(activityId);
+    if (!activity) {
+      throw new AppError("Activity not found", 404);
+    }
+    const document = await documentRepository.findById(documentId);
+    if (!document) {
+      throw new AppError("Document not found", 404);
+    }
+    if (document.activityId !== activityId) {
+      throw new AppError("Document is not associated with this activity", 400);
+    }
+    return await documentRepository.associateDocumentWithActivity(documentId, null);
+  },
 };
 export default activityService;

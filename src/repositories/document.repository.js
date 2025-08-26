@@ -52,6 +52,14 @@ const documentRepository = {
       data: data,
     });
   },
+  findByTicketId: async (ticketId) => {
+    return prisma.document.findMany({
+      where: {
+        ticketId: ticketId,
+        deletedAt: null,
+      },
+    });
+  },
   softDelete: async (id) => {
     return prisma.document.update({
       where: {

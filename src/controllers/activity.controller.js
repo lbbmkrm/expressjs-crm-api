@@ -90,6 +90,48 @@ const activityController = {
       next(err);
     }
   },
+  getDocumentsForActivity: async (req, res, next) => {
+    try {
+      const documents = await activityService.getActivityDocuments(parseInt(req.params.id));
+      const message =
+        documents.length === 0
+          ? "No documents found for this activity"
+          : "Documents retrieved successfully";
+      res.status(200).json({
+        status: "success",
+        message: message,
+        data: documents,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  addDocumentToActivity: async (req, res, next) => {
+    try {
+      const { id, documentId } = req.params;
+      const document = await activityService.addDocumentToActivity(parseInt(id), parseInt(documentId));
+      res.status(200).json({
+        status: "success",
+        message: "Document added to activity successfully",
+        data: document,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  removeDocumentFromActivity: async (req, res, next) => {
+    try {
+      const { id, documentId } = req.params;
+      const document = await activityService.removeDocumentFromActivity(parseInt(id), parseInt(documentId));
+      res.status(200).json({
+        status: "success",
+        message: "Document removed from activity successfully",
+        data: document,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 export default activityController;
