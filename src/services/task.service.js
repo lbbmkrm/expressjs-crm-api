@@ -44,8 +44,16 @@ const taskService = {
     requestData.createdByUserId = userId;
     return taskRepository.create(requestData);
   },
-  getAllTasks: async () => {
-    return taskRepository.all();
+  getAllTasks: async (query) => {
+    if (query.assignedUserId) {
+      const assignedUserId = parseInt(query.assignedUserId);
+      const user = await userRepository.findById(assignedUserId);
+      if (!user) {
+        throw new AppError("User not found", 404);
+      }
+      query.assignedUserId = assignedUserId;
+    }
+    return taskRepository.all(query);
   },
   getTaskById: async (id) => {
     const task = await taskRepository.findById(id);
@@ -53,23 +61,6 @@ const taskService = {
       throw new AppError("Task not found", 404);
     }
     return task;
-  },
-  getTasksByAssignedUserId: async (assignedToUserId) => {
-    const user = await userRepository.findById(assignedToUserId);
-    if (!user) {
-      throw new AppError("User not found", 404);
-    }
-    const tasks = await taskRepository.findByAssignedUserId(assignedToUserId);
-    return tasks;
-  },
-  getTasksByStatus: async (status) => {
-    if (!status) {
-      throw new AppError("Status is required", 400);
-    }
-    return taskRepository.findByStatus(status);
-  },
-  getTasksByPriority: async (priority) => {
-    return taskRepository.findByPriority(priority);
   },
   getUserTasks: async (userId) => {
     return taskRepository.findByUserId(userId);

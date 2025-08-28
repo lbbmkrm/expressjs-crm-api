@@ -221,14 +221,14 @@ describe("Task Endpoints", () => {
     });
     it("should get tasks by status (only admin)", async () => {
       const response = await request(app)
-        .get(`/api/tasks/status/PENDING`)
+        .get(`/api/tasks?status=IN_PROGRESS`)
         .set("Authorization", `Bearer ${userData.admin.token}`);
       expect(response.statusCode).toBe(200);
       expect(response.body.status).toBe("success");
     });
     it("should fail to get tasks with invalid status", async () => {
       const response = await request(app)
-        .get(`/api/tasks/status/INVALID`)
+        .get(`/api/tasks?status=INVALID`)
         .set("Authorization", `Bearer ${userData.admin.token}`);
       expect(response.statusCode).toBe(400);
       expect(response.body.status).toBe("error");
@@ -242,21 +242,21 @@ describe("Task Endpoints", () => {
     });
     it("should fail to get tasks with invalid priority", async () => {
       const response = await request(app)
-        .get(`/api/tasks/priority/INVALID`)
+        .get(`/api/tasks?priority=INVALID`)
         .set("Authorization", `Bearer ${userData.admin.token}`);
       expect(response.statusCode).toBe(400);
       expect(response.body.status).toBe("error");
     });
     it("should get tasks by assignedUserId (only admin)", async () => {
       const response = await request(app)
-        .get(`/api/tasks/assigned/${userData.sales1.id}`)
+        .get(`/api/tasks?assignedUserId=${userData.sales1.id}`)
         .set("Authorization", `Bearer ${userData.admin.token}`);
       expect(response.statusCode).toBe(200);
       expect(response.body.status).toBe("success");
     });
     it("should fail to get tasks with invalid assignedUserId", async () => {
       const response = await request(app)
-        .get(`/api/tasks/assigned/9999`)
+        .get(`/api/tasks?assignedUserId=9999`)
         .set("Authorization", `Bearer ${userData.admin.token}`);
       expect(response.statusCode).toBe(404);
       expect(response.body.status).toBe("error");

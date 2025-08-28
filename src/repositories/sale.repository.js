@@ -200,7 +200,7 @@ const saleRepository = {
     });
   },
   calculateTotalRevenue: async () => {
-    return prisma.sale.aggregate({
+    const result = await prisma.sale.aggregate({
       _sum: {
         totalAmount: true,
       },
@@ -209,6 +209,7 @@ const saleRepository = {
         deletedAt: null,
       },
     });
+    return result._sum.totalAmount || 0;
   },
 };
 

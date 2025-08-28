@@ -85,38 +85,13 @@ const taskIdScheme = Joi.object({
     "number.integer": "Task ID must be an integer",
   }),
 });
-const statusParamScheme = Joi.object({
+const taskQueryScheme = Joi.object({
   status: Joi.string()
-    .valid(...Object.values(TaskStatus))
-    .required()
-    .messages({
-      "any.required": "Status is required",
-      "any.only":
-        "Status must be one of the following: PENDING, IN_PROGRESS, COMPLETED, CANCELLED",
-    }),
-});
-
-const priorityParamScheme = Joi.object({
+    .optional()
+    .valid(...Object.values(TaskStatus)),
   priority: Joi.string()
-    .required()
-    .valid(...Object.values(TaskPriority))
-    .messages({
-      "any.required": "Priority is required",
-      "any.only": "Priority must be one of the following: LOW, MEDIUM, HIGH",
-    }),
+    .optional()
+    .valid(...Object.values(TaskPriority)),
+  assignedUserId: Joi.number().integer().optional(),
 });
-const assignedUserIdScheme = Joi.object({
-  assignedUserId: Joi.number().integer().required().messages({
-    "any.required": "Assigned to user ID is required",
-    "number.base": "Assigned to user ID must be a number",
-    "number.integer": "Assigned to user ID must be an integer",
-  }),
-});
-export {
-  createTaskScheme,
-  updateTaskScheme,
-  taskIdScheme,
-  statusParamScheme,
-  priorityParamScheme,
-  assignedUserIdScheme,
-};
+export { createTaskScheme, updateTaskScheme, taskIdScheme, taskQueryScheme };

@@ -40,11 +40,23 @@ const taskRepository = {
       include: taskRelation,
     });
   },
-  all: async () => {
+  all: async (query) => {
+    const { status, priority, assignedUserId } = query;
+    const whereClause = {
+      deletedAt: null,
+    };
+    if (status) {
+      whereClause.status = status;
+    }
+    if (priority) {
+      whereClause.priority = priority;
+    }
+    if (assignedUserId) {
+      whereClause.assignedToUserId = assignedUserId;
+    }
     return prisma.task.findMany({
-      where: {
-        deletedAt: null,
-      },
+      where: whereClause,
+      include: taskRelation,
     });
   },
   findById: async (id) => {

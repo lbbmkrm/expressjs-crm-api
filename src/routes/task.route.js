@@ -8,11 +8,8 @@ import {
   createTaskScheme,
   updateTaskScheme,
   taskIdScheme,
-  statusParamScheme,
-  priorityParamScheme,
-  assignedUserIdScheme,
+  taskQueryScheme,
 } from "../validators/task.validator.js";
-import { AppError } from "../utils/AppError.js";
 import taskService from "../services/task.service.js";
 
 const router = express.Router();
@@ -20,40 +17,10 @@ const router = express.Router();
 router.get(
   "/",
   authMiddleware,
+  validate(taskQueryScheme, "query"),
   policyMiddleware(taskPolicy, "canViewAll"),
   taskController.index
 );
-
-router.get(
-  "/status/:status",
-  authMiddleware,
-  validate(statusParamScheme, "params"),
-  policyMiddleware(taskPolicy, "canViewAll"),
-  taskController.indexByStatus
-);
-router.get("/status", (req, res, next) => {
-  next(new AppError("Route parameters is required", 400));
-});
-router.get(
-  "/priority/:priority",
-  authMiddleware,
-  validate(priorityParamScheme, "params"),
-  policyMiddleware(taskPolicy, "canViewAll"),
-  taskController.indexByPriority
-);
-router.get("/priority", (req, res, next) => {
-  next(new AppError("Route parameters is required", 400));
-});
-router.get(
-  "/assigned/:assignedUserId",
-  authMiddleware,
-  validate(assignedUserIdScheme, "params"),
-  policyMiddleware(taskPolicy, "canViewAll"),
-  taskController.indexByAssignedUser
-);
-router.get("/assigned", (req, res, next) => {
-  next(new AppError("Route parameters is required", 400));
-});
 router.get("/my-tasks", authMiddleware, taskController.indexByUserTasks);
 router.post(
   "/",

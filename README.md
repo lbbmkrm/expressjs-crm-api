@@ -1,11 +1,11 @@
 # CRM RESTful API
 
-Ini adalah backend RESTful API yang komprehensif untuk aplikasi **Customer Relationship Management (CRM)**. Proyek ini dibangun menggunakan Node.js, Express, dan Prisma, dengan fokus pada arsitektur yang bersih, keamanan, dan skalabilitas. Proyek ini berfungsi sebagai studi kasus atau portofolio yang menunjukkan implementasi praktik terbaik dalam pengembangan backend modern.
+Proyek ini dibangun menggunakan Node.js, Express, dan Prisma, dengan fokus pada arsitektur yang bersih, keamanan, dan skalabilitas. Proyek ini berfungsi sebagai studi kasus atau portofolio yang menunjukkan implementasi praktik terbaik yang saya ketahui dalam pengembangan aplikasi backend.
 
 ## Fitur Utama
 
 - **Manajemen Pengguna & Peran**: Sistem pengguna dengan empat peran berbeda (`ADMIN`, `MANAGER`, `SALES`, `VIEWER`).
-- **Otentikasi & Otorisasi**: Menggunakan JWT (JSON Web Tokens) untuk otentikasi dan sistem *Policy-Based Authorization* untuk mengontrol akses ke setiap endpoint berdasarkan peran pengguna.
+- **Otentikasi & Otorisasi**: Menggunakan JWT (JSON Web Tokens) untuk otentikasi dan sistem _Policy-Based Authorization_ untuk mengontrol akses ke setiap endpoint berdasarkan peran pengguna.
 - **Sales Pipeline**: Manajemen alur penjualan penuh, mulai dari `Lead` -> `Opportunity` -> `Sale`.
 - **Manajemen Pelanggan**: CRUD penuh untuk `Customers` dan `Contacts` terkait.
 - **Manajemen Produk**: Kemampuan untuk mengelola produk yang dapat dijual.
@@ -41,29 +41,34 @@ Aplikasi ini menggunakan **arsitektur berlapis (Layered Architecture)** untuk me
 ## Prasyarat
 
 - [Node.js](https://nodejs.org/) (v18.x atau lebih baru)
-- [NPM](https://www.npmjs.com/) atau [Yarn](https://yarnpkg.com/)
+- [NPM](https://www.npmjs.com/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Git](https://git-scm.com/)
 
 ## Instalasi & Setup
 
 1.  **Clone repositori ini:**
+
     ```bash
     git clone <URL_REPOSITORI_ANDA>
     cd crm-api
     ```
 
 2.  **Install dependensi:**
+
     ```bash
     npm install
     ```
 
 3.  **Setup Environment Variables:**
     Buat file `.env` di root proyek dengan menyalin dari `.env.example`:
+
     ```bash
     cp .env.example .env
     ```
+
     Kemudian, isi variabel di dalam file `.env`:
+
     ```env
     # URL koneksi ke database PostgreSQL Anda
     DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
@@ -77,6 +82,7 @@ Aplikasi ini menggunakan **arsitektur berlapis (Layered Architecture)** untuk me
 
 4.  **Jalankan Migrasi Database:**
     Perintah ini akan membuat tabel-tabel di database Anda sesuai dengan `schema.prisma`.
+
     ```bash
     npx prisma migrate dev
     ```
@@ -90,9 +96,11 @@ Aplikasi ini menggunakan **arsitektur berlapis (Layered Architecture)** untuk me
 ## Menjalankan Aplikasi
 
 - **Mode Development (dengan hot-reload):**
+
   ```bash
   npm run dev
   ```
+
   Server akan berjalan di `http://localhost:3000`.
 
 - **Mode Production:**
@@ -103,6 +111,7 @@ Aplikasi ini menggunakan **arsitektur berlapis (Layered Architecture)** untuk me
 ## Menjalankan Test
 
 Untuk menjalankan semua test suite menggunakan Jest:
+
 ```bash
 npm test
 ```

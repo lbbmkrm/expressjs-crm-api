@@ -3,7 +3,7 @@ import taskService from "../services/task.service.js";
 const taskController = {
   index: async (req, res, next) => {
     try {
-      const tasks = await taskService.getAllTasks();
+      const tasks = await taskService.getAllTasks(req.query);
       const message =
         tasks.length === 0 ? "No tasks found" : "Tasks retrieved successfully";
       res.status(200).json({
@@ -22,53 +22,6 @@ const taskController = {
         status: "success",
         message: "Task retrieved successfully",
         data: task,
-      });
-    } catch (err) {
-      next(err);
-    }
-  },
-  indexByAssignedUser: async (req, res, next) => {
-    try {
-      if (!req.params.assignedUserId) {
-        throw new Error("No user id provided");
-      }
-      const tasks = await taskService.getTasksByAssignedUserId(
-        parseInt(req.params.assignedUserId)
-      );
-      const message =
-        tasks.length === 0 ? "No tasks found" : "Tasks retrieved successfully";
-      res.status(200).json({
-        status: "success",
-        message: message,
-        data: tasks,
-      });
-    } catch (err) {
-      next(err);
-    }
-  },
-  indexByStatus: async (req, res, next) => {
-    try {
-      const tasks = await taskService.getTasksByStatus(req.params.status);
-      const message =
-        tasks.length === 0 ? "No tasks found" : "Tasks retrieved successfully";
-      res.status(200).json({
-        status: "success",
-        message: message,
-        data: tasks,
-      });
-    } catch (err) {
-      next(err);
-    }
-  },
-  indexByPriority: async (req, res, next) => {
-    try {
-      const tasks = await taskService.getTasksByPriority(req.params.priority);
-      const message =
-        tasks.length === 0 ? "No tasks found" : "Tasks retrieved successfully";
-      res.status(200).json({
-        status: "success",
-        message: message,
-        data: tasks,
       });
     } catch (err) {
       next(err);
