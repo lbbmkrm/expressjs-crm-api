@@ -10,6 +10,8 @@ const createDocumentScheme = Joi.object({
   leadId: Joi.number().integer().optional().allow(null),
   opportunityId: Joi.number().integer().optional().allow(null),
   campaignId: Joi.number().integer().optional().allow(null),
+  ticketId: Joi.number().integer().optional().allow(null),
+  activityId: Joi.number().integer().optional().allow(null),
   saleId: Joi.number().integer().optional().allow(null),
   file: Joi.any().required(),
 });
@@ -23,8 +25,10 @@ const updateDocumentScheme = Joi.object({
   leadId: Joi.number().integer().optional().allow(null),
   opportunityId: Joi.number().integer().optional().allow(null),
   campaignId: Joi.number().integer().optional().allow(null),
+  ticketId: Joi.number().integer().optional().allow(null),
+  activityId: Joi.number().integer().optional().allow(null),
   saleId: Joi.number().integer().optional().allow(null),
-  file: Joi.any().optional(),
+  file: Joi.any().required(),
 });
 
 const documentIdScheme = Joi.object({

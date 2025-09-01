@@ -195,7 +195,7 @@ describe("Ticket Endpoints", () => {
     });
     it("should get all tickets by creator id", async () => {
       const res = await request(app)
-        .get(`/api/tickets/creators/${userData.sales1.id}`)
+        .get(`/api/tickets?creator=${userData.sales1.id}`)
         .set("Authorization", `Bearer ${userData.manager.token}`);
 
       expect(res.statusCode).toBe(200);

@@ -23,12 +23,16 @@ const ticketRelation = {
 };
 
 const ticketRepository = {
-  all: async (status) => {
+  all: async (query) => {
+    const { status, creator } = query;
     const whereClause = {
       deletedAt: null,
     };
     if (status) {
       whereClause.status = status;
+    }
+    if (creator) {
+      whereClause.createdByUserId = creator;
     }
     return prisma.ticket.findMany({
       where: whereClause,
@@ -38,15 +42,6 @@ const ticketRepository = {
     return prisma.ticket.findUnique({
       where: {
         id: id,
-        deletedAt: null,
-      },
-      include: ticketRelation,
-    });
-  },
-  findByCreatorId: async (creatorId) => {
-    return prisma.ticket.findMany({
-      where: {
-        createdByUserId: creatorId,
         deletedAt: null,
       },
       include: ticketRelation,

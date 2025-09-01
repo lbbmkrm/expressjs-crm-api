@@ -54,6 +54,7 @@ const upload = multer({
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "application/vnd.ms-excel",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "text/plain",
       "text/csv",
       "application/vnd.ms-powerpoint",
@@ -70,7 +71,7 @@ const upload = multer({
     }
   },
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
+    fileSize: 10 * 1024 * 1024, // 10MB
   },
 });
 

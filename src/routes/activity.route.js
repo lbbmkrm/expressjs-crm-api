@@ -10,7 +10,6 @@ import {
   activityIdScheme,
   activityTypeScheme,
 } from "./../validators/activity.validator.js";
-import { documentIdScheme } from "../validators/document.validator.js";
 import activityService from "../services/activity.service.js";
 const router = express.Router();
 
@@ -59,41 +58,6 @@ router.delete(
     serviceMethod: activityService.getActivityById,
   }),
   activityController.destroy
-);
-
-router.get(
-  "/:id/documents",
-  authMiddleware,
-  validate(activityIdScheme, "params"),
-  policyMiddleware(activityPolicy, "canView", {
-    needModel: true,
-    serviceMethod: activityService.getActivityById,
-  }),
-  activityController.getDocumentsForActivity
-);
-
-router.post(
-  "/:id/documents/:documentId",
-  authMiddleware,
-  validate(activityIdScheme, "params"),
-  validate(documentIdScheme, "params"),
-  policyMiddleware(activityPolicy, "canUpdate", {
-    needModel: true,
-    serviceMethod: activityService.getActivityById,
-  }),
-  activityController.addDocumentToActivity
-);
-
-router.delete(
-  "/:id/documents/:documentId",
-  authMiddleware,
-  validate(activityIdScheme, "params"),
-  validate(documentIdScheme, "params"),
-  policyMiddleware(activityPolicy, "canUpdate", {
-    needModel: true,
-    serviceMethod: activityService.getActivityById,
-  }),
-  activityController.removeDocumentFromActivity
 );
 
 export default router;

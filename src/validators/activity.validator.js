@@ -43,10 +43,6 @@ const activityTypeScheme = Joi.object({
   type: Joi.string().valid(...Object.values(ActivityType)),
 });
 
-const documentIdScheme = Joi.object({
-  documentId: Joi.number().integer().required(),
-});
-
 export {
   createActivityScheme,
   updateActivityScheme,

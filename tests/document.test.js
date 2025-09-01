@@ -461,31 +461,6 @@ describe("Document Endpoints", () => {
       expect(response.body.data.documentType).toBe("QUOTE");
       expect(response.body.data.customerId).toBe(customer.id);
     });
-    it("should update a document's metadata without uploading a new file", async () => {
-      const file = await createFile(uniquePrefix, "pdf");
-      const document = await createDocument(
-        userData.admin.token,
-        file,
-        "PROPOSAL"
-      );
-      const customer = await createCustomer(
-        userData.sales2.token,
-        uniquePrefix
-      );
-
-      const response = await request(app)
-        .patch(`/api/documents/${document.id}?isTesting=true`)
-        .set("Authorization", `Bearer ${userData.admin.token}`)
-        .set("Content-Type", "multipart/form-data")
-        .field("documentType", "INVOICE")
-        .field("customerId", customer.id);
-
-      expect(response.statusCode).toBe(200);
-      expect(response.body.status).toBe("success");
-      expect(response.body.data.documentType).toBe("INVOICE");
-      expect(response.body.data.customerId).toBe(customer.id);
-      expect(response.body.data.path).toBe(document.path);
-    });
     it("should fail to update a document by non owner user", async () => {
       const file = await createFile(uniquePrefix, "pdf");
       const document = await createDocument(
@@ -555,7 +530,7 @@ describe("Document Endpoints", () => {
         .set("Content-Type", "multipart/form-data")
         .field("documentType", "QUOTE")
         .attach("file", invalidFilePath);
-      expect(response.statusCode).toBe(500);
+      expect(response.statusCode).toBe(400);
       expect(response.body.status).toBe("error");
     });
     it("should fail to update a document with invalid customer id", async () => {

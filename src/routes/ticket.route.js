@@ -6,7 +6,7 @@ import {
   createTicketScheme,
   updateTicketScheme,
   ticketIdScheme,
-  ticketStatusScheme,
+  ticketQueryScheme,
 } from "./../validators/ticket.validator.js";
 import { documentIdScheme } from "./../validators/document.validator.js";
 import policyMiddleware from "./../middlewares/policy.middleware.js";
@@ -18,19 +18,12 @@ router.use(authMiddleware);
 
 router.get(
   "/",
+  validate(ticketQueryScheme, "query"),
   policyMiddleware(ticketPolicy, "canViewAll"),
-  validate(ticketStatusScheme, "query"),
   ticketController.index
 );
 
 router.get("/my-tickets", ticketController.showByAssignedUser);
-
-router.get(
-  "/creators/:id",
-  policyMiddleware(ticketPolicy, "canViewAll"),
-  validate(ticketIdScheme, "params"),
-  ticketController.showByCreator
-);
 
 router.get(
   "/:id",
@@ -66,29 +59,6 @@ router.delete(
   policyMiddleware(ticketPolicy, "canDelete"),
   validate(ticketIdScheme, "params"),
   ticketController.destroy
-);
-
-router.get(
-  "/:id/documents",
-  policyMiddleware(ticketPolicy, "canView"),
-  validate(ticketIdScheme, "params"),
-  ticketController.getDocumentsForTicket
-);
-
-router.post(
-  "/:id/documents/:documentId",
-  policyMiddleware(ticketPolicy, "canUpdate"),
-  validate(ticketIdScheme, "params"),
-  validate(documentIdScheme, "params"),
-  ticketController.addDocumentToTicket
-);
-
-router.delete(
-  "/:id/documents/:documentId",
-  policyMiddleware(ticketPolicy, "canUpdate"),
-  validate(ticketIdScheme, "params"),
-  validate(documentIdScheme, "params"),
-  ticketController.removeDocumentFromTicket
 );
 
 export default router;

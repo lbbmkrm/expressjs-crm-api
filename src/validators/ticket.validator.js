@@ -20,19 +20,15 @@ const updateTicketScheme = Joi.object({
 const ticketIdScheme = Joi.object({
   id: Joi.number().integer().required(),
 });
-const ticketStatusScheme = Joi.object({
+const ticketQueryScheme = Joi.object({
   status: Joi.string()
     .optional()
     .valid(...Object.values(TicketStatus)),
+  creator: Joi.number().integer().optional(),
 });
-
-const documentIdScheme = Joi.object({
-  documentId: Joi.number().integer().required(),
-});
-
 export {
   createTicketScheme,
   updateTicketScheme,
   ticketIdScheme,
-  ticketStatusScheme,
+  ticketQueryScheme,
 };
