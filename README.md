@@ -1,134 +1,127 @@
 # CRM RESTful API
 
-Proyek ini dibangun menggunakan Node.js, Express, dan Prisma, dengan fokus pada arsitektur yang bersih, keamanan, dan skalabilitas. Proyek ini berfungsi sebagai studi kasus atau portofolio yang menunjukkan implementasi praktik terbaik yang saya ketahui dalam pengembangan aplikasi backend.
+This project was built using Node.js, Express, and Prisma, with a focus on clean architecture, security, and scalability. It serves as a case study or portfolio piece showcasing the best practices I know in backend application development.
 
-## Fitur Utama
+## Features
 
-- **Manajemen Pengguna & Peran**: Sistem pengguna dengan empat peran berbeda (`ADMIN`, `MANAGER`, `SALES`, `VIEWER`).
-- **Otentikasi & Otorisasi**: Menggunakan JWT (JSON Web Tokens) untuk otentikasi dan sistem _Policy-Based Authorization_ untuk mengontrol akses ke setiap endpoint berdasarkan peran pengguna.
-- **Sales Pipeline**: Manajemen alur penjualan penuh, mulai dari `Lead` -> `Opportunity` -> `Sale`.
-- **Manajemen Pelanggan**: CRUD penuh untuk `Customers` dan `Contacts` terkait.
-- **Manajemen Produk**: Kemampuan untuk mengelola produk yang dapat dijual.
-- **Pelacakan Interaksi**: Mencatat `Activities` (panggilan, email, rapat) dan `Notes` yang terhubung ke pelanggan, prospek, atau peluang.
-- **Manajemen Tugas**: Membuat dan menugaskan `Tasks` ke pengguna lain.
-- **Manajemen Dokumen**: Mengunggah dan mengelola dokumen (`proposals`, `invoices`, `contracts`) yang terkait dengan berbagai entitas.
-- **Dashboard Analitik**: Endpoint dashboard yang menyajikan data agregat yang berbeda berdasarkan peran pengguna.
-- **Fitur Tambahan**: Termasuk modul untuk `Campaigns` (kampanye pemasaran) dan `Tickets` (dukungan pelanggan).
+- **User Management**: User registration, authentication (JWT), and role-based access control (Admin, Manager, Sales, Viewer).
+- **Customer & Contact Management**: Create, read, update, and delete customers and their associated contacts.
+- **Sales Pipeline**:
+    - **Leads**: Track potential customers.
+    - **Opportunities**: Manage sales deals from qualification to closing.
+- **Task Management**: Assign and track tasks related to customers, leads, or opportunities.
+- **Marketing Campaigns**: Plan and manage marketing campaigns.
+- **Product & Sales Tracking**: Manage products and record sales transactions.
+- **Support Tickets**: Handle customer support requests.
+- **Interactions**: Log notes and activities (calls, emails, meetings) for various records.
+- **Document Management**: Upload and associate documents with different entities.
+- **Dashboard**: (Conceptual) Endpoint for fetching dashboard data.
+- **Soft Deletes**: Implemented for most models to prevent accidental data loss.
 
-## Arsitektur
-
-Aplikasi ini menggunakan **arsitektur berlapis (Layered Architecture)** untuk memisahkan tanggung jawab secara jelas:
-
-- **`routes`**: Mendefinisikan semua endpoint API dan menautkannya ke middleware dan controller yang sesuai.
-- **`middlewares`**: Menangani otentikasi (JWT), otorisasi (Policies), validasi input (Joi), logging, dan penanganan error.
-- **`controllers`**: Menerima HTTP request, memvalidasi input dasar, dan memanggil `service` yang relevan. Bertanggung jawab untuk membentuk dan mengirim HTTP response.
-- **`services`**: Berisi semua logika bisnis inti aplikasi. Mengorkestrasi data dari berbagai `repository` untuk menyelesaikan sebuah tugas.
-- **`repositories`**: Satu-satunya lapisan yang berkomunikasi langsung dengan database menggunakan Prisma Client. Bertugas untuk abstraksi query database.
-- **`policies`**: Mendefinisikan aturan hak akses (misalnya, "hanya ADMIN yang bisa menghapus pengguna").
-- **`validators`**: Skema validasi (menggunakan Joi) untuk memastikan integritas data yang masuk.
-
-## Teknologi yang Digunakan
+## Tech Stack
 
 - **Backend**: Node.js, Express.js
-- **ORM**: Prisma
 - **Database**: PostgreSQL
+- **ORM**: Prisma
+- **Authentication**: JSON Web Tokens (JWT)
+- **Validation**: Joi
+- **API Documentation**: OpenAPI (Swagger)
 - **Testing**: Jest, Supertest
-- **Validasi**: Joi
-- **Keamanan**: JWT (jsonwebtoken), Bcrypt
 - **Logging**: Winston
-- **File Uploads**: Multer
 
-## Prasyarat
+## Getting Started
 
-- [Node.js](https://nodejs.org/) (v18.x atau lebih baru)
-- [NPM](https://www.npmjs.com/)
-- [PostgreSQL](https://www.postgresql.org/)
-- [Git](https://git-scm.com/)
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
-## Instalasi & Setup
+### Prerequisites
 
-1.  **Clone repositori ini:**
+- [Node.js](https://nodejs.org/)
+- [PostgreSQL](https://www.postgresql.org/download/)
+- A package manager like [npm](https://www.npmjs.com/)
 
+### Installation
+
+1.  **Clone the repository:**
     ```bash
-    git clone <URL_REPOSITORI_ANDA>
+    git clone https://github.com/your-username/crm-api.git
     cd crm-api
     ```
 
-2.  **Install dependensi:**
-
+2.  **Install dependencies:**
     ```bash
     npm install
     ```
 
-3.  **Setup Environment Variables:**
-    Buat file `.env` di root proyek dengan menyalin dari `.env.example`:
-
+3.  **Set up environment variables:**
+    Create a `.env` file in the root directory by copying the example file:
     ```bash
     cp .env.example .env
     ```
-
-    Kemudian, isi variabel di dalam file `.env`:
-
-    ```env
-    # URL koneksi ke database PostgreSQL Anda
+    Update the `.env` file with your database connection string and a JWT secret:
+    ```
     DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
-
-    # Secret key untuk menandatangani JWT
-    JWT_SECRET="SECRET_KEY_ANDA_YANG_KUAT"
-
-    # Port untuk menjalankan server
-    PORT=3000
+    JWT_SECRET="your_jwt_secret_key"
+    JWT_EXPIRES_IN="1d"
     ```
 
-4.  **Jalankan Migrasi Database:**
-    Perintah ini akan membuat tabel-tabel di database Anda sesuai dengan `schema.prisma`.
-
+4.  **Run database migrations:**
+    This will create the database schema based on the models defined in `prisma/schema.prisma`.
     ```bash
-    npx prisma migrate dev
+    npm run db:migrate
     ```
 
-5.  **(Opsional) Seed Database:**
-    Isi database dengan data awal (termasuk user ADMIN, MANAGER, dll.) untuk mempermudah pengujian.
+5.  **(Optional) Seed the database:**
+    To populate the database with initial data for testing.
     ```bash
     npm run db:seed
     ```
 
-## Menjalankan Aplikasi
+### Running the Application
 
-- **Mode Development (dengan hot-reload):**
+-   **Development mode** (with hot-reloading):
+    ```bash
+    npm run dev
+    ```
 
-  ```bash
-  npm run dev
-  ```
+-   **Production mode**:
+    ```bash
+    npm start
+    ```
 
-  Server akan berjalan di `http://localhost:3000`.
+The server will start on the port specified in your configuration (default is likely 3000 or 8000).
 
-- **Mode Production:**
-  ```bash
-  npm run start
-  ```
+### Running Tests
 
-## Menjalankan Test
-
-Untuk menjalankan semua test suite menggunakan Jest:
-
+To run the automated tests:
 ```bash
 npm test
 ```
 
-## Endpoint API
+## API Documentation
 
-API ini menyediakan endpoint RESTful yang kaya untuk semua fiturnya. Berikut adalah beberapa contoh endpoint utama:
+This API is documented using the OpenAPI 3.0 specification. Once the application is running, you can access the interactive Swagger UI documentation at:
 
-- `POST /api/auth/register` - Registrasi pengguna baru.
-- `POST /api/auth/login` - Login dan dapatkan token JWT.
-- `GET /api/dashboard` - Mendapatkan data dashboard sesuai peran pengguna.
-- `GET, POST /api/customers` - Mendapatkan daftar atau membuat customer baru.
-- `GET, PATCH, DELETE /api/customers/:id` - Mengelola customer spesifik.
-- `POST /api/leads` - Membuat lead baru.
-- `POST /api/leads/:id/convert` - Mengonversi lead menjadi customer, contact, dan opportunity.
-- `GET, POST /api/opportunities` - Mendapatkan atau membuat opportunity baru.
-- `POST /api/sales` - Membuat data penjualan baru.
-- `POST /api/documents` - Mengunggah dokumen.
+**http://localhost:{PORT}/api-docs**
 
-Sebagian besar endpoint memerlukan otentikasi melalui Bearer Token. Silakan merujuk ke direktori `src/routes` untuk daftar lengkap semua endpoint dan metode HTTP yang didukung.
+(Replace `PORT` with the port your application is running on).
+
+## Project Structure
+
+The project follows a layered architecture to ensure a clean separation of concerns:
+
+```
+/
+├── prisma/             # Prisma schema, migrations, and seeds
+├── src/
+│   ├── app.js          # Main Express application setup
+│   ├── config/         # Application configuration (logger, etc.)
+│   ├── controllers/    # Request/response handling logic
+│   ├── middlewares/    # Express middlewares (auth, error handling, validation)
+│   ├── policies/       # Authorization logic for different roles
+│   ├── repositories/   # Data access layer (interacts with Prisma)
+│   ├── routes/         # API route definitions
+│   ├── services/       # Business logic layer
+│   ├── utils/          # Utility classes and functions
+│   └── validators/     # Joi validation schemas
+└── tests/              # Jest test files
+```
