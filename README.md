@@ -1,22 +1,22 @@
 # CRM RESTful API
 
-This project was built using Node.js, Express, and Prisma, with a focus on clean architecture, security, and scalability. It serves as a case study or portfolio piece showcasing the best practices I know in backend application development.
+Proyek ini dibangun menggunakan Node.js, Express, dan Prisma, dengan fokus pada *clean architecture*, *security*, dan *scalability*. Proyek ini berfungsi sebagai *case study* atau portofolio yang menampilkan *best practices* dalam pengembangan aplikasi *backend*.
 
 ## Features
 
-- **User Management**: User registration, authentication (JWT), and role-based access control (Admin, Manager, Sales, Viewer).
-- **Customer & Contact Management**: Create, read, update, and delete customers and their associated contacts.
+- **User Management**: Registrasi pengguna, otentikasi (JWT), dan *role-based access control* (Admin, Manager, Sales, Viewer).
+- **Customer & Contact Management**: Operasi CRUD untuk pelanggan dan kontak terkait.
 - **Sales Pipeline**:
-    - **Leads**: Track potential customers.
-    - **Opportunities**: Manage sales deals from qualification to closing.
-- **Task Management**: Assign and track tasks related to customers, leads, or opportunities.
-- **Marketing Campaigns**: Plan and manage marketing campaigns.
-- **Product & Sales Tracking**: Manage products and record sales transactions.
-- **Support Tickets**: Handle customer support requests.
-- **Interactions**: Log notes and activities (calls, emails, meetings) for various records.
-- **Document Management**: Upload and associate documents with different entities.
-- **Dashboard**: (Conceptual) Endpoint for fetching dashboard data.
-- **Soft Deletes**: Implemented for most models to prevent accidental data loss.
+    - **Leads**: Melacak calon pelanggan.
+    - **Opportunities**: Mengelola *sales deals* dari kualifikasi hingga *closing*.
+- **Task Management**: Menetapkan dan melacak *tasks* yang terkait dengan pelanggan, *leads*, atau *opportunities*.
+- **Marketing Campaigns**: Merencanakan dan mengelola kampanye pemasaran.
+- **Product & Sales Tracking**: Mengelola produk dan mencatat transaksi penjualan.
+- **Support Tickets**: Menangani permintaan *customer support*.
+- **Interactions**: Mencatat *notes* dan *activities* (panggilan, email, rapat).
+- **Document Management**: Mengunggah dan mengaitkan dokumen dengan berbagai entitas.
+- **Dashboard**: (Konseptual) *Endpoint* untuk mengambil data dasbor.
+- **Soft Deletes**: Diimplementasikan untuk sebagian besar model untuk mencegah kehilangan data yang tidak disengaja.
 
 ## Tech Stack
 
@@ -31,17 +31,17 @@ This project was built using Node.js, Express, and Prisma, with a focus on clean
 
 ## Getting Started
 
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+Ikuti instruksi ini untuk menjalankan proyek ini di komputer Anda untuk tujuan *development* dan *testing*.
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/)
 - [PostgreSQL](https://www.postgresql.org/download/)
-- A package manager like [npm](https://www.npmjs.com/)
+- *Package manager* seperti [npm](https://www.npmjs.com/)
 
 ### Installation
 
-1.  **Clone the repository:**
+1.  **Clone repository:**
     ```bash
     git clone https://github.com/your-username/crm-api.git
     cd crm-api
@@ -52,12 +52,12 @@ Follow these instructions to get a copy of the project up and running on your lo
     npm install
     ```
 
-3.  **Set up environment variables:**
-    Create a `.env` file in the root directory by copying the example file:
+3.  **Setup environment variables:**
+    Buat file `.env` di *root directory* dengan menyalin file contoh:
     ```bash
     cp .env.example .env
     ```
-    Update the `.env` file with your database connection string and a JWT secret:
+    Perbarui file `.env` dengan *database connection string* dan *JWT secret* Anda:
     ```
     DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
     JWT_SECRET="your_jwt_secret_key"
@@ -65,20 +65,20 @@ Follow these instructions to get a copy of the project up and running on your lo
     ```
 
 4.  **Run database migrations:**
-    This will create the database schema based on the models defined in `prisma/schema.prisma`.
+    Ini akan membuat skema *database* berdasarkan model yang didefinisikan di `prisma/schema.prisma`.
     ```bash
     npm run db:migrate
     ```
 
 5.  **(Optional) Seed the database:**
-    To populate the database with initial data for testing.
+    Untuk mengisi *database* dengan data awal untuk *testing*.
     ```bash
     npm run db:seed
     ```
 
 ### Running the Application
 
--   **Development mode** (with hot-reloading):
+-   **Development mode** (dengan *hot-reloading*):
     ```bash
     npm run dev
     ```
@@ -88,26 +88,26 @@ Follow these instructions to get a copy of the project up and running on your lo
     npm start
     ```
 
-The server will start on the port specified in your configuration (default is likely 3000 or 8000).
+Server akan dimulai pada *port* yang ditentukan dalam konfigurasi Anda (default 3000 atau 8000).
 
 ### Running Tests
 
-To run the automated tests:
+Untuk menjalankan *automated tests*:
 ```bash
 npm test
 ```
 
 ## API Documentation
 
-This API is documented using the OpenAPI 3.0 specification. Once the application is running, you can access the interactive Swagger UI documentation at:
+API ini didokumentasikan menggunakan spesifikasi OpenAPI 3.0. Setelah aplikasi berjalan, Anda dapat mengakses dokumentasi interaktif Swagger UI di:
 
 **http://localhost:{PORT}/api-docs**
 
-(Replace `PORT` with the port your application is running on).
+(Ganti `{PORT}` dengan *port* tempat aplikasi Anda berjalan).
 
 ## Project Structure
 
-The project follows a layered architecture to ensure a clean separation of concerns:
+Proyek ini mengikuti *layered architecture* untuk memastikan *separation of concerns* yang bersih:
 
 ```
 /
